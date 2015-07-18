@@ -1,14 +1,14 @@
 angular.module('starter.controllers', ['ngCordova'])
 
-.controller('DashCtrl', function($scope,$cordovaDevice, $cordovaActionSheet) {
-        $scope.checkWeChatInstalled = function(id) {
+    .controller('DashCtrl', function ($scope, $cordovaDevice, $cordovaActionSheet) {
+        $scope.checkWeChatInstalled = function (id) {
             Wechat.isInstalled(function (installed) {
                 alert("Wechat installed: " + (installed ? "Yes" : "No"));
             }, function (reason) {
                 alert("Failed: " + reason);
             });
         }
-        $scope.loginWechat = function() {
+        $scope.loginWechat = function () {
             // 登陆微信
 //            Wechat.auth("snsapi_userinfo", function (response) {
 //                // you may use response.code to get the access token.
@@ -16,23 +16,25 @@ angular.module('starter.controllers', ['ngCordova'])
 //            }, function (reason) {
 //                alert("Failed:2222 " + reason);
 //            });
-            Wechat.auth(function (response) { alert(response.code); });
+            Wechat.auth(function (response) {
+                alert(response.code);
+            });
         }
-        $scope.shareWechat = function(id) {
+        $scope.shareWechat = function (id) {
             Wechat.share({
-                 message: {
-                        title: "Message Title",
-                        description: "Message Description(optional)",
-                        mediaTagName: "Media Tag Name(optional)",
-                        thumb: "http://YOUR_THUMBNAIL_IMAGE",
-                        media: {
-                            type: Wechat.Type.WEBPAGE,   // webpage
-                            webpageUrl: "https://github.com/xu-li/cordova-plugin-wechat"    // webpage
-                       }
-               },
-               scene: Wechat.Scene.TIMELINE   // share to Timeline
+                message: {
+                    title: "Message Title",
+                    description: "Message Description(optional)",
+                    mediaTagName: "Media Tag Name(optional)",
+                    thumb: "http://YOUR_THUMBNAIL_IMAGE",
+                    media: {
+                        type: Wechat.Type.WEBPAGE,   // webpage
+                        webpageUrl: "https://github.com/xu-li/cordova-plugin-wechat"    // webpage
+                    }
+                },
+                scene: Wechat.Scene.TIMELINE   // share to Timeline
             }, function () {
-               alert("Success");
+                alert("Success");
             }, function (reason) {
                 alert("Failed: " + reason);
             });
@@ -67,10 +69,10 @@ angular.module('starter.controllers', ['ngCordova'])
             } else {
                 window.umappkey = '5598ee6867e58e42e9002113';
             }
-            $scope.loginBtn = function() {
+            $scope.loginBtn = function () {
                 // 现实第三方登陆的login
                 $cordovaActionSheet.show(options)
-                    .then(function(btnIndex) {
+                    .then(function (btnIndex) {
                         var index = btnIndex;
                         var platform;
 //                        alert('index:' + index);
@@ -82,7 +84,7 @@ angular.module('starter.controllers', ['ngCordova'])
                             // var info = $.fn.umshare.delToken("sina");
                             // $("#delTokenInfo").html('退出成功');
 
-                            $.fn.umshare.checkToken('sina',function(user){
+                            $.fn.umshare.checkToken('sina', function (user) {
                                 // 测试是否登陆成功过sina
                                 $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
 //                                alert('登录成功,token:' + user.token + ', uid:' + user.uid);
@@ -109,35 +111,35 @@ angular.module('starter.controllers', ['ngCordova'])
             title: '第三方登陆',
             buttonLabels: ['新浪登陆', '腾讯微博'],
             addCancelButtonWithLabel: 'Cancel',
-            androidEnableCancelButton : true,
-            winphoneEnableCancelButton : true
+            androidEnableCancelButton: true,
+            winphoneEnableCancelButton: true
         };
 
 
     })
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-  
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
-})
+    .controller('ChatsCtrl', function ($scope, Chats) {
+        // With the new view caching in Ionic, Controllers are only called
+        // when they are recreated or on app start, instead of every page change.
+        // To listen for when this page is active (for example, to refresh data),
+        // listen for the $ionicView.enter event:
+        //
+        //$scope.$on('$ionicView.enter', function(e) {
+        //});
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
+        $scope.chats = Chats.all();
+        $scope.remove = function (chat) {
+            Chats.remove(chat);
+        }
+    })
 
-})
+    .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
+        $scope.chat = Chats.get($stateParams.chatId);
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+    })
+
+    .controller('AccountCtrl', function ($scope) {
+        $scope.settings = {
+            enableFriends: true
+        };
+    });
