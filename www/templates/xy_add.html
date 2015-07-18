@@ -1,0 +1,43 @@
+<ion-view title="在宣言墙上涂鸦">
+    <ion-nav-buttons side="left">
+        <!--<a class="button icon-left ion-chevron-left button-clear button-dark">Back</a>-->
+
+        <button class="button button-clear" ng-click="back()">
+            取消
+        </button>
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="right">
+        <button class="button button-clear" ng-click="addComment()">
+            发表
+        </button>
+    </ion-nav-buttons>
+
+    <ion-content has-header="true" padding="true">
+        <ion-nav-back-button></ion-nav-back-button>
+
+        <div class="list">
+            <label class="item">
+                <textarea placeholder="我想说.." ng-model="xy.content"></textarea>
+            </label>
+
+            <div class="item item-input item-select">
+                <div class="input-label">
+                    #话题
+                </div>
+                <select>
+                    <option>毕业旅行</option>
+                    <option selected>毕业照</option>
+                    <option>毕业感言</option>
+                </select>
+            </div>
+        </div>
+    </ion-content>
+    <div class="bar bar-footer">
+        <div class="button-bar">
+            <a href="" ng-click="" class="button button-positive button-clear ion-ios-camera-outline"></a>
+            <a href="" ng-click="" class="button button-positive button-clear ion-ios-photos"></a>
+        </div>
+    </div>
+
+</ion-view>

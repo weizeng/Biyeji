@@ -1,0 +1,16 @@
+<ion-view title="我的毕业脚印">
+    <ion-nav-buttons side="right">
+        <button class="button button-clear icon ion-ios-compose-outline" ui-sref="addXy()">
+        </button>
+    </ion-nav-buttons>
+
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="friend in friends" type="item-text-wrap" href="#/tab/friend/{{friend.id}}">
+                {{friend.name}}
+                <iframe height=100 width=100 src="http://player.youku.com/embed/XODMxMDA4NjE2" frameborder=0
+                        allowfullscreen></iframe>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
