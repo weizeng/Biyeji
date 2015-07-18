@@ -73,8 +73,9 @@ angular.module('starter.controllers', ['ngCordova'])
                     .then(function(btnIndex) {
                         var index = btnIndex;
                         var platform;
+//                        alert('index:' + index);
                         // 目前只支持 平台名.('sina','tencent','qzone','renren','douban')
-                        if (index == 0) {
+                        if (index == 1) {
                             platform = 'sina';
                         } else {
                             platform = 'tencent';
