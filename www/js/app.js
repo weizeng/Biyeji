@@ -48,6 +48,38 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
+  .state('tab.my', {
+      url: '/my',
+      views: {
+          'tab-my': {
+              templateUrl: 'templates/tab-my.html',
+              controller: 'MyBoardCtrl'
+          }
+      }
+  })
+
+  .state('tab.xylist', {
+      url: '/xylist',
+      views: {
+          'tab-xylist': {
+              templateUrl: 'templates/tab-xylist.html',
+              controller: 'XYListCtrl'
+          }
+      }
+  })
+
+  .state('share', {
+      url: '/share',
+      templateUrl: 'templates/index_share.html',
+      controller:"ShareCtrl"
+  })
+
+  .state('addXy', {
+      url: '/addXy',
+      templateUrl: 'templates/xy_add.html',
+      controller: 'AddXyCtrl'
+  })
+
   .state('tab.chats', {
       url: '/chats',
       views: {
