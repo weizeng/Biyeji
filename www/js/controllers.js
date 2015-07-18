@@ -77,15 +77,29 @@ angular.module('starter.controllers', ['ngCordova'])
                         // 目前只支持 平台名.('sina','tencent','qzone','renren','douban')
                         if (index == 1) {
                             platform = 'sina';
+                            // 检查某个平台的登录信息.如果未登录，则进行登录(等价于先使用getoken进行检测，若返回false，则调用login)
+                            //
+                            // var info = $.fn.umshare.delToken("sina");
+                            // $("#delTokenInfo").html('退出成功');
+
+                            $.fn.umshare.checkToken('sina',function(user){
+                                // 测试是否登陆成功过sina
+                                $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
+//                                alert('登录成功,token:' + user.token + ', uid:' + user.uid);
+//                                if (!user) {
+//                                    $.fn.umshare.login(platform, function (user) {
+//                                        $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
+//                                        // 获取用户平台上的信息
+//                                        var info = $.fn.umshare.getToken("sina");
+//                                        alert(info ? 'token:' + info.token + ', uid:' + info.uid : 'false');
+//
+//                                    });
+//                                }
+                            });
                         } else {
                             platform = 'tencent';
                         }
 
-                        $.fn.umshare.login(platform, function (user) {
-                            // console.log('usersuerseru');
-                            alert("result...");
-                            $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
-                        });
                     });
             }
 
