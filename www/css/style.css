@@ -1,1 +1,15 @@
 /* Empty. Add your own CSS if you like */
+
+.me-bg {
+    background-image: url(../img/weibo.jpg);
+    height: 200px;
+    background-size: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.me-bg img {
+    border-radius: 50%;
+    height: 80px;
+    margin-top: 40px;
+}

@@ -1,17 +1,10 @@
 <ion-view title="我的毕业脚印">
-    <ion-nav-buttons side="right">
-        <button class="button button-clear icon ion-ios-compose-outline" ui-sref="addXy()">
-        </button>
-    </ion-nav-buttons>
-
     <ion-content>
-        <div style="background-image: url(img/weibo.jpg);">
-            <img src="img/ionic.png" style="border-radius: 50%;" >
-
+        <div class="me-bg">
+            <img ng-show="!me.avatar_large" src="img/ionic.png" style="border-radius: 50%;">
+            <img ng-show="me.avatar_large" ng-src="{{me.avatar_large}}">
+            <div>{{me.screen_name}}</div>
         </div>
-
-
-
 
         <ion-list>
             <ion-item ng-repeat="friend in friends" type="item-text-wrap" href="#/tab/friend/{{friend.id}}">

@@ -5,21 +5,24 @@
     <!--</button>-->
     <!--</ion-nav-buttons>-->
 
+    <ion-nav-buttons side="right">
+        <button class="button button-clear icon ion-ios-compose-outline" ui-sref="addXy()">
+        </button>
+    </ion-nav-buttons>
 
     <ion-content>
-        <ion-refresher pulling-icon="ion-arrow-down-a" refreshing-icon="ion-loading-c" on-refresh="hardRefresh()">
-        </ion-refresher>
+        <ion-refresher on-refresh="hardRefresh()"></ion-refresher>
         <ion-list>
             <ion-item ng-repeat="item in results"
                       style="border-width: 0px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);"
                     >
-                <!--<div class="item item-avatar">-->
-                    <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
+                <div class="item item-avatar">
+                    <img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">
 
-                    <!--<h2>Marty McFly</h2>-->
+                    <h2>Marty McFly</h2>
 
-                    <!--<p>November 05, 1955</p>-->
-                <!--</div>-->
+                    <p>November 05, 1955</p>
+                </div>
 
                 <div class="item item-body" style="padding: 0px"
                      ng-click="goXy(item.id)">

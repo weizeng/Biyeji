@@ -322,11 +322,11 @@ angular.module('starter.controllers', ['ngCordova'])
 
 
 // 我的设置
-.controller('MyBoardCtrl', function ($rootScope,$scope, $ionicLoading) {
+.controller('MyBoardCtrl', function ($rootScope,$scope,$http,$ionicLoading) {
     $scope.quit = function() {
         var info = $.fn.umshare.delToken("sina");
         alert('已经退出微博账号');
-    }
+    };
 
     $scope.checkToken = function() {
         // 检查某个平台的登录信息.如果未登录，则进行登录(等价于先使用getoken进行检测，若返回false，则调用login)
@@ -335,8 +335,15 @@ angular.module('starter.controllers', ['ngCordova'])
             $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
             // 获取数据
             var showJsonUrl = 'https://api.weibo.com/2/users/show.json?uid='+user.uid+'&access_token=' + user.token;
+            $http.get(showJsonUrl)
+                .success(function (response) {
+                    $scope.me = response;
+                    //console.log(response);
+                }
+            );
         });
-    }
+    };
+    $scope.checkToken();
 })
 
 .controller('ShareCtrl', function ($ionicPlatform, $cordovaFile, $rootScope,$scope, $ionicLoading) {
