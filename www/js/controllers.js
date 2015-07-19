@@ -184,7 +184,7 @@ angular.module('starter.controllers', ['ngCordova'])
             });
         };
         //TODO 许愿详情
-        $ionicModal.fromTemplateUrl('templates/xy_detail.html', {
+        $ionicModal.fromTemplateUrl('xy-modal.html', {
             scope: $scope,
             animation: 'slide-in-up'
         }).then(function(modal) {

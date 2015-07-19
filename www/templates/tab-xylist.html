@@ -41,3 +41,40 @@
         </ion-infinite-scroll>
     </ion-content>
 </ion-view>
+<script id="xy-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar>
+            <button class="button button-clear" ng-click="closeModal()">完成</button>
+            <h1 class="title">详情</h1>
+        </ion-header-bar>
+        <ion-content>
+
+            <ion-item class="xy-item">
+                <div class="item item-avatar">
+                    <img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">
+                    <h2>{{item.get('title')}}</h2>
+                    <p>{{item.createdAt}}</p>
+                </div>
+
+                <div class="item item-body">
+                    <img class="full-image" ng-show="item.get('image')._url"
+                         onerror="javascript:this.src='img/weibo.jpg'" src="{{item.get('image')._url}}">
+                    <div style="padding-left: 16px;">
+                        <!--<p>{{item.get('title')}}</p>-->
+                        <!--<p>{{item.createdAt}}</p>-->
+                        <a class="button button-icon icon ion-ios-heart-outline" ng-click="goZan(item)"> 1</a>
+                        <!--<a class="button button-icon icon ion-ios-heart">1</a>-->
+                        <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goChat(item)"> 1</a>
+                        <!--<a class="subdued" ng-click="goZan(item)">1</a>-->
+                        <!--<a href="#" class="subdued">5 Comments</a>-->
+                        <!--</p>-->
+                        <form ng-submit="saveForm()">
+                            <input placeholder="添加评论..." type="text">
+                        </form>
+
+                    </div>
+                </div>
+            </ion-item>
+        </ion-content>
+    </ion-modal-view>
+</script>
