@@ -1,9 +1,11 @@
-<ion-view title="我的毕业脚印">
+<ion-view title="我">
     <ion-content>
         <div class="me-bg">
             <img ng-show="!me.avatar_large" src="img/ionic.png" style="border-radius: 50%;">
             <img ng-show="me.avatar_large" ng-src="{{me.avatar_large}}">
             <div>{{me.screen_name}}</div>
+            <button ng-click="logout()" ng-show="me.uid">注销</button>
+            <button ng-click="logIn()" ng-show="!me.uid">新浪登陆</button>
         </div>
 
         <ion-list>

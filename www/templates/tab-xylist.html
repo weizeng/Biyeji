@@ -1,10 +1,4 @@
-<ion-view title="毕业大家说">
-    <!--<ion-nav-buttons side="left">-->
-    <!--<button class="button" ui-sref="share()">-->
-    <!--分享-->
-    <!--</button>-->
-    <!--</ion-nav-buttons>-->
-
+<ion-view title="毕业墙">
     <ion-nav-buttons side="right">
         <button class="button button-clear icon ion-ios-compose-outline" ui-sref="addXy()">
         </button>
@@ -18,31 +12,23 @@
                     >
                 <div class="item item-avatar">
                     <img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">
-
                     <h2>Marty McFly</h2>
-
                     <p>November 05, 1955</p>
                 </div>
 
                 <div class="item item-body" style="padding: 0px"
-                     ng-click="goXy(item.id)">
+                     ng-click="goXyDetail(item.id)">
                     <img class="full-image" ng-show="item.get('image')._url"
                          onerror="javascript:this.src='img/weibo.jpg'" src="{{item.get('image')._url}}">
-
                     <div style="padding-left: 10px">
                         <p>{{item.get('title')}}</p>
-
-                        <p>
-
                         <p>{{item.createdAt}}</p>
-
                         <div class="subdued" ng-click="goZan(item)">1 Like</div>
                         <a href="#" class="subdued">5 Comments</a>
                         </p>
                     </div>
                 </div>
             </ion-item>
-
         </ion-list>
         <ion-infinite-scroll
                 ng-if="more"

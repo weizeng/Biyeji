@@ -58,6 +58,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
   })
 
+  // 许愿列表
   .state('tab.xylist', {
       url: '/xylist',
       views: {
@@ -68,12 +69,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
   })
 
-  .state('share', {
-      url: '/share',
-      templateUrl: 'templates/index_share.html',
-      controller:"ShareCtrl"
-  })
-
+  // 增加许愿
   .state('addXy', {
       url: '/addXy',
       templateUrl: 'templates/xy_add.html',
