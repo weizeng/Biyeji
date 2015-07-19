@@ -1,11 +1,13 @@
 <ion-view title="我">
     <ion-content>
         <div class="me-bg">
-            <img ng-show="!me.avatar_large" src="img/ionic.png" style="border-radius: 50%;">
-            <img ng-show="me.avatar_large" ng-src="{{me.avatar_large}}">
-            <div>{{me.screen_name}}</div>
-            <button ng-click="logout()" ng-show="me.uid">注销</button>
-            <button ng-click="logIn()" ng-show="!me.uid">新浪登陆</button>
+            <img ng-show="!user.avatar_large" src="img/ionic.png" style="border-radius: 50%;">
+            <img ng-show="user.avatar_large" ng-src="{{user.avatar_large}}">
+            <div>{{user.screen_name}}</div>
+            <div>{{user.description}}</div>
+            <div>{{user.location}}</div>
+            <button ng-click="logout()" ng-show="user">注销</button>
+            <button ng-click="logIn()" ng-show="!user">新浪登陆</button>
         </div>
 
         <ion-list>
