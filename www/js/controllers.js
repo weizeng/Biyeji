@@ -151,7 +151,7 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
 // 许愿的列表
-    .controller('XYListCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaDevice) {
+    .controller('XYListCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaDevice,$ionicModal) {
         //TODO 增加对某一个评论点赞的方法
         $scope.goZan = function (xy) {
             //alert(xy);
@@ -182,13 +182,35 @@ angular.module('starter.controllers', ['ngCordova'])
                     });
                 }
             });
-        }
+        };
+        //TODO 许愿详情
+        $ionicModal.fromTemplateUrl('templates/xy_detail.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
+        $scope.openModal = function() {
+            $scope.modal.show();
+        };
+        $scope.closeModal = function() {
+            $scope.modal.hide();
+        };
+        //Cleanup the modal when we're done with it!
+        $scope.$on('$destroy', function() {
+            $scope.modal.remove();
+        });
 
-        // 毕业墙的详情页面
-        $scope.goXyDetail = function (id) {
+        // 弹出毕业墙的详情
+        $scope.goXyDetail = function (detail) {
+            $scope.item = detail;
+            $scope.openModal();
+        };
 
-            alert(id);
-        }
+        //TODO 保存简单的评论
+        $scope.saveForm = function(){
+
+        };
 
         // 初始化毕业墙的
         Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
@@ -212,7 +234,7 @@ angular.module('starter.controllers', ['ngCordova'])
                     return "YES3";
                 }
             });
-
+            $ionicLoading.show({template: '加载中...'});
             var query = new Bmob.Query(XyList);
             query.limit(5);
             query.skip(skip);

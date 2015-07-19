@@ -1,13 +1,14 @@
-<ion-view title="毕业墙">
-    <ion-nav-buttons side="right">
-        <button class="button button-clear icon ion-ios-compose-outline" ui-sref="addXy()">
-        </button>
-    </ion-nav-buttons>
+
+<div class="modal">
+    <div class="bar bar-header bar-royal">
+        <button class="button button-clear" ng-click="closeModal()">取消</button>
+        <h1 class="title">详情</h1>
+    </div>
 
     <ion-content>
-        <ion-refresher on-refresh="hardRefresh()"></ion-refresher>
-        <ion-list>
-            <ion-item class="xy-item" ng-repeat="item in results">
+        <!--<ion-refresher on-refresh="hardRefresh()"></ion-refresher>-->
+        <!--<ion-list>-->
+            <ion-item class="xy-item">
                 <div class="item item-avatar">
                     <img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">
                     <h2>{{item.get('title')}}</h2>
@@ -15,29 +16,30 @@
                 </div>
 
                 <div class="item item-body">
-                    <img class="full-image" ng-show="item.get('image')._url" ng-click="goXyDetail(item)"
+                    <img class="full-image" ng-show="item.get('image')._url"
                          onerror="javascript:this.src='img/weibo.jpg'" src="{{item.get('image')._url}}">
                     <div style="padding-left: 16px;">
                         <!--<p>{{item.get('title')}}</p>-->
                         <!--<p>{{item.createdAt}}</p>-->
                         <a class="button button-icon icon ion-ios-heart-outline" ng-click="goZan(item)"> 1</a>
                         <!--<a class="button button-icon icon ion-ios-heart">1</a>-->
-                        <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goXyDetail(item)"> 1</a>
+                        <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goChat(item)"> 1</a>
                         <!--<a class="subdued" ng-click="goZan(item)">1</a>-->
                         <!--<a href="#" class="subdued">5 Comments</a>-->
                         <!--</p>-->
                         <form ng-submit="saveForm()">
                             <input placeholder="添加评论..." type="text">
                         </form>
+
                     </div>
                 </div>
             </ion-item>
-        </ion-list>
-        <ion-infinite-scroll
-                ng-if="more"
-                icon="ion-loading-c"
-                on-infinite="loadMorePost()"
-                distance="1%">
-        </ion-infinite-scroll>
+        <!--</ion-list>-->
+        <!--<ion-infinite-scroll-->
+                <!--ng-if="more"-->
+                <!--icon="ion-loading-c"-->
+                <!--on-infinite="loadMorePost()"-->
+                <!--distance="1%">-->
+        <!--</ion-infinite-scroll>-->
     </ion-content>
-</ion-view>
+</div>
