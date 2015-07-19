@@ -154,7 +154,7 @@ angular.module('starter.controllers', ['ngCordova'])
     .controller('XYListCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaDevice) {
         //TODO 增加对某一个评论点赞的方法
         $scope.goZan = function (xy) {
-            alert(xy);
+            //alert(xy);
 
             var query = new Bmob.Query("_User");
             query.first({
@@ -174,10 +174,10 @@ angular.module('starter.controllers', ['ngCordova'])
                             var relation = xy.relation("zan");
                             relation.add(zan);
                             xy.save();
-                            alert("保存成功");
+                            alert("已赞");
                         },
                         error: function (ddd, error) {
-                            alert("抱歉，学长，错了。。" + error.message);
+                            alert("抱歉，没赞成功。。" + error.message);
                         }
                     });
                 }
@@ -233,11 +233,13 @@ angular.module('starter.controllers', ['ngCordova'])
                     }
 
                     $ionicLoading.hide();
-                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                    //$scope.$broadcast('scroll.infiniteScrollComplete');
+                    $scope.$broadcast('scroll.refreshComplete');
                 },
                 error: function (error) {
                     alert("查询失败: " + error.code + " " + error.message);
                     $ionicLoading.hide();
+                    $scope.$broadcast('scroll.refreshComplete');
                 }
             });
         }
@@ -286,7 +288,7 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading) {
+    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading,$cordovaCamera) {
         //返回
         $scope.back = function () {
             window.history.back();
@@ -341,6 +343,42 @@ angular.module('starter.controllers', ['ngCordova'])
                 error: function (error) {
                     alert("查询失败: " + error.code + " " + error.message);
                 }
+            });
+        }
+        //选择拍照
+        $scope.goCamera = function(){
+            var options = {
+                quality: 50,
+                destinationType: Camera.DestinationType.DATA_URL,
+                sourceType: Camera.PictureSourceType.CAMERA
+            };
+
+            // udpate camera image directive
+            $cordovaCamera.getPicture(options).then(function (imageData) {
+                $scope.cameraimage = "data:image/jpeg;base64," + imageData;
+                //TODO 保存图片接口
+            }, function (err) {
+                console.log('Failed because: ');
+                console.log(err);
+            });
+        };
+        //选择照片
+        $scope.goPhoto = function(){
+            var options = {
+                quality: 50,
+                destinationType : Camera.DestinationType.DATA_URL,
+                sourceType : Camera.PictureSourceType.PHOTOLIBRARY,
+                //destinationType: Camera.DestinationType.DATA_URL,
+                //sourceType: Camera.PictureSourceType.CAMERA
+            };
+
+            // udpate camera image directive
+            $cordovaCamera.getPicture(options).then(function (imageData) {
+                $scope.cameraimage = "data:image/jpeg;base64," + imageData;
+                //TODO 保存图片接口
+            }, function (err) {
+                console.log('Failed because: ');
+                console.log(err);
             });
         }
     })

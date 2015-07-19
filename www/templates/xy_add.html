@@ -18,7 +18,7 @@
 
         <div class="list">
             <label class="item">
-                <textarea placeholder="我想说.." ng-model="xy.content"></textarea>
+                <textarea class="w100" placeholder="我想说.." ng-model="xy.content"></textarea>
             </label>
 
             <div class="item item-input item-select">
@@ -31,12 +31,16 @@
                     <option>毕业感言</option>
                 </select>
             </div>
+            <div class="item item-image" ng-show="cameraimage">
+                <img class="item" ng-src="{{cameraimage}}" style="height: 350px;"/>
+            </div>
+
         </div>
     </ion-content>
     <div class="bar bar-footer">
         <div class="button-bar">
-            <a href="" ng-click="" class="button button-positive button-clear ion-ios-camera-outline"></a>
-            <a href="" ng-click="" class="button button-positive button-clear ion-ios-photos"></a>
+            <a href="" class="button button-clear ion-ios-camera" ng-click="goCamera()"></a>
+            <a href="" class="button button-clear ion-ios-photos" ng-click="goPhoto()"></a>
         </div>
     </div>
 

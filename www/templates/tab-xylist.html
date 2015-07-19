@@ -7,24 +7,24 @@
     <ion-content>
         <ion-refresher on-refresh="hardRefresh()"></ion-refresher>
         <ion-list>
-            <ion-item ng-repeat="item in results"
-                      style="border-width: 0px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);"
-                    >
+            <ion-item class="xy-item" ng-repeat="item in results">
                 <div class="item item-avatar">
                     <img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">
-                    <h2>Marty McFly</h2>
-                    <p>November 05, 1955</p>
+                    <h2>{{item.get('title')}}</h2>
+                    <p>{{item.createdAt}}</p>
                 </div>
 
-                <div class="item item-body" style="padding: 0px"
-                     ng-click="goXyDetail(item.id)">
+                <div class="item item-body">
                     <img class="full-image" ng-show="item.get('image')._url"
                          onerror="javascript:this.src='img/weibo.jpg'" src="{{item.get('image')._url}}">
-                    <div style="padding-left: 10px">
-                        <p>{{item.get('title')}}</p>
-                        <p>{{item.createdAt}}</p>
-                        <div class="subdued" ng-click="goZan(item)">1 Like</div>
-                        <a href="#" class="subdued">5 Comments</a>
+                    <div style="padding-left: 16px; margin-bottom: -12px;">
+                        <!--<p>{{item.get('title')}}</p>-->
+                        <!--<p>{{item.createdAt}}</p>-->
+                        <a class="button button-icon icon ion-ios-heart-outline" ng-click="goZan(item)"> 1</a>
+                        <!--<a class="button button-icon icon ion-ios-heart">1</a>-->
+                        <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goChat(item)"> 1</a>
+                        <!--<a class="subdued" ng-click="goZan(item)">1</a>-->
+                        <!--<a href="#" class="subdued">5 Comments</a>-->
                         </p>
                     </div>
                 </div>
