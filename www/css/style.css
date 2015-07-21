@@ -23,12 +23,13 @@
     max-width: 44px;
     max-height: 44px;
     top:12px;
+    left:12px;
 }
 .xy-item .item-avatar{
     padding-top:10px;
     padding-right: 12px;
     padding-bottom: 12px;
-    padding-left: 64px;
+    padding-left: 68px;
     min-height: 64px;
     border-bottom: 0;
 }
@@ -56,4 +57,11 @@
 }
 .item-input.item-select{
     min-height: 50px;
+}
+.ws-normal{
+    white-space: normal !important;
+}
+.bt0{
+    border-bottom: 0;
+    box-shadow: none;
 }
