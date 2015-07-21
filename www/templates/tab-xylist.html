@@ -9,9 +9,11 @@
         <ion-list>
             <ion-item class="xy-item" ng-repeat="item in results">
                 <div class="item item-avatar">
-                    <img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">
-                    <h2>{{item.get('title')}}</h2>
-                    <p>{{item.createdAt}}</p>
+                    <img ng-show="item.get('userId').get('cover_image_phone')"
+                         src="{{item.get('userId').get('cover_image_phone')}}" onerror="javascript:this.src='img/ionic.png'">
+                    <h2>{{item.get('userId').get('nick')}}</h2>
+                    <p>{{item.get('userId').get('description')}}</p>
+
                 </div>
 
                 <div class="item item-body">
@@ -23,9 +25,12 @@
                         <a class="button button-icon icon ion-ios-heart-outline" ng-click="goZan(item)"> 1</a>
                         <!--<a class="button button-icon icon ion-ios-heart">1</a>-->
                         <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goXyDetail(item)"> 1</a>
+                        <a  class="button button-icon icon">{{item.createdAt}}</a>
                         <!--<a class="subdued" ng-click="goZan(item)">1</a>-->
                         <!--<a href="#" class="subdued">5 Comments</a>-->
                         <!--</p>-->
+                        <h2 ng-bind-html="item.htmlStr"></h2>
+                        <p>{{item.createdAt}}</p>
                         <form ng-submit="saveForm()">
                             <input placeholder="添加评论..." type="text">
                         </form>

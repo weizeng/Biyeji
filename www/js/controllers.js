@@ -151,7 +151,7 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
 // 许愿的列表
-    .controller('XYListCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaDevice,$ionicModal) {
+    .controller('XYListCtrl', function ($sce,$rootScope, $scope, $ionicLoading, $cordovaDevice,$ionicModal) {
         //TODO 增加对某一个评论点赞的方法
         $scope.goZan = function (xy) {
             //alert(xy);
@@ -235,9 +235,13 @@ angular.module('starter.controllers', ['ngCordova'])
                 }
             });
             $ionicLoading.show({template: '加载中...'});
+            var User = Bmob.Object.extend("_User");
+            var userQuery = new Bmob.Query(User);
+
             var query = new Bmob.Query(XyList);
-            query.limit(5);
+            query.limit(10);
             query.skip(skip);
+            query.include("userId");// 查询关联的用户信息
             query.descending("updatedAt");
 
             // 查询所有数据
@@ -248,6 +252,7 @@ angular.module('starter.controllers', ['ngCordova'])
                         skip += results.length;
                         console.log("skip===>:" + skip);
                         angular.forEach(results, function (result) {
+                            result.htmlStr = $sce.trustAsHtml(result.get('title'));
                             $scope.results.push(result);
                         });
                     } else {
@@ -417,8 +422,6 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.checkToken = function () {
             // 检查某个平台的登录信息.如果未登录，则进行登录(等价于先使用getoken进行检测，若返回false，则调用login)
             $.fn.umshare.checkToken('sina', function (checkUser) {
-                // 测试是否登陆成功过sina
-
                 // 获取数据
                 var showJsonUrl = 'https://api.weibo.com/2/users/show.json?uid=' + checkUser.uid + '&access_token=' + checkUser.token;
                 $http.get(showJsonUrl)
