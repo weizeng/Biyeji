@@ -11,7 +11,13 @@
                 <div class="item item-avatar" ng-click="goXyDetail(item)">
                     <img ng-show="item.get('userId').get('cover_image_phone')"
                          src="{{item.get('userId').get('cover_image_phone')}}" onerror="javascript:this.src='img/ionic.png'">
-                    <h2>{{item.get('userId').get('nick')}}</h2>
+                    <!--<h2>{{item.get('userId').get('nick')}}</h2>-->
+
+                    <div class="item-title-row">
+                        <div class="item-title">{{item.get('userId').get('nick')}}</div>
+                        <div class="item-after">{{item.createdAt|filter:dateFn(item.createdAt)}}</div>
+                    </div>
+
                     <p>{{item.get('userId').get('description')}}</p>
 
                 </div>
@@ -25,7 +31,7 @@
                         <a class="button button-icon icon ion-ios-heart-outline" ng-click="goZan(item)"> 1</a>
                         <!--<a class="button button-icon icon ion-ios-heart">1</a>-->
                         <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goXyDetail(item)"> 1</a>
-                        <a  class="button button-icon icon">{{item.createdAt | date : 'yy/MM/dd'}}</a>
+                        <!--<a  class="button button-icon icon">{{item.createdAt|filter:dateFn(item.createdAt)}}</a>-->
                         <!--<a class="subdued" ng-click="goZan(item)">1</a>-->
                         <!--<a href="#" class="subdued">5 Comments</a>-->
                         <!--</p>-->
@@ -59,7 +65,7 @@
                     <img ng-show="item.get('userId').get('cover_image_phone')"
                          src="{{item.get('userId').get('cover_image_phone')}}" onerror="javascript:this.src='img/ionic.png'">
                     <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
-                    <p>{{item.createdAt}}</p>
+                    <p class="mb5">{{item.createdAt}}</p>
                     <p class="ws-normal">{{item.get('userId').get('description')}}</p>
                 </div>
 
