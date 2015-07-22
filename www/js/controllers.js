@@ -423,7 +423,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
         $scope.xy = {content: null};
 
-        //TODO 增加用户评论的方法
+        //TODO 增加一个许愿
         $scope.addComment = function () {
             var query = new Bmob.Query("_User");
             query.first({
@@ -528,18 +528,11 @@ angular.module('starter.controllers', ['ngCordova'])
                         // FIXME 提交bmob，此处最好交给js云端处理
                         checkUserFromBmob(response.screen_name, function (isExist) {
                             if (isExist) {
-//                                $.fn.umshare.tip('try to login');
-
-                                // 存在则做用户登陆操作
                                 Bmob.User.logIn(response.screen_name, "123", {
                                     success: function (user) {
-                                        // Do stuff after successful login.
-//                                        alert('login from bmob,user:' +user.avatar_large+"////"+  );
-//                                        $rootScope.user = ;
                                         initDataAfterLogin(eval('(' + JSON.stringify(user) + ')'));
                                     },
                                     error: function (user, error) {
-                                        // The login failed. Check error to see why.
                                         alert("Error: " + error.code + " " + error.message);
                                     }
                                 });
@@ -609,7 +602,7 @@ angular.module('starter.controllers', ['ngCordova'])
             // FIXME
             $rootScope.user = user;
             $scope.user = user;
-            // 对象转化成json保存
+            // 对象转化成json的字符串保存
             localStorage.setItem('user', JSON.stringify(user));
         };
     });
