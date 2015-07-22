@@ -151,35 +151,27 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
 // 许愿的列表
-    .controller('XYListCtrl', function ($sce,$rootScope, $scope, $ionicLoading, $cordovaDevice,$ionicModal) {
-        //TODO 增加对某一个评论点赞的方法
+    .controller('XYListCtrl', function ($sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal) {
+        // 增加对某一个评论点赞的方法
         $scope.goZan = function (xy) {
             //alert(xy);
-
-            var query = new Bmob.Query("_User");
-            query.first({
-                //查询要保存的用户，这个对象应该要被序列话到本地
-                success: function (user) {
-                    $rootScope.user = user;
-                    // 添加到赞列表
-                    var zanObject = Bmob.Object.extend("Zan");
-                    // 插入许愿列表
-                    //var aa = Bmob.Query(Xy_List);
-                    var zan = new zanObject();
-                    // Pointer指针
-                    zan.set("userId", user);
-                    zan.save(null, {
-                        success: function (zan) {
-                            // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
-                            var relation = xy.relation("zan");
-                            relation.add(zan);
-                            xy.save();
-                            alert("已赞");
-                        },
-                        error: function (ddd, error) {
-                            alert("抱歉，没赞成功。。" + error.message);
-                        }
-                    });
+            // 添加到赞列表
+            var zanObject = Bmob.Object.extend("Zan");
+            // 插入许愿列表
+            //var aa = Bmob.Query(Xy_List);
+            var zan = new zanObject();
+            // Pointer指针
+            zan.set("userId", $rootScope.user);
+            zan.save(null, {
+                success: function (zan) {
+                    // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
+                    var relation = xy.relation("zan");
+                    relation.add(zan);
+                    xy.save();
+                    alert("赞成");
+                },
+                error: function (ddd, error) {
+                    alert("抱歉，没赞成功。。" + error.message);
                 }
             });
         };
@@ -187,17 +179,17 @@ angular.module('starter.controllers', ['ngCordova'])
         $ionicModal.fromTemplateUrl('xy-modal.html', {
             scope: $scope,
             animation: 'slide-in-up'
-        }).then(function(modal) {
+        }).then(function (modal) {
             $scope.modal = modal;
         });
-        $scope.openModal = function() {
+        $scope.openModal = function () {
             $scope.modal.show();
         };
-        $scope.closeModal = function() {
+        $scope.closeModal = function () {
             $scope.modal.hide();
         };
         //Cleanup the modal when we're done with it!
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
             $scope.modal.remove();
         });
 
@@ -208,9 +200,32 @@ angular.module('starter.controllers', ['ngCordova'])
         };
 
         //TODO 保存简单的评论
-        $scope.saveForm = function(){
-
+        $scope.saveForm = function (xy) {
+            // 添加到赞列表
+            var commentObject = Bmob.Object.extend("Comment");
+            // 插入许愿列表
+            //var aa = Bmob.Query(Xy_List);
+            var comment = new commentObject();
+            // Pointer指针
+            comment.set("userId", $rootScope.user);
+            comment.set("content", $scope.msg);
+            comment.save(null, {
+                success: function (comment) {
+                    // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
+                    var relation = xy.relation("commentId");
+                    relation.add(comment);
+                    xy.save();
+                    alert("添加评论成功");
+                },
+                error: function (ddd, error) {
+                    alert("抱歉，添加评论失败。。" + error.message);
+                }
+            });
         };
+
+        $scope.zanCount = [];
+        $scope.commentCount = [];
+        $scope.imagesCount = [];
 
         // 初始化毕业墙的
         Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
@@ -235,24 +250,46 @@ angular.module('starter.controllers', ['ngCordova'])
                 }
             });
             $ionicLoading.show({template: '加载中...'});
-            var User = Bmob.Object.extend("_User");
-            var userQuery = new Bmob.Query(User);
 
             var query = new Bmob.Query(XyList);
             query.limit(10);
             query.skip(skip);
-            query.include("userId");// 查询关联的用户信息
+            // 查询关联的用户信息
+            query.include("userId");
+            // 查询评论总数，和赞数目
+
             query.descending("updatedAt");
 
-            // 查询所有数据
             query.find({
                 success: function (results) {
                     if (results.length > 0) {
                         $scope.more = true;
                         skip += results.length;
                         console.log("skip===>:" + skip);
+//                        var commentIdRelation = result.relation("commentId");
+
                         angular.forEach(results, function (result) {
                             result.htmlStr = $sce.trustAsHtml(result.get('title'));
+                            // FIXME 考虑后台提交file的时候直接产生缩略图 http://wenda.bmob.cn/?/question/129 在云端掺入url可以让云端保存呢一份缩略图，将返回的url保存到特殊字段中
+                            // 怀疑第二次请求会取本地的图片直接返回
+                            var zanRelation = result.relation("zan");
+                            zanRelation.query().find({
+                                success: function (list) {
+                                    $scope.zanCount.push(list.length);
+                                }
+                            });
+
+                            var commentIdRelation = result.relation("commentId");
+                            commentIdRelation.query().find({
+                                success: function (list) {
+                                    $scope.commentCount.push(list.length);
+                                }
+                            });
+                            // 产生缩略图
+                            Bmob.Image.thumbnail({"image": result.get('image')._url, "mode": 0, "quality": 100, "width": 480}
+                            ).then(function (obj) {
+                                    $scope.imagesCount.push('http://file.bmob.cn/' + obj.url);
+                                });
                             $scope.results.push(result);
                         });
                     } else {
@@ -303,18 +340,33 @@ angular.module('starter.controllers', ['ngCordova'])
             } else {
                 window.umappkey = '5598ee6867e58e42e9002113';
             }
-//            alert(platform);
         });
 
         // 本地读取user的信息，这个user通常是bmob返回的信息
         // 包含字段:uid, screen_name, token, avatar, avatar_large
-        var user = localStorage.getItem('user');
-        if (user) {
-            $rootScope.user = eval('(' + user + ')');
+        var duser = localStorage.getItem('user');
+        if (duser) {
+            // 把字符串转化成json对象，变成对象厚可以取
+            var uu = eval('(' + duser + ')');
+            Bmob.User.logIn(uu.username, "123", {
+                success: function (user) {
+                    // Do stuff after successful login.
+//                                        alert('login from bmob,user:' +user.avatar_large+"////"+  );
+//                                        $rootScope.user = ;
+                    $rootScope.user = user;
+                    $.fn.umshare.tip('自动登陆成功');
+                },
+                error: function (user, error) {
+                    // The login failed. Check error to see why.
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            });
+        } else {
+//            alert('未登陆');
         }
 
         //TODO dateFn 日期格式化
-        $scope.dateFn = function(date){
+        $scope.dateFn = function (date) {
 
             var minute = 1000 * 60;
             var hour = minute * 60;
@@ -322,8 +374,8 @@ angular.module('starter.controllers', ['ngCordova'])
             var halfamonth = day * 15;
             var month = day * 30;
 
-            var str=date.toString();
-            str =  str.replace(/-/g,"/");
+            var str = date.toString();
+            str = str.replace(/-/g, "/");
             var oDate1 = new Date(str);
             date = oDate1.getTime();
 
@@ -356,14 +408,14 @@ angular.module('starter.controllers', ['ngCordova'])
             }
             else if (minC < 1) {
                 result = "刚刚";
-            }else
+            } else
                 result = date;
             return result;
         }
     })
 
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading,$cordovaCamera) {
+    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaCamera) {
         //返回
         $scope.back = function () {
             window.history.back();
@@ -371,7 +423,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
         $scope.xy = {content: null};
 
-        //TODO 增加用户评论的方法
+        //TODO 增加一个许愿
         $scope.addComment = function () {
             var query = new Bmob.Query("_User");
             query.first({
@@ -421,7 +473,7 @@ angular.module('starter.controllers', ['ngCordova'])
             });
         }
         //选择拍照
-        $scope.goCamera = function(){
+        $scope.goCamera = function () {
             var options = {
                 quality: 50,
                 destinationType: Camera.DestinationType.DATA_URL,
@@ -438,11 +490,11 @@ angular.module('starter.controllers', ['ngCordova'])
             });
         };
         //选择照片
-        $scope.goPhoto = function(){
+        $scope.goPhoto = function () {
             var options = {
                 quality: 50,
-                destinationType : Camera.DestinationType.DATA_URL,
-                sourceType : Camera.PictureSourceType.PHOTOLIBRARY,
+                destinationType: Camera.DestinationType.DATA_URL,
+                sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
                 //destinationType: Camera.DestinationType.DATA_URL,
                 //sourceType: Camera.PictureSourceType.CAMERA
             };
@@ -457,7 +509,6 @@ angular.module('starter.controllers', ['ngCordova'])
             });
         }
     })
-
 
     // 我的毕业脚印
     .controller('MyBoardCtrl', function ($rootScope, $scope, $http, $ionicLoading) {
@@ -475,20 +526,13 @@ angular.module('starter.controllers', ['ngCordova'])
                 $http.get(showJsonUrl)
                     .success(function (response) {
                         // FIXME 提交bmob，此处最好交给js云端处理
-                        checkUserFromBmob(response.screen_name, function(isExist){
-                            if(isExist) {
-//                                $.fn.umshare.tip('try to login');
-
-                                // 存在则做用户登陆操作
+                        checkUserFromBmob(response.screen_name, function (isExist) {
+                            if (isExist) {
                                 Bmob.User.logIn(response.screen_name, "123", {
-                                    success: function(user) {
-                                        // Do stuff after successful login.
-//                                        alert('login from bmob,user:' +user.avatar_large+"////"+  );
-//                                        $rootScope.user = ;
+                                    success: function (user) {
                                         initDataAfterLogin(eval('(' + JSON.stringify(user) + ')'));
                                     },
-                                    error: function(user, error) {
-                                        // The login failed. Check error to see why.
+                                    error: function (user, error) {
                                         alert("Error: " + error.code + " " + error.message);
                                     }
                                 });
@@ -512,11 +556,11 @@ angular.module('starter.controllers', ['ngCordova'])
                                 // 用户设备信息
                                 user.set("version", '');
                                 user.signUp(null, {
-                                    success: function(user) {
+                                    success: function (user) {
                                         alert('regist from bmob,user:' + user.avatar_large);
                                         initDataAfterLogin(user);
                                     },
-                                    error: function(user, error) {
+                                    error: function (user, error) {
                                         $ionicLoading.hide();
                                         // Show the error message somewhere and let the user try again.
                                         alert("Error: " + error.code + " " + error.message);
@@ -529,7 +573,7 @@ angular.module('starter.controllers', ['ngCordova'])
             });
         };
 
-        $scope.logIn = function() {
+        $scope.logIn = function () {
             $ionicLoading.show({
                 template: '正在登陆...'
             });
@@ -542,10 +586,10 @@ angular.module('starter.controllers', ['ngCordova'])
             var query = new Bmob.Query(User);
             query.equalTo("username", name);
             query.find({
-                success: function(results) {
+                success: function (results) {
                     callback(results.length);
                 },
-                error: function(error) {
+                error: function (error) {
 //                    return true;
 //                    alert("查询失败: " + error.code + " " + error.message);
                 }
@@ -558,6 +602,7 @@ angular.module('starter.controllers', ['ngCordova'])
             // FIXME
             $rootScope.user = user;
             $scope.user = user;
+            // 对象转化成json的字符串保存
             localStorage.setItem('user', JSON.stringify(user));
         };
     });
