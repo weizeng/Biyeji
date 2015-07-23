@@ -25,12 +25,15 @@
                 <div class="item item-body">
                     <img class="full-image" ng-show="imagesCount" ng-click="goXyDetail(item)"
                          onerror="javascript:this.src='img/weibo.jpg'" src="{{imagesCount[$index]}}">
+                    <p style="margin: 10px" >{{item.get('title')}}</p>
+
                     <div style="padding-left: 16px;">
                         <a class="button button-icon icon ion-ios-heart-outline" ng-click="goZan(item)"> {{zanCount[$index]}}</a>
                         <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goXyDetail(item)"> {{commentCount[$index]}}</a>
-                        <form ng-submit="saveForm(item)">
-                            <input placeholder="添加评论..." type="text">
-                        </form>
+
+                        <!--<form ng-submit="saveForm(item)">-->
+                            <!--<input placeholder="添加评论..." type="text">-->
+                        <!--</form>-->
                     </div>
                 </div>
             </ion-item>
@@ -72,7 +75,7 @@
                         <!--<a class="subdued" ng-click="goZan(item)">1</a>-->
                         <!--<a href="#" class="subdued">5 Comments</a>-->
                         <!--</p>-->
-                        <div ng-bind-html="item.get('title')"></div>
+                        <div ng-bind-html="article"></div>
                         <!--<form ng-submit="saveForm()">-->
                             <!--<input placeholder="添加评论..." type="text">-->
                         <!--</form>-->
