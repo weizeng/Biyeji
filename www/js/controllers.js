@@ -37,7 +37,7 @@ angular.module('starter.controllers', ['ngCordova'])
             });
         }
 
-        Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
+        //Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
         var XyList = Bmob.Object.extend("Xy_List");
         var query = new Bmob.Query(XyList);
         query.limit(5);
@@ -54,18 +54,18 @@ angular.module('starter.controllers', ['ngCordova'])
         });
 
         document.addEventListener("deviceready", function () {
-            var device = $cordovaDevice.getDevice();
-            var cordova = $cordovaDevice.getCordova();
-            var model = $cordovaDevice.getModel();
-            var platform = $cordovaDevice.getPlatform();
-            var uuid = $cordovaDevice.getUUID();
-            var version = $cordovaDevice.getVersion();
-
-            if (platform == 'Android') {
-                window.umappkey = '5598edc167e58e4247001e1e';
-            } else {
-                window.umappkey = '5598ee6867e58e42e9002113';
-            }
+            //var device = $cordovaDevice.getDevice();
+            //var cordova = $cordovaDevice.getCordova();
+            //var model = $cordovaDevice.getModel();
+            //var platform = $cordovaDevice.getPlatform();
+            //var uuid = $cordovaDevice.getUUID();
+            //var version = $cordovaDevice.getVersion();
+            //
+            //if (platform == 'Android') {
+            //    window.umappkey = '5598edc167e58e4247001e1e';
+            //} else {
+            //    window.umappkey = '5598ee6867e58e42e9002113';
+            //}
             $scope.loginBtn = function () {
                 // 现实第三方登陆的login
                 $cordovaActionSheet.show(options)
@@ -153,7 +153,9 @@ angular.module('starter.controllers', ['ngCordova'])
                     var relation = xy.relation("zan");
                     relation.add(zan);
                     xy.save();
-                    alert("赞成");
+                    //xy.showZan = true;
+                    console.log(xy.showZan);
+                    //alert("赞成");
                 },
                 error: function (ddd, error) {
                     alert("抱歉，没赞成功。。" + error.message);
@@ -242,7 +244,7 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.imagesCount = [];
 
         // 初始化毕业墙的
-        Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
+        //Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
         loadMore = function () {
             // 宣言列表
             var XyList = Bmob.Object.extend("Xy_List", {
@@ -344,22 +346,22 @@ angular.module('starter.controllers', ['ngCordova'])
 
         // FIXME MEGAGift帮忙把以下这几句话初始化写到通用的js里面
         // 初始化bmob
-        Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
-        // 初始化平台信息
-        document.addEventListener("deviceready", function () {
-            var device = $cordovaDevice.getDevice();
-            var cordova = $cordovaDevice.getCordova();
-            var model = $cordovaDevice.getModel();
-            var platform = $cordovaDevice.getPlatform();
-            var uuid = $cordovaDevice.getUUID();
-            var version = $cordovaDevice.getVersion();
-
-            if (platform == 'Android') {
-                window.umappkey = '5598edc167e58e4247001e1e';
-            } else {
-                window.umappkey = '5598ee6867e58e42e9002113';
-            }
-        });
+        //Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
+        //// 初始化平台信息
+        //document.addEventListener("deviceready", function () {
+        //    var device = $cordovaDevice.getDevice();
+        //    var cordova = $cordovaDevice.getCordova();
+        //    var model = $cordovaDevice.getModel();
+        //    var platform = $cordovaDevice.getPlatform();
+        //    var uuid = $cordovaDevice.getUUID();
+        //    var version = $cordovaDevice.getVersion();
+        //
+        //    if (platform == 'Android') {
+        //        window.umappkey = '5598edc167e58e4247001e1e';
+        //    } else {
+        //        window.umappkey = '5598ee6867e58e42e9002113';
+        //    }
+        //});
 
         // 本地读取user的信息，这个user通常是bmob返回的信息
         // 包含字段:uid, screen_name, token, avatar, avatar_large
@@ -431,7 +433,7 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaCamera) {
+    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaCamera,$cordovaFile) {
         //返回
         $scope.back = function () {
             window.history.back();
@@ -452,51 +454,78 @@ angular.module('starter.controllers', ['ngCordova'])
 //            var fileUploadControl = $("#profilePhotoFileUpload")[0];
 //            if (fileUploadControl.files.length > 0) {
 //                var file = fileUploadControl.files[0];
-                var name = "logo2.png";
-                var file = new Bmob.File(name, $scope.cameraimage,"image/png");
-                file.save().then(function (obj) {
-                    alert("url:"+obj.url());
-                    console.log(obj.url());
-                    var Xy_List = Bmob.Object.extend("Xy_List");
-                    // 插入许愿列表
-                    var ddd = new Xy_List();
-                    ddd.set("title", $scope.xy.content);
-                    // Pointer指针
-                    ddd.set("userId", $scope.user);
-                    ddd.set("image", obj);
-                    ddd.set("style", 1);
-                    alert("2222:" + $scope.xy.content);
-                    ddd.save(null, {
-                        success: function (ddd) {
+                var imageURI =  $scope.cameraimage;
 
-                            $ionicLoading.hide();
-                            alert("你的毕业说已经到宣言墙啦");
-                            var relation = ddd.relation("commentId");
-                        },
-                        error: function (ddd, error) {
-                            alert("抱歉，学长，错了。。" + error.message);
-                        }
+                console.log(imageURI);
+                document.addEventListener("deviceready", function () {
+                    //TODO 报错,readFile not Found????
+                    $cordovaFile.readFile(imageURI).then (function (data){
+                        var file = data;
+                        //var file = new Bmob.File(name, file);
+
+                        var file = new Bmob.File(name,data,"image/png");
+                        file.save().then(function (obj) {
+                            alert("url:"+obj.url());
+                            console.log(obj.url());
+                            var Xy_List = Bmob.Object.extend("Xy_List");
+                            // 插入许愿列表
+                            var ddd = new Xy_List();
+                            ddd.set("title", $scope.xy.content);
+                            // Pointer指针
+                            ddd.set("userId", $scope.user);
+                            ddd.set("image", obj);
+                            ddd.set("style", 1);
+                            alert("2222:" + $scope.xy.content);
+                            ddd.save(null, {
+                                success: function (ddd) {
+
+                                    $ionicLoading.hide();
+                                    //alert("你的毕业说已经到宣言墙啦");
+                                    var relation = ddd.relation("commentId");
+                                    window.history.back();
+                                },
+                                error: function (ddd, error) {
+                                    alert("抱歉，学长，错了。。" + error.message);
+                                }
+                            });
+                        }, function (error) {
+                            // the save failed.
+                            alert("抱歉，学长，错了2。。" + error.message);
+                        });
+                    }, function (error) {
+                        console.log(error);
                     });
-                }, function (error) {
-                    // the save failed.
-                    alert("抱歉，学长，错了2。。" + error.message);
-                })
+                });
+
+                var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+                //var name = "logo2.png";
+
+                //var file = new File(imageURI);
+                //var options = new FileUploadOptions();
+                //options.fileKey = "file";
+                //options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1) + ".png";
+                //options.mimeType = "image/png";
+
+
 //            } else {
 //                $ionicLoading.hide();
 //            }
-        }
+        };
         //选择拍照
         $scope.goCamera = function () {
             var options = {
-                quality: 50,
-                destinationType: Camera.DestinationType.DATA_URL,
-                sourceType: Camera.PictureSourceType.CAMERA
+                destinationType: Camera.DestinationType.FILE_URI,
+                sourceType: Camera.PictureSourceType.CAMERA,
+                allowEdit: true,
+                encodingType: Camera.EncodingType.PNG,
+                popoverOptions: CameraPopoverOptions,
+                saveToPhotoAlbum: true
             };
 
             // udpate camera image directive
-            $cordovaCamera.getPicture(options).then(function (imageData) {
-                $scope.cameraimage = "data:image/jpeg;base64," + imageData;
-
+            $cordovaCamera.getPicture(options).then(function (imageURI) {
+                //var image = document.getElementById('myImage');
+                $scope.cameraimage = imageURI;
                 //TODO 保存图片接口
             }, function (err) {
                 console.log('Failed because: ');
@@ -506,16 +535,17 @@ angular.module('starter.controllers', ['ngCordova'])
         //选择照片
         $scope.goPhoto = function () {
             var options = {
-                quality: 50,
-                destinationType: Camera.DestinationType.DATA_URL,
+                destinationType: Camera.DestinationType.FILE_URI,
                 sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-                //destinationType: Camera.DestinationType.DATA_URL,
-                //sourceType: Camera.PictureSourceType.CAMERA
+                allowEdit: true,
+                encodingType: Camera.EncodingType.PNG,
+                popoverOptions: CameraPopoverOptions,
+                saveToPhotoAlbum: true
             };
 
             // udpate camera image directive
-            $cordovaCamera.getPicture(options).then(function (imageData) {
-                $scope.cameraimage = "data:image/jpeg;base64," + imageData;
+            $cordovaCamera.getPicture(options).then(function (imageURI) {
+                $scope.cameraimage = imageURI;
                 //TODO 保存图片接口
             }, function (err) {
                 console.log('Failed because: ');

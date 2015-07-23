@@ -33,7 +33,8 @@
     "cordova-plugin-media-capture",
     "org.apache.cordova.device-motion",
     "org.apache.cordova.inappbrowser",
-    "org.apache.cordova.network-information"
+    "org.apache.cordova.network-information",
+    "cordova-plugin-statusbar"
   ],
   "cordovaPlatforms": [
     "android",

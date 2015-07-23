@@ -27,8 +27,12 @@
                          onerror="javascript:this.src='img/weibo.jpg'" src="{{imagesCount[$index]}}">
                     <p style="margin: 10px" >{{item.get('title')}}</p>
 
-                    <div style="padding-left: 16px;">
-                        <a class="button button-icon icon ion-ios-heart-outline" ng-click="goZan(item)"> {{zanCount[$index]}}</a>
+                    <div style="padding-left: 16px;" ng-init="item.showZan=false">
+                        <a class="button button-icon icon ion-ios-heart" ng-class="{'ion-ios-heart-outline':item.showZan==false}" ng-click="goZan(item,$index);item.showZan=!item.showZan">
+                            <span ng-show="!item.showZan">{{zanCount[$index]}}</span>
+                            <span ng-show="item.showZan">{{zanCount[$index]+1}}</span>
+                        </a>
+
                         <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goXyDetail(item)"> {{commentCount[$index]}}</a>
 
                         <!--<form ng-submit="saveForm(item)">-->

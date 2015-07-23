@@ -7,10 +7,8 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,$cordovaDevice) {
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
@@ -19,6 +17,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       StatusBar.styleLightContent();
     }
   });
+
+    Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
+    // 初始化平台信息
+    document.addEventListener("deviceready", function () {
+        var device = $cordovaDevice.getDevice();
+        var cordova = $cordovaDevice.getCordova();
+        var model = $cordovaDevice.getModel();
+        var platform = $cordovaDevice.getPlatform();
+        var uuid = $cordovaDevice.getUUID();
+        var version = $cordovaDevice.getVersion();
+
+        if (platform == 'Android') {
+            window.umappkey = '5598edc167e58e4247001e1e';
+
+        } else {
+            window.umappkey = '5598ee6867e58e42e9002113';
+        }
+    });
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
