@@ -72,28 +72,13 @@ angular.module('starter.controllers', ['ngCordova'])
                     .then(function (btnIndex) {
                         var index = btnIndex;
                         var platform;
-//                        alert('index:' + index);
                         // 目前只支持 平台名.('sina','tencent','qzone','renren','douban')
                         if (index == 1) {
                             platform = 'sina';
-                            // 检查某个平台的登录信息.如果未登录，则进行登录(等价于先使用getoken进行检测，若返回false，则调用login)
-                            //
-                            // var info = $.fn.umshare.delToken("sina");
-                            // $("#delTokenInfo").html('退出成功');
 
                             $.fn.umshare.checkToken('sina', function (user) {
                                 // 测试是否登陆成功过sina
                                 $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
-//                                alert('登录成功,token:' + user.token + ', uid:' + user.uid);
-//                                if (!user) {
-//                                    $.fn.umshare.login(platform, function (user) {
-//                                        $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
-//                                        // 获取用户平台上的信息
-//                                        var info = $.fn.umshare.getToken("sina");
-//                                        alert(info ? 'token:' + info.token + ', uid:' + info.uid : 'false');
-//
-//                                    });
-//                                }
                             });
                         } else {
                             platform = 'tencent';
@@ -151,7 +136,7 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
 // 许愿的列表
-    .controller('XYListCtrl', function ($sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal) {
+    .controller('XYListCtrl', function ($sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
         // 增加对某一个评论点赞的方法
         $scope.goZan = function (xy) {
             //alert(xy);
@@ -184,6 +169,31 @@ angular.module('starter.controllers', ['ngCordova'])
         });
         $scope.openModal = function () {
             $scope.modal.show();
+            // 检测类型，看是否加载更多内容
+            var style = $scope.item.get('style');
+            var detailId = $scope.item.get('detailId');
+            if (style == 1) {
+                //短信息，直接显示
+                $scope.article = $scope.item.get('title');
+            } else {
+                $ionicLoading.show({template: '加载中...'});
+                // 实例方法
+                $timeout(function () {
+                    var XyDetail = Bmob.Object.extend("Xy_Detail");
+                    var query = new Bmob.Query(XyDetail);
+                    query.equalTo("objectId", detailId.id);
+                    // 查询所有数据
+                    query.first({
+                        success: function (results) {
+                            $ionicLoading.hide();
+                            $scope.article = results.get('extends');
+                        },
+                        error: function (error) {
+                            alert("查询失败: " + error.code + " " + error.message);
+                        }
+                    });
+                }, 500);
+            }
         };
         $scope.closeModal = function () {
             $scope.modal.hide();
@@ -230,9 +240,6 @@ angular.module('starter.controllers', ['ngCordova'])
         // 初始化毕业墙的
         Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
         loadMore = function () {
-            if (showLoading) {
-                $ionicLoading.show({template: '加载中...'});
-            }
             // 宣言列表
             var XyList = Bmob.Object.extend("Xy_List", {
                 // 实例方法
@@ -257,17 +264,20 @@ angular.module('starter.controllers', ['ngCordova'])
             // 查询关联的用户信息
             query.include("userId");
             // 查询评论总数，和赞数目
-
-            query.descending("updatedAt");
+            query.descending("createdAt");
 
             query.find({
                 success: function (results) {
+                    $ionicLoading.hide();
                     if (results.length > 0) {
                         $scope.more = true;
-                        skip += results.length;
-                        console.log("skip===>:" + skip);
-//                        var commentIdRelation = result.relation("commentId");
 
+                        if(skip == 0) {
+                            $scope.results.length = 0;
+                            $scope.imagesCount.length=0;
+                            $scope.commentCount.length=0;
+                            $scope.$broadcast('scroll.refreshComplete');
+                        }
                         angular.forEach(results, function (result) {
                             result.htmlStr = $sce.trustAsHtml(result.get('title'));
                             // FIXME 考虑后台提交file的时候直接产生缩略图 http://wenda.bmob.cn/?/question/129 在云端掺入url可以让云端保存呢一份缩略图，将返回的url保存到特殊字段中
@@ -292,13 +302,15 @@ angular.module('starter.controllers', ['ngCordova'])
                                 });
                             $scope.results.push(result);
                         });
+                        skip += results.length;
+                        console.log("skip:"+skip);
                     } else {
+                        if(skip == 0) {
+
+                        }
                         $scope.more = false;
                     }
-
-                    $ionicLoading.hide();
-                    //$scope.$broadcast('scroll.infiniteScrollComplete');
-                    $scope.$broadcast('scroll.refreshComplete');
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
                 },
                 error: function (error) {
                     alert("查询失败: " + error.code + " " + error.message);
@@ -308,20 +320,23 @@ angular.module('starter.controllers', ['ngCordova'])
             });
         }
 
+        $scope.more = true;
+        $scope.results = [];
+        var skip = 0;
+
         //下拉刷新
         $scope.hardRefresh = function () {
+            showLoading = false;
+            skip = 0;
+            loadMore();
+        }
+
+        $scope.loadMorePost = function () {
             showLoading = false;
             loadMore();
         }
 
-        $scope.more = true;
-        $scope.results = [];
-        var skip = 0;
-        $scope.loadMorePost = function () {
-            console.log('loadmore========>>>');
-            showLoading = false;
-            loadMore();
-        }
+        $ionicLoading.show({template: '加载中...'});
 
         // FIXME MEGAGift帮忙把以下这几句话初始化写到通用的js里面
         // 初始化bmob
@@ -344,15 +359,12 @@ angular.module('starter.controllers', ['ngCordova'])
 
         // 本地读取user的信息，这个user通常是bmob返回的信息
         // 包含字段:uid, screen_name, token, avatar, avatar_large
-        var duser = localStorage.getItem('user');
-        if (duser) {
+        var userStr = localStorage.getItem('user');
+        if (userStr) {
             // 把字符串转化成json对象，变成对象厚可以取
-            var uu = eval('(' + duser + ')');
+            var uu = eval('(' + userStr + ')');
             Bmob.User.logIn(uu.username, "123", {
                 success: function (user) {
-                    // Do stuff after successful login.
-//                                        alert('login from bmob,user:' +user.avatar_large+"////"+  );
-//                                        $rootScope.user = ;
                     $rootScope.user = user;
                     $.fn.umshare.tip('自动登陆成功');
                 },
