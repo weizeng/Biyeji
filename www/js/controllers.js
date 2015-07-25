@@ -272,7 +272,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
         //TODO 增加一个许愿
         $scope.addXy = function () {
-            if($scope.user == null) {
+            if($rootScope.user == null) {
                 alert("请先登录");
                 return;
             }
@@ -281,32 +281,34 @@ angular.module('starter.controllers', ['ngCordova'])
             var imageURI = $scope.cameraimage;
             var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
 
-            console.log(imageURI);
+
             document.addEventListener("deviceready", function () {
                 //TODO 报错,readFile not Found????
                 $cordovaFile.readAsBinaryString(cordova.file.tempDirectory, name).then(function (success) {
                     // success
-                    alert("done!!");
+                    console.log("#增加许愿#图片读取完毕:" + imageURI);
                     var file = new Bmob.File(name, success, "image/png");
                     file.save().then(function (obj) {
-                        console.log("upload file url:" + obj.url());
-                        alert("url:" + obj.url());
+                        console.log("#增加许愿#图片上传完毕, 准备添加到URL:" + obj.url());
+//                        alert("url:" + obj.url());
                         var Xy_List = Bmob.Object.extend("Xy_List");
                         // 插入许愿列表
                         var ddd = new Xy_List();
                         ddd.set("title", $scope.xy.content);
                         // Pointer指针
-                        ddd.set("userId", $scope.user);
+                        ddd.set("userId", $rootScope.user);
                         ddd.set("image", obj);
                         ddd.set("style", 1);
                         ddd.save(null, {
                             success: function (ddd) {
                                 $ionicLoading.hide();
+                                console.log("#增加许愿# 操作完毕");
                                 alert("你的毕业说已经到宣言墙啦");
                                 var relation = ddd.relation("commentId");
 //                                window.history.back();
                             },
                             error: function (ddd, error) {
+                                $ionicLoading.hide();
                                 alert("抱歉，学长，错了。。" + error.message);
                             }
                         });
@@ -320,70 +322,6 @@ angular.module('starter.controllers', ['ngCordova'])
                     alert("readAsArrayBuffer error---");
 
                 });
-
-
-//                $cordovaFile.createFile(cordova.file.dataDirectory, "new_file.txt", true)
-//                    .then(function (success) {
-//                        // success
-//                        alert("createFile success---"+success);
-//                        $cordovaFile.checkFile(cordova.file.dataDirectory, "new_file.txt")
-//                            .then(function (success) {
-//                                // success
-//                                alert("checkFile success---"+JSON.stringify(success));
-//                            }, function (error) {
-//                                // error
-//                                alert("checkFile error---"+success);
-//                            });
-//                    }, function (error) {
-//                        // error
-//                        alert("createFile error---"+error);
-//                        $cordovaFile.checkFile(cordova.file.dataDirectory, "new_file.txt")
-//                            .then(function (success) {
-//                                // success
-//                                alert("checkFile success---"+success);
-//                            }, function (error) {
-//                                // error
-//                                alert("error---"+error);
-//                            });
-//                    });
-
-
-//                $cordovaFile.readAsDataURL(imageURI, $scope.inputs.readFile).then(function (data) {
-//                    var file = data;
-//                    //var file = new Bmob.File(name, file);
-//                    alert("url:" + data);
-//                    var file = new Bmob.File(name, $scope.inputs.readFile, "image/png");
-//                    file.save().then(function (obj) {
-//                        alert("url:" + obj.url());
-//                        console.log(obj.url());
-//                        var Xy_List = Bmob.Object.extend("Xy_List");
-//                        // 插入许愿列表
-//                        var ddd = new Xy_List();
-//                        ddd.set("title", $scope.xy.content);
-//                        // Pointer指针
-//                        ddd.set("userId", $scope.user);
-//                        ddd.set("image", obj);
-//                        ddd.set("style", 1);
-//                        alert("2222:" + $scope.xy.content);
-//                        ddd.save(null, {
-//                            success: function (ddd) {
-//
-//                                $ionicLoading.hide();
-//                                //alert("你的毕业说已经到宣言墙啦");
-//                                var relation = ddd.relation("commentId");
-//                                window.history.back();
-//                            },
-//                            error: function (ddd, error) {
-//                                alert("抱歉，学长，错了。。" + error.message);
-//                            }
-//                        });
-//                    }, function (error) {
-//                        // the save failed.
-//                        alert("抱歉，学长，错了2。。" + error.message);
-//                    });
-//                }, function (error) {
-//                    console.log(error);
-//                });
             });
 
             var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
@@ -440,12 +378,19 @@ angular.module('starter.controllers', ['ngCordova'])
             var result = $.fn.umshare.delToken("sina");
             localStorage.removeItem('user');
             $rootScope.user = null;
+            $scope.user = null;
         };
 
         $scope.checkToken = function () {
             // 检查某个平台的登录信息.如果未登录，则进行登录(等价于先使用getoken进行检测，若返回false，则调用login)
             $.fn.umshare.checkToken('sina', function (checkUser) {
                 console.log("fn.umshare.checkToken:"+JSON.stringify(checkUser));
+                if (checkUser.error!=null && checkUser.error.length > 0) {
+                    alert("登陆出错啦,"+checkUser.error);
+                    $scope.logout();
+                    $scope.checkToken();
+                    return;
+                }
 
                 // 获取用户的详细数据
                 var showJsonUrl = 'https://api.weibo.com/2/users/show.json?uid=' + checkUser.uid + '&access_token=' + checkUser.token;
@@ -453,8 +398,8 @@ angular.module('starter.controllers', ['ngCordova'])
                 $http.get(showJsonUrl)
                     .success(function (response) {
                         console.log("$http.get user detail:"+JSON.stringify(response));
-                        // FIXME 提交bmob，此处最好交给js云端处理
 
+                        // FIXME 提交bmob，此处最好交给js云端处理
                         checkUserFromBmob(response.screen_name, function (isExist) {
                             if (isExist) {
                                 console.log("bmob EXIST user. then login");
@@ -532,12 +477,13 @@ angular.module('starter.controllers', ['ngCordova'])
             // 保存成功之后,设置到全局，并且保存本地local
             // FIXME
             $rootScope.user = user;
-            $scope.user = user;
+            $scope.user = $rootScope.user;
             // 对象转化成json的字符串保存
             localStorage.setItem('user', JSON.stringify(user));
         };
 
-        $scope.checkToken();
+        //FIXME
+        $scope.user = $rootScope.user;
     })
 
     /**
