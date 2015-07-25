@@ -34,6 +34,27 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         } else {
             window.umappkey = '5598ee6867e58e42e9002113';
         }
+
+        // 本地读取user的信息，这个user通常是bmob返回的信息
+        // 包含字段:uid, screen_name, token, avatar, avatar_large
+        var userStr = localStorage.getItem('user');
+        if (userStr) {
+            // 把字符串转化成json对象，变成对象厚可以取
+            var uu = eval('(' + userStr + ')');
+            Bmob.User.logIn(uu.username, "123", {
+                success: function (user) {
+                    $rootScope.user = user;
+                    $.fn.umshare.tip('自动登陆成功');
+                },
+                error: function (user, error) {
+                    // The login failed. Check error to see why.
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            });
+        } else {
+//            alert('未登陆');
+
+        }
     });
 })
 

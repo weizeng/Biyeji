@@ -1,143 +1,14 @@
 angular.module('starter.controllers', ['ngCordova'])
 
-    .controller('DashCtrl', function ($scope, $cordovaDevice, $cordovaActionSheet) {
-        $scope.checkWeChatInstalled = function (id) {
-            Wechat.isInstalled(function (installed) {
-                alert("Wechat installed: " + (installed ? "Yes" : "No"));
-            }, function (reason) {
-                alert("Failed: " + reason);
-            });
-        }
-        $scope.loginWechat = function () {
-            // 登陆微信
-            Wechat.auth("snsapi_userinfo", function (response) {
-                // you may use response.code to get the access token.
-                alert(JSON.stringify(response));
-            }, function (reason) {
-                alert("Failed:2222 " + reason);
-            });
-        }
-        $scope.shareWechat = function (id) {
-            Wechat.share({
-                message: {
-                    title: "Message Title",
-                    description: "Message Description(optional)",
-                    mediaTagName: "Media Tag Name(optional)",
-                    thumb: "http://YOUR_THUMBNAIL_IMAGE",
-                    media: {
-                        type: Wechat.Type.WEBPAGE,   // webpage
-                        webpageUrl: "https://github.com/xu-li/cordova-plugin-wechat"    // webpage
-                    }
-                },
-                scene: Wechat.Scene.TIMELINE   // share to Timeline
-            }, function () {
-                alert("Success");
-            }, function (reason) {
-                alert("Failed: " + reason);
-            });
-        }
 
-        //Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
-        var XyList = Bmob.Object.extend("Xy_List");
-        var query = new Bmob.Query(XyList);
-        query.limit(5);
-        query.skip(10);
-        query.descending("updatedAt");
-        // 查询所有数据
-        query.find({
-            success: function (results) {
-//                alert("查询results: " + results);
-            },
-            error: function (error) {
-                alert("查询失败: " + error.code + " " + error.message);
-            }
-        });
-
-        document.addEventListener("deviceready", function () {
-            //var device = $cordovaDevice.getDevice();
-            //var cordova = $cordovaDevice.getCordova();
-            //var model = $cordovaDevice.getModel();
-            //var platform = $cordovaDevice.getPlatform();
-            //var uuid = $cordovaDevice.getUUID();
-            //var version = $cordovaDevice.getVersion();
-            //
-            //if (platform == 'Android') {
-            //    window.umappkey = '5598edc167e58e4247001e1e';
-            //} else {
-            //    window.umappkey = '5598ee6867e58e42e9002113';
-            //}
-            $scope.loginBtn = function () {
-                // 现实第三方登陆的login
-                $cordovaActionSheet.show(options)
-                    .then(function (btnIndex) {
-                        var index = btnIndex;
-                        var platform;
-                        // 目前只支持 平台名.('sina','tencent','qzone','renren','douban')
-                        if (index == 1) {
-                            platform = 'sina';
-
-                            $.fn.umshare.checkToken('sina', function (user) {
-                                // 测试是否登陆成功过sina
-                                $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
-                            });
-                        } else {
-                            platform = 'tencent';
-                        }
-
-                    });
-            }
-
-        }, false);
-
-        var options = {
-            title: '第三方登陆',
-            buttonLabels: ['新浪登陆', '腾讯微博'],
-            addCancelButtonWithLabel: 'Cancel',
-            androidEnableCancelButton: true,
-            winphoneEnableCancelButton: true
-        };
-
-
-    })
-
-    .controller('ChatsCtrl', function ($scope, Chats) {
-        // With the new view caching in Ionic, Controllers are only called
-        // when they are recreated or on app start, instead of every page change.
-        // To listen for when this page is active (for example, to refresh data),
-        // listen for the $ionicView.enter event:
-        //
-        //$scope.$on('$ionicView.enter', function(e) {
-        //});
-
-        $scope.chats = Chats.all();
-        $scope.remove = function (chat) {
-            Chats.remove(chat);
-        }
-    })
-
-    .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
-        $scope.chat = Chats.get($stateParams.chatId);
-
-    })
-
-    .controller('AccountCtrl', function ($scope) {
-        $scope.settings = {
-            enableFriends: true
-        };
-    })
-// 预留可以删除
-    .controller('FriendsCtrl', function ($scope, Friends) {
-        $scope.friends = Friends.all();
-    })
-
-// 预留可以删除
-    .controller('FriendDetailCtrl', function ($scope, $stateParams, Friends) {
-        $scope.friend = Friends.get($stateParams.friendId);
-    })
-
-// 许愿的列表
+/**
+ *许愿的列表
+ */
     .controller('XYListCtrl', function ($sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
-        // 增加对某一个评论点赞的方法
+        /**
+         *增加对某一个评论点赞的方法
+         */
+
         $scope.goZan = function (xy) {
             //alert(xy);
             // 添加到赞列表
@@ -180,21 +51,19 @@ angular.module('starter.controllers', ['ngCordova'])
                 } else {
                     $ionicLoading.show({template: '加载中...'});
                     // 实例方法
-//                    $timeout(function () {
-                        var XyDetail = Bmob.Object.extend("Xy_Detail");
-                        var query = new Bmob.Query(XyDetail);
-                        query.equalTo("objectId", detailId.id);
-                        // 查询所有数据
-                        query.first({
-                            success: function (results) {
-                                $ionicLoading.hide();
-                                $scope.article = results.get('extends');
-                            },
-                            error: function (error) {
-                                alert("查询失败: " + error.code + " " + error.message);
-                            }
-                        });
-//                    }, 500);
+                    var XyDetail = Bmob.Object.extend("Xy_Detail");
+                    var query = new Bmob.Query(XyDetail);
+                    query.equalTo("objectId", detailId.id);
+                    // 查询所有数据
+                    query.first({
+                        success: function (results) {
+                            $ionicLoading.hide();
+                            $scope.article = results.get('extends');
+                        },
+                        error: function (error) {
+                            alert("查询失败: " + error.code + " " + error.message);
+                        }
+                    });
                 }
             });
 
@@ -238,13 +107,16 @@ angular.module('starter.controllers', ['ngCordova'])
                 }
             });
         };
-
+        /**
+         * 查询内容
+         */
         $scope.zanCount = [];
         $scope.commentCount = [];
         $scope.imagesCount = [];
+        $scope.more = true;
+        $scope.results = [];
+        var skip = 0;
 
-        // 初始化毕业墙的
-        //Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
         loadMore = function () {
             // 宣言列表
             var XyList = Bmob.Object.extend("Xy_List", {
@@ -326,10 +198,6 @@ angular.module('starter.controllers', ['ngCordova'])
             });
         }
 
-        $scope.more = true;
-        $scope.results = [];
-        var skip = 0;
-
         //下拉刷新
         $scope.hardRefresh = function () {
             showLoading = false;
@@ -343,45 +211,6 @@ angular.module('starter.controllers', ['ngCordova'])
         }
 
         $ionicLoading.show({template: '加载中...'});
-
-        // FIXME MEGAGift帮忙把以下这几句话初始化写到通用的js里面
-        // 初始化bmob
-        //Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
-        //// 初始化平台信息
-        //document.addEventListener("deviceready", function () {
-        //    var device = $cordovaDevice.getDevice();
-        //    var cordova = $cordovaDevice.getCordova();
-        //    var model = $cordovaDevice.getModel();
-        //    var platform = $cordovaDevice.getPlatform();
-        //    var uuid = $cordovaDevice.getUUID();
-        //    var version = $cordovaDevice.getVersion();
-        //
-        //    if (platform == 'Android') {
-        //        window.umappkey = '5598edc167e58e4247001e1e';
-        //    } else {
-        //        window.umappkey = '5598ee6867e58e42e9002113';
-        //    }
-        //});
-
-        // 本地读取user的信息，这个user通常是bmob返回的信息
-        // 包含字段:uid, screen_name, token, avatar, avatar_large
-        var userStr = localStorage.getItem('user');
-        if (userStr) {
-            // 把字符串转化成json对象，变成对象厚可以取
-            var uu = eval('(' + userStr + ')');
-            Bmob.User.logIn(uu.username, "123", {
-                success: function (user) {
-                    $rootScope.user = user;
-                    $.fn.umshare.tip('自动登陆成功');
-                },
-                error: function (user, error) {
-                    // The login failed. Check error to see why.
-                    alert("Error: " + error.code + " " + error.message);
-                }
-            });
-        } else {
-//            alert('未登陆');
-        }
 
         //TODO dateFn 日期格式化
         $scope.dateFn = function (date) {
@@ -433,7 +262,7 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaCamera,$cordovaFile) {
+    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
         //返回
         $scope.back = function () {
             window.history.back();
@@ -443,73 +272,122 @@ angular.module('starter.controllers', ['ngCordova'])
 
         //TODO 增加一个许愿
         $scope.addXy = function () {
-//            var query = new Bmob.Query("_User");
-//            query.first({
-//                //查询要保存的用户，这个对象应该要被序列话到本地
-//                success: function (user) {
-            // FIXME 这里需要做第三方登陆，之后把成功的用户信息保存到本地，目前这里只是查询数据中第一条数据，模拟
+            if($scope.user == null) {
+                alert("请先登录");
+                return;
+            }
             $ionicLoading.show({template: '发表中...'});
-//                    $rootScope.user = user;
-            // FIXME 上传宣言墙的图片, 这里只测试本地的字符串保存到BMOB的file字段
-//            var fileUploadControl = $("#profilePhotoFileUpload")[0];
-//            if (fileUploadControl.files.length > 0) {
-//                var file = fileUploadControl.files[0];
-                var imageURI =  $scope.cameraimage;
 
-                console.log(imageURI);
-                document.addEventListener("deviceready", function () {
-                    //TODO 报错,readFile not Found????
-                    $cordovaFile.readFile(imageURI).then (function (data){
-                        var file = data;
-                        //var file = new Bmob.File(name, file);
+            var imageURI = $scope.cameraimage;
+            var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
 
-                        var file = new Bmob.File(name,data,"image/png");
-                        file.save().then(function (obj) {
-                            alert("url:"+obj.url());
-                            console.log(obj.url());
-                            var Xy_List = Bmob.Object.extend("Xy_List");
-                            // 插入许愿列表
-                            var ddd = new Xy_List();
-                            ddd.set("title", $scope.xy.content);
-                            // Pointer指针
-                            ddd.set("userId", $scope.user);
-                            ddd.set("image", obj);
-                            ddd.set("style", 1);
-                            alert("2222:" + $scope.xy.content);
-                            ddd.save(null, {
-                                success: function (ddd) {
-
-                                    $ionicLoading.hide();
-                                    //alert("你的毕业说已经到宣言墙啦");
-                                    var relation = ddd.relation("commentId");
-                                    window.history.back();
-                                },
-                                error: function (ddd, error) {
-                                    alert("抱歉，学长，错了。。" + error.message);
-                                }
-                            });
-                        }, function (error) {
-                            // the save failed.
-                            alert("抱歉，学长，错了2。。" + error.message);
+            console.log(imageURI);
+            document.addEventListener("deviceready", function () {
+                //TODO 报错,readFile not Found????
+                $cordovaFile.readAsBinaryString(cordova.file.tempDirectory, name).then(function (success) {
+                    // success
+                    alert("done!!");
+                    var file = new Bmob.File(name, success, "image/png");
+                    file.save().then(function (obj) {
+                        console.log("upload file url:" + obj.url());
+                        alert("url:" + obj.url());
+                        var Xy_List = Bmob.Object.extend("Xy_List");
+                        // 插入许愿列表
+                        var ddd = new Xy_List();
+                        ddd.set("title", $scope.xy.content);
+                        // Pointer指针
+                        ddd.set("userId", $scope.user);
+                        ddd.set("image", obj);
+                        ddd.set("style", 1);
+                        ddd.save(null, {
+                            success: function (ddd) {
+                                $ionicLoading.hide();
+                                alert("你的毕业说已经到宣言墙啦");
+                                var relation = ddd.relation("commentId");
+//                                window.history.back();
+                            },
+                            error: function (ddd, error) {
+                                alert("抱歉，学长，错了。。" + error.message);
+                            }
                         });
                     }, function (error) {
-                        console.log(error);
+                        // the save failed.
+                        $ionicLoading.hide();
+                        alert("抱歉，学长，错了2。。");
                     });
+                }, function (error) {
+                    // error
+                    alert("readAsArrayBuffer error---");
+
                 });
 
-                var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-                //var name = "logo2.png";
 
-                //var file = new File(imageURI);
-                //var options = new FileUploadOptions();
-                //options.fileKey = "file";
-                //options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1) + ".png";
-                //options.mimeType = "image/png";
+//                $cordovaFile.createFile(cordova.file.dataDirectory, "new_file.txt", true)
+//                    .then(function (success) {
+//                        // success
+//                        alert("createFile success---"+success);
+//                        $cordovaFile.checkFile(cordova.file.dataDirectory, "new_file.txt")
+//                            .then(function (success) {
+//                                // success
+//                                alert("checkFile success---"+JSON.stringify(success));
+//                            }, function (error) {
+//                                // error
+//                                alert("checkFile error---"+success);
+//                            });
+//                    }, function (error) {
+//                        // error
+//                        alert("createFile error---"+error);
+//                        $cordovaFile.checkFile(cordova.file.dataDirectory, "new_file.txt")
+//                            .then(function (success) {
+//                                // success
+//                                alert("checkFile success---"+success);
+//                            }, function (error) {
+//                                // error
+//                                alert("error---"+error);
+//                            });
+//                    });
 
 
-//            } else {
-//                $ionicLoading.hide();
-//            }
+//                $cordovaFile.readAsDataURL(imageURI, $scope.inputs.readFile).then(function (data) {
+//                    var file = data;
+//                    //var file = new Bmob.File(name, file);
+//                    alert("url:" + data);
+//                    var file = new Bmob.File(name, $scope.inputs.readFile, "image/png");
+//                    file.save().then(function (obj) {
+//                        alert("url:" + obj.url());
+//                        console.log(obj.url());
+//                        var Xy_List = Bmob.Object.extend("Xy_List");
+//                        // 插入许愿列表
+//                        var ddd = new Xy_List();
+//                        ddd.set("title", $scope.xy.content);
+//                        // Pointer指针
+//                        ddd.set("userId", $scope.user);
+//                        ddd.set("image", obj);
+//                        ddd.set("style", 1);
+//                        alert("2222:" + $scope.xy.content);
+//                        ddd.save(null, {
+//                            success: function (ddd) {
+//
+//                                $ionicLoading.hide();
+//                                //alert("你的毕业说已经到宣言墙啦");
+//                                var relation = ddd.relation("commentId");
+//                                window.history.back();
+//                            },
+//                            error: function (ddd, error) {
+//                                alert("抱歉，学长，错了。。" + error.message);
+//                            }
+//                        });
+//                    }, function (error) {
+//                        // the save failed.
+//                        alert("抱歉，学长，错了2。。" + error.message);
+//                    });
+//                }, function (error) {
+//                    console.log(error);
+//                });
+            });
+
+            var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+            var path = imageURI.substr(0, imageURI.lastIndexOf('/') + 1);
         };
         //选择拍照
         $scope.goCamera = function () {
@@ -545,7 +423,9 @@ angular.module('starter.controllers', ['ngCordova'])
 
             // udpate camera image directive
             $cordovaCamera.getPicture(options).then(function (imageURI) {
+                console.log('Failed because: ');
                 $scope.cameraimage = imageURI;
+//                alert('imageURI1:'+imageURI);
                 //TODO 保存图片接口
             }, function (err) {
                 console.log('Failed because: ');
@@ -565,13 +445,19 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.checkToken = function () {
             // 检查某个平台的登录信息.如果未登录，则进行登录(等价于先使用getoken进行检测，若返回false，则调用login)
             $.fn.umshare.checkToken('sina', function (checkUser) {
-                // 获取数据
+                console.log("fn.umshare.checkToken:"+JSON.stringify(checkUser));
+
+                // 获取用户的详细数据
                 var showJsonUrl = 'https://api.weibo.com/2/users/show.json?uid=' + checkUser.uid + '&access_token=' + checkUser.token;
+                console.log("fetch user Detail by url:"+showJsonUrl);
                 $http.get(showJsonUrl)
                     .success(function (response) {
+                        console.log("$http.get user detail:"+JSON.stringify(response));
                         // FIXME 提交bmob，此处最好交给js云端处理
+
                         checkUserFromBmob(response.screen_name, function (isExist) {
                             if (isExist) {
+                                console.log("bmob EXIST user. then login");
                                 Bmob.User.logIn(response.screen_name, "123", {
                                     success: function (user) {
                                         initDataAfterLogin(eval('(' + JSON.stringify(user) + ')'));
@@ -582,6 +468,7 @@ angular.module('starter.controllers', ['ngCordova'])
                                 });
                             } else {
                                 // 不存在则
+                                console.log("bmob NOT EXIST user. then Regist");
                                 var user = new Bmob.User();
                                 user.set("username", response.screen_name);
                                 user.set("password", "123");// bmob要求必须密码，默认123
@@ -649,4 +536,135 @@ angular.module('starter.controllers', ['ngCordova'])
             // 对象转化成json的字符串保存
             localStorage.setItem('user', JSON.stringify(user));
         };
-    });
+
+        $scope.checkToken();
+    })
+
+    /**
+     *
+     * 不经常用到
+     *
+     *
+     */
+        .controller('DashCtrl', function ($scope, $cordovaDevice, $cordovaActionSheet) {
+            $scope.checkWeChatInstalled = function (id) {
+                Wechat.isInstalled(function (installed) {
+                    alert("Wechat installed: " + (installed ? "Yes" : "No"));
+                }, function (reason) {
+                    alert("Failed: " + reason);
+                });
+            }
+            $scope.loginWechat = function () {
+                // 登陆微信
+                Wechat.auth("snsapi_userinfo", function (response) {
+                    // you may use response.code to get the access token.
+                    alert(JSON.stringify(response));
+                }, function (reason) {
+                    alert("Failed:2222 " + reason);
+                });
+            }
+            $scope.shareWechat = function (id) {
+                Wechat.share({
+                    message: {
+                        title: "Message Title",
+                        description: "Message Description(optional)",
+                        mediaTagName: "Media Tag Name(optional)",
+                        thumb: "http://YOUR_THUMBNAIL_IMAGE",
+                        media: {
+                            type: Wechat.Type.WEBPAGE,   // webpage
+                            webpageUrl: "https://github.com/xu-li/cordova-plugin-wechat"    // webpage
+                        }
+                    },
+                    scene: Wechat.Scene.TIMELINE   // share to Timeline
+                }, function () {
+                    alert("Success");
+                }, function (reason) {
+                    alert("Failed: " + reason);
+                });
+            }
+
+            var XyList = Bmob.Object.extend("Xy_List");
+            var query = new Bmob.Query(XyList);
+            query.limit(5);
+            query.skip(10);
+            query.descending("updatedAt");
+            // 查询所有数据
+            query.find({
+                success: function (results) {
+//                alert("查询results: " + results);
+                },
+                error: function (error) {
+                    alert("查询失败: " + error.code + " " + error.message);
+                }
+            });
+
+            document.addEventListener("deviceready", function () {
+                $scope.loginBtn = function () {
+                    // 现实第三方登陆的login
+                    $cordovaActionSheet.show(options)
+                        .then(function (btnIndex) {
+                            var index = btnIndex;
+                            var platform;
+                            // 目前只支持 平台名.('sina','tencent','qzone','renren','douban')
+                            if (index == 1) {
+                                platform = 'sina';
+
+                                $.fn.umshare.checkToken('sina', function (user) {
+                                    // 测试是否登陆成功过sina
+                                    $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
+                                });
+                            } else {
+                                platform = 'tencent';
+                            }
+
+                        });
+                }
+
+            }, false);
+
+            var options = {
+                title: '第三方登陆',
+                buttonLabels: ['新浪登陆', '腾讯微博'],
+                addCancelButtonWithLabel: 'Cancel',
+                androidEnableCancelButton: true,
+                winphoneEnableCancelButton: true
+            };
+
+
+        })
+
+        .controller('ChatsCtrl', function ($scope, Chats) {
+            // With the new view caching in Ionic, Controllers are only called
+            // when they are recreated or on app start, instead of every page change.
+            // To listen for when this page is active (for example, to refresh data),
+            // listen for the $ionicView.enter event:
+            //
+            //$scope.$on('$ionicView.enter', function(e) {
+            //});
+
+            $scope.chats = Chats.all();
+            $scope.remove = function (chat) {
+                Chats.remove(chat);
+            }
+        })
+
+        .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
+            $scope.chat = Chats.get($stateParams.chatId);
+
+        })
+
+        .controller('AccountCtrl', function ($scope) {
+            $scope.settings = {
+                enableFriends: true
+            };
+        })
+// 预留可以删除
+        .controller('FriendsCtrl', function ($scope, Friends) {
+            $scope.friends = Friends.all();
+        })
+
+// 预留可以删除
+        .controller('FriendDetailCtrl', function ($scope, $stateParams, Friends) {
+            $scope.friend = Friends.get($stateParams.friendId);
+        }
+);
