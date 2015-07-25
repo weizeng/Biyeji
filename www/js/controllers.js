@@ -276,16 +276,23 @@ angular.module('starter.controllers', ['ngCordova'])
                 alert("请先登录");
                 return;
             }
-            $ionicLoading.show({template: '发表中...'});
 
             var imageURI = $scope.cameraimage;
             var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
 
-
             document.addEventListener("deviceready", function () {
                 //TODO 报错,readFile not Found????
-                $cordovaFile.readAsBinaryString(cordova.file.tempDirectory, name).then(function (success) {
+                var picDictionary;
+                if ($rootScope.platform == 'Android') {
+                    picDictionary = cordova.file.dataDirectory;
+                } else {
+                    picDictionary = cordova.file.tempDirectory;
+                }
+                console.log("#增加许愿#图片:" + picDictionary);
+                alert("#增加许愿#图片:" + picDictionary);
+                $cordovaFile.readAsBinaryString(picDictionary, name).then(function (success) {
                     // success
+                    $ionicLoading.show({template: '发表中...'});
                     console.log("#增加许愿#图片读取完毕:" + imageURI);
                     var file = new Bmob.File(name, success, "image/png");
                     file.save().then(function (obj) {
@@ -319,8 +326,7 @@ angular.module('starter.controllers', ['ngCordova'])
                     });
                 }, function (error) {
                     // error
-                    alert("readAsArrayBuffer error---");
-
+                    alert("readAsBinaryString error---:"+JSON.stringify(error));
                 });
             });
 
@@ -335,12 +341,12 @@ angular.module('starter.controllers', ['ngCordova'])
                 allowEdit: true,
                 encodingType: Camera.EncodingType.PNG,
                 popoverOptions: CameraPopoverOptions,
-                saveToPhotoAlbum: true
+                saveToPhotoAlbum: false
             };
 
             // udpate camera image directive
             $cordovaCamera.getPicture(options).then(function (imageURI) {
-                //var image = document.getElementById('myImage');
+                console.log('goCamera getPicture(options) :'+imageURI);
                 $scope.cameraimage = imageURI;
                 //TODO 保存图片接口
             }, function (err) {
@@ -356,14 +362,14 @@ angular.module('starter.controllers', ['ngCordova'])
                 allowEdit: true,
                 encodingType: Camera.EncodingType.PNG,
                 popoverOptions: CameraPopoverOptions,
-                saveToPhotoAlbum: true
+                saveToPhotoAlbum: false
             };
 
             // udpate camera image directive
             $cordovaCamera.getPicture(options).then(function (imageURI) {
-                console.log('Failed because: ');
+                console.log('goPhoto getPicture(options) :'+imageURI);
+                alert("imageURI:"+imageURI);
                 $scope.cameraimage = imageURI;
-//                alert('imageURI1:'+imageURI);
                 //TODO 保存图片接口
             }, function (err) {
                 console.log('Failed because: ');
