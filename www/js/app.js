@@ -28,8 +28,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             var uuid = $cordovaDevice.getUUID();
             var version = $cordovaDevice.getVersion();
 
-            $rootScope.platform = platform;
-
             if (platform == 'Android') {
                 window.umappkey = '5598edc167e58e4247001e1e';
 

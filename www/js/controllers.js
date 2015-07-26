@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ngCordova'])
+angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
 
 /**
@@ -262,39 +262,42 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
+    .controller('AddXyCtrl', function ($ionicPlatform,$rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
+        $ionicPlatform.registerBackButtonAction(function(success) {
+            $ionicLoading.hide();
+        });
         //返回
         $scope.back = function () {
             window.history.back();
         };
 
         $scope.xy = {content: null};
+        // 本地图片的路径,android需要转化URI，ios不需要
+        var imageLocalPath;
 
         //TODO 增加一个许愿
         $scope.addXy = function () {
-            if($rootScope.user == null) {
+            if ($rootScope.user == null) {
                 alert("请先登录");
                 return;
             }
 
-            var imageURI = $scope.cameraimage;
-            var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-
+            var name = imageLocalPath.substr(imageLocalPath.lastIndexOf('/') + 1);
             document.addEventListener("deviceready", function () {
-                //TODO 报错,readFile not Found????
                 var picDictionary;
-                if ($rootScope.platform == 'Android') {
-                    picDictionary = cordova.file.dataDirectory;
+                if (ionic.Platform.isAndroid()) {
+                    // 必须要加前缀file:// 否则出现 ECODING_ERR的错误
+                    picDictionary = 'file://' + imageLocalPath.substr(0, imageLocalPath.lastIndexOf('/'));
                 } else {
                     picDictionary = cordova.file.tempDirectory;
                 }
+
                 console.log("#增加许愿#图片:" + picDictionary);
-                alert("#增加许愿#图片:" + picDictionary);
                 $cordovaFile.readAsBinaryString(picDictionary, name).then(function (success) {
                     // success
                     $ionicLoading.show({template: '发表中...'});
-                    console.log("#增加许愿#图片读取完毕:" + imageURI);
                     var file = new Bmob.File(name, success, "image/png");
+                    console.log("#增加许愿#图片读取完毕:" + picDictionary);
                     file.save().then(function (obj) {
                         console.log("#增加许愿#图片上传完毕, 准备添加到URL:" + obj.url());
 //                        alert("url:" + obj.url());
@@ -322,16 +325,14 @@ angular.module('starter.controllers', ['ngCordova'])
                     }, function (error) {
                         // the save failed.
                         $ionicLoading.hide();
-                        alert("抱歉，学长，错了2。。");
+                        alert("抱歉，学长，错了2。。"+ JSON.stringify(error));
                     });
+//                    alert("right");
                 }, function (error) {
                     // error
-                    alert("readAsBinaryString error---:"+JSON.stringify(error));
+                    alert("readAsBinaryString error---:" + JSON.stringify(error));
                 });
             });
-
-            var name = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-            var path = imageURI.substr(0, imageURI.lastIndexOf('/') + 1);
         };
         //选择拍照
         $scope.goCamera = function () {
@@ -346,9 +347,9 @@ angular.module('starter.controllers', ['ngCordova'])
 
             // udpate camera image directive
             $cordovaCamera.getPicture(options).then(function (imageURI) {
-                console.log('goCamera getPicture(options) :'+imageURI);
+                console.log('goCamera getPicture(options) :' + imageURI);
                 $scope.cameraimage = imageURI;
-                //TODO 保存图片接口
+                imageLocalPath = imageURI;
             }, function (err) {
                 console.log('Failed because: ');
                 console.log(err);
@@ -367,10 +368,19 @@ angular.module('starter.controllers', ['ngCordova'])
 
             // udpate camera image directive
             $cordovaCamera.getPicture(options).then(function (imageURI) {
-                console.log('goPhoto getPicture(options) :'+imageURI);
-                alert("imageURI:"+imageURI);
+                console.log('goPhoto getPicture(options) :' + imageURI);
+                if (ionic.Platform.isAndroid()) {
+                    window.FilePath.resolveNativePath(imageURI, function (success) {
+                        imageLocalPath = success;
+                    }, function (error) {
+                        alert(error);
+                    });
+                } else {
+                    imageLocalPath = imageURI;
+                }
+
+                // 用于展示
                 $scope.cameraimage = imageURI;
-                //TODO 保存图片接口
             }, function (err) {
                 console.log('Failed because: ');
                 console.log(err);
@@ -390,9 +400,9 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.checkToken = function () {
             // 检查某个平台的登录信息.如果未登录，则进行登录(等价于先使用getoken进行检测，若返回false，则调用login)
             $.fn.umshare.checkToken('sina', function (checkUser) {
-                console.log("fn.umshare.checkToken:"+JSON.stringify(checkUser));
-                if (checkUser.error!=null && checkUser.error.length > 0) {
-                    alert("登陆出错啦,"+checkUser.error);
+                console.log("fn.umshare.checkToken:" + JSON.stringify(checkUser));
+                if (checkUser.error != null && checkUser.error.length > 0) {
+                    alert("登陆出错啦," + checkUser.error);
                     $scope.logout();
                     $scope.checkToken();
                     return;
@@ -400,10 +410,10 @@ angular.module('starter.controllers', ['ngCordova'])
 
                 // 获取用户的详细数据
                 var showJsonUrl = 'https://api.weibo.com/2/users/show.json?uid=' + checkUser.uid + '&access_token=' + checkUser.token;
-                console.log("fetch user Detail by url:"+showJsonUrl);
+                console.log("fetch user Detail by url:" + showJsonUrl);
                 $http.get(showJsonUrl)
                     .success(function (response) {
-                        console.log("$http.get user detail:"+JSON.stringify(response));
+                        console.log("$http.get user detail:" + JSON.stringify(response));
 
                         // FIXME 提交bmob，此处最好交给js云端处理
                         checkUserFromBmob(response.screen_name, function (isExist) {
@@ -492,131 +502,131 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.user = $rootScope.user;
     })
 
-    /**
-     *
-     * 不经常用到
-     *
-     *
-     */
-        .controller('DashCtrl', function ($scope, $cordovaDevice, $cordovaActionSheet) {
-            $scope.checkWeChatInstalled = function (id) {
-                Wechat.isInstalled(function (installed) {
-                    alert("Wechat installed: " + (installed ? "Yes" : "No"));
-                }, function (reason) {
-                    alert("Failed: " + reason);
-                });
-            }
-            $scope.loginWechat = function () {
-                // 登陆微信
-                Wechat.auth("snsapi_userinfo", function (response) {
-                    // you may use response.code to get the access token.
-                    alert(JSON.stringify(response));
-                }, function (reason) {
-                    alert("Failed:2222 " + reason);
-                });
-            }
-            $scope.shareWechat = function (id) {
-                Wechat.share({
-                    message: {
-                        title: "Message Title",
-                        description: "Message Description(optional)",
-                        mediaTagName: "Media Tag Name(optional)",
-                        thumb: "http://YOUR_THUMBNAIL_IMAGE",
-                        media: {
-                            type: Wechat.Type.WEBPAGE,   // webpage
-                            webpageUrl: "https://github.com/xu-li/cordova-plugin-wechat"    // webpage
-                        }
-                    },
-                    scene: Wechat.Scene.TIMELINE   // share to Timeline
-                }, function () {
-                    alert("Success");
-                }, function (reason) {
-                    alert("Failed: " + reason);
-                });
-            }
-
-            var XyList = Bmob.Object.extend("Xy_List");
-            var query = new Bmob.Query(XyList);
-            query.limit(5);
-            query.skip(10);
-            query.descending("updatedAt");
-            // 查询所有数据
-            query.find({
-                success: function (results) {
-//                alert("查询results: " + results);
-                },
-                error: function (error) {
-                    alert("查询失败: " + error.code + " " + error.message);
-                }
+/**
+ *
+ * 不经常用到
+ *
+ *
+ */
+    .controller('DashCtrl', function ($scope, $cordovaDevice, $cordovaActionSheet) {
+        $scope.checkWeChatInstalled = function (id) {
+            Wechat.isInstalled(function (installed) {
+                alert("Wechat installed: " + (installed ? "Yes" : "No"));
+            }, function (reason) {
+                alert("Failed: " + reason);
             });
-
-            document.addEventListener("deviceready", function () {
-                $scope.loginBtn = function () {
-                    // 现实第三方登陆的login
-                    $cordovaActionSheet.show(options)
-                        .then(function (btnIndex) {
-                            var index = btnIndex;
-                            var platform;
-                            // 目前只支持 平台名.('sina','tencent','qzone','renren','douban')
-                            if (index == 1) {
-                                platform = 'sina';
-
-                                $.fn.umshare.checkToken('sina', function (user) {
-                                    // 测试是否登陆成功过sina
-                                    $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
-                                });
-                            } else {
-                                platform = 'tencent';
-                            }
-
-                        });
-                }
-
-            }, false);
-
-            var options = {
-                title: '第三方登陆',
-                buttonLabels: ['新浪登陆', '腾讯微博'],
-                addCancelButtonWithLabel: 'Cancel',
-                androidEnableCancelButton: true,
-                winphoneEnableCancelButton: true
-            };
-
-
-        })
-
-        .controller('ChatsCtrl', function ($scope, Chats) {
-            // With the new view caching in Ionic, Controllers are only called
-            // when they are recreated or on app start, instead of every page change.
-            // To listen for when this page is active (for example, to refresh data),
-            // listen for the $ionicView.enter event:
-            //
-            //$scope.$on('$ionicView.enter', function(e) {
-            //});
-
-            $scope.chats = Chats.all();
-            $scope.remove = function (chat) {
-                Chats.remove(chat);
-            }
-        })
-
-        .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
-            $scope.chat = Chats.get($stateParams.chatId);
-
-        })
-
-        .controller('AccountCtrl', function ($scope) {
-            $scope.settings = {
-                enableFriends: true
-            };
-        })
-// 预留可以删除
-        .controller('FriendsCtrl', function ($scope, Friends) {
-            $scope.friends = Friends.all();
-        })
-
-// 预留可以删除
-        .controller('FriendDetailCtrl', function ($scope, $stateParams, Friends) {
-            $scope.friend = Friends.get($stateParams.friendId);
         }
+        $scope.loginWechat = function () {
+            // 登陆微信
+            Wechat.auth("snsapi_userinfo", function (response) {
+                // you may use response.code to get the access token.
+                alert(JSON.stringify(response));
+            }, function (reason) {
+                alert("Failed:2222 " + reason);
+            });
+        }
+        $scope.shareWechat = function (id) {
+            Wechat.share({
+                message: {
+                    title: "Message Title",
+                    description: "Message Description(optional)",
+                    mediaTagName: "Media Tag Name(optional)",
+                    thumb: "http://YOUR_THUMBNAIL_IMAGE",
+                    media: {
+                        type: Wechat.Type.WEBPAGE,   // webpage
+                        webpageUrl: "https://github.com/xu-li/cordova-plugin-wechat"    // webpage
+                    }
+                },
+                scene: Wechat.Scene.TIMELINE   // share to Timeline
+            }, function () {
+                alert("Success");
+            }, function (reason) {
+                alert("Failed: " + reason);
+            });
+        }
+
+        var XyList = Bmob.Object.extend("Xy_List");
+        var query = new Bmob.Query(XyList);
+        query.limit(5);
+        query.skip(10);
+        query.descending("updatedAt");
+        // 查询所有数据
+        query.find({
+            success: function (results) {
+//                alert("查询results: " + results);
+            },
+            error: function (error) {
+                alert("查询失败: " + error.code + " " + error.message);
+            }
+        });
+
+        document.addEventListener("deviceready", function () {
+            $scope.loginBtn = function () {
+                // 现实第三方登陆的login
+                $cordovaActionSheet.show(options)
+                    .then(function (btnIndex) {
+                        var index = btnIndex;
+                        var platform;
+                        // 目前只支持 平台名.('sina','tencent','qzone','renren','douban')
+                        if (index == 1) {
+                            platform = 'sina';
+
+                            $.fn.umshare.checkToken('sina', function (user) {
+                                // 测试是否登陆成功过sina
+                                $.fn.umshare.tip('登录成功,token:' + user.token + ', uid:' + user.uid);
+                            });
+                        } else {
+                            platform = 'tencent';
+                        }
+
+                    });
+            }
+
+        }, false);
+
+        var options = {
+            title: '第三方登陆',
+            buttonLabels: ['新浪登陆', '腾讯微博'],
+            addCancelButtonWithLabel: 'Cancel',
+            androidEnableCancelButton: true,
+            winphoneEnableCancelButton: true
+        };
+
+
+    })
+
+    .controller('ChatsCtrl', function ($scope, Chats) {
+        // With the new view caching in Ionic, Controllers are only called
+        // when they are recreated or on app start, instead of every page change.
+        // To listen for when this page is active (for example, to refresh data),
+        // listen for the $ionicView.enter event:
+        //
+        //$scope.$on('$ionicView.enter', function(e) {
+        //});
+
+        $scope.chats = Chats.all();
+        $scope.remove = function (chat) {
+            Chats.remove(chat);
+        }
+    })
+
+    .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
+        $scope.chat = Chats.get($stateParams.chatId);
+
+    })
+
+    .controller('AccountCtrl', function ($scope) {
+        $scope.settings = {
+            enableFriends: true
+        };
+    })
+// 预留可以删除
+    .controller('FriendsCtrl', function ($scope, Friends) {
+        $scope.friends = Friends.all();
+    })
+
+// 预留可以删除
+    .controller('FriendDetailCtrl', function ($scope, $stateParams, Friends) {
+        $scope.friend = Friends.get($stateParams.friendId);
+    }
 );
