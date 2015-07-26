@@ -9,17 +9,13 @@
         <ion-list>
             <ion-item class="xy-item" ng-repeat="item in results|filter:''">
                 <div class="item item-avatar" ng-click="goXyDetail(item)">
-                    <img ng-show="item.get('userId').get('cover_image_phone')"
-                         src="{{item.get('userId').get('cover_image_phone')}}" onerror="javascript:this.src='img/ionic.png'">
-                    <!--<h2>{{item.get('userId').get('nick')}}</h2>-->
-
+                    <img ng-src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
                     <div class="item-title-row">
                         <div class="item-title">{{item.get('userId').get('nick')}}</div>
                         <div class="item-after">{{item.createdAt|filter:dateFn(item.createdAt)}}</div>
                     </div>
-
-                    <p>{{item.get('userId').get('description')}}</p>
-
+                    <p ng-show="item.get('userId').get('description').length==0">{{item.get('userId').get('location')}}</p>
+                    <p ng-show="item.get('userId').get('description').length>0">{{item.get('userId').get('description')}}</p>
                 </div>
 
                 <div class="item item-body">
@@ -34,10 +30,6 @@
                         </a>
 
                         <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goXyDetail(item)"> {{commentCount[$index]}}</a>
-
-                        <!--<form ng-submit="saveForm(item)">-->
-                            <!--<input placeholder="添加评论..." type="text">-->
-                        <!--</form>-->
                     </div>
                 </div>
             </ion-item>
@@ -60,8 +52,7 @@
 
             <ion-item class="xy-item bt0">
                 <div class="item item-avatar">
-                    <img ng-show="item.get('userId').get('cover_image_phone')"
-                         src="{{item.get('userId').get('cover_image_phone')}}" onerror="javascript:this.src='img/ionic.png'">
+                    <img ng-src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
                     <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
                     <p class="mb5">{{item.createdAt}}</p>
                     <p class="ws-normal">{{item.get('userId').get('description')}}</p>

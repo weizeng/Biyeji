@@ -229,6 +229,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
         $ionicLoading.show({template: '加载中...'});
 
+        if( window.sessionStorage.getItem('doRefresh')){
+            window.sessionStorage.removeItem('doRefresh');
+            $scope.hardRefresh();
+        }
+
         //TODO dateFn 日期格式化
         $scope.dateFn = function (date) {
 
@@ -314,7 +319,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 console.log("#增加许愿#图片:" + picDictionary);
                 $cordovaFile.readAsBinaryString(picDictionary, name).then(function (success) {
                     // success
-                    $ionicLoading.show({template: '发表中...'});
+                    $ionicLoading.show({
+                        template: ('发表中... ' + "<i class = 'ion-close-round' ng-click='forceLoading()'></i>")
+                    });
+
+                    //$ionicLoading.show({template: '发表中...'});
                     var file = new Bmob.File(name, success, "image/png");
                     console.log("#增加许愿#图片读取完毕:" + picDictionary);
                     file.save().then(function (obj) {
@@ -340,6 +349,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                                         $cordovaDialogs.confirm('你的毕业说已经到宣言墙啦', '太好了', '确定')
                                             .then(function () {
                                                 // callback success
+                                                window.sessionStorage.setItem('doRefresh',true);
                                                 $scope.back();
                                             });
                                     },

@@ -65,6 +65,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         $ionicPlatform.registerBackButtonAction(function() {
             $rootScope.hide();
         }, 100);
+
+        $rootScope.forceLoading = function(){
+            $ionicLoading.hide();
+        }
     })
 
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {

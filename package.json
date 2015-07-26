@@ -34,7 +34,11 @@
     "org.apache.cordova.device-motion",
     "org.apache.cordova.inappbrowser",
     "org.apache.cordova.network-information",
-    "cordova-plugin-statusbar"
+    "cordova-plugin-statusbar",
+    {
+      "locator": "https://github.com/havefive/com.twnav.plugins.backgroundtask.git",
+      "id": "com.twnav.plugins.backgroundtask"
+    }
   ],
   "cordovaPlatforms": [
     "android",
