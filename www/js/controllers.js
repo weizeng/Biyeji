@@ -174,11 +174,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                                     $scope.commentCount.push(list.length);
                                 }
                             });
+                            $scope.imagesCount.push(result.get('image')._url);
                             // 产生缩略图
-                            Bmob.Image.thumbnail({"image": result.get('image')._url, "mode": 0, "quality": 100, "width": 480}
-                            ).then(function (obj) {
-                                    $scope.imagesCount.push('http://file.bmob.cn/' + obj.url);
-                                });
+                            //Bmob.Image.thumbnail({"image": result.get('image')._url, "mode": 0, "quality": 100, "width": 480}
+                            //).then(function (obj) {
+                            //        $scope.imagesCount.push('http://file.bmob.cn/' + obj.url);
+                            //    });
                             $scope.results.push(result);
                         });
                         skip += results.length;
@@ -398,7 +399,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
     // 我的毕业脚印
-    .controller('MyBoardCtrl', function ($rootScope, $scope, $http, $ionicLoading) {
+    .controller('MyBoardCtrl', function ($rootScope, $scope, $http, $ionicLoading, $ionicPlatform) {
         $scope.logout = function () {
             var result = $.fn.umshare.delToken("sina");
             localStorage.removeItem('user');
@@ -407,6 +408,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
 
         $scope.checkToken = function () {
+            alert(ionic.Platform.platform());
+            alert(ionic.Platform.isAndroid());
+
+            alert(ionic.Platform.isIOS());
+
             // 检查某个平台的登录信息.如果未登录，则进行登录(等价于先使用getoken进行检测，若返回false，则调用login)
             $.fn.umshare.checkToken('sina', function (checkUser) {
                 console.log("fn.umshare.checkToken:" + JSON.stringify(checkUser));

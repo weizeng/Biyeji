@@ -9,8 +9,8 @@
         <ion-list>
             <ion-item class="xy-item" ng-repeat="item in results|filter:''">
                 <div class="item item-avatar" ng-click="goXyDetail(item)">
-                    <img ng-show="item.get('userId').get('cover_image_phone')"
-                         src="{{item.get('userId').get('cover_image_phone')}}" onerror="javascript:this.src='img/ionic.png'">
+                    <img ng-show="item.get('userId').get('avatar_large')"
+                         src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
                     <!--<h2>{{item.get('userId').get('nick')}}</h2>-->
 
                     <div class="item-title-row">
@@ -23,8 +23,8 @@
                 </div>
 
                 <div class="item item-body">
-                    <img class="full-image" ng-show="imagesCount" ng-click="goXyDetail(item)"
-                         onerror="javascript:this.src='img/weibo.jpg'" src="{{imagesCount[$index]}}">
+                    <img class="full-image" ng-src="{{imagesCount[$index]}}" ng-click="goXyDetail(item)"
+                         onerror="javascript:this.src='img/weibo.jpg'">
                     <p style="margin: 10px" >{{item.get('title')}}</p>
 
                     <div style="padding-left: 16px;" ng-init="item.showZan=false">
@@ -60,8 +60,8 @@
 
             <ion-item class="xy-item bt0">
                 <div class="item item-avatar">
-                    <img ng-show="item.get('userId').get('cover_image_phone')"
-                         src="{{item.get('userId').get('cover_image_phone')}}" onerror="javascript:this.src='img/ionic.png'">
+                    <img ng-show="item.get('userId').get('avatar_large')"
+                         src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
                     <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
                     <p class="mb5">{{item.createdAt}}</p>
                     <p class="ws-normal">{{item.get('userId').get('description')}}</p>
