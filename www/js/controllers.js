@@ -269,6 +269,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         //返回
         $scope.back = function () {
             window.history.back();
+            initData();
         };
 
         $scope.xy = {content: null};
@@ -278,7 +279,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.xy = {content: null};
             $scope.cameraimage = null;
         };
-        initData();
 
         // 本地图片的路径,android需要转化URI，ios不需要
         var imageLocalPath;
