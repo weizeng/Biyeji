@@ -4,7 +4,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 /**
  *许愿的列表
  */
-    .controller('XYListCtrl', function ($sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
+    .controller('XYListCtrl', function ($cordovaDialogs,$sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
         /**
          *增加对某一个评论点赞的方法
          */
@@ -27,6 +27,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     //xy.showZan = true;
                     console.log(xy.showZan);
                     //alert("赞成");
+                    $cordovaDialogs.confirm('已赞', '太好了', '确定');
                 },
                 error: function (ddd, error) {
                     alert("抱歉，没赞成功。。" + error.message);
@@ -191,7 +192,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                 },
                 error: function (error) {
-                    alert("查询失败: " + error.code + " " + error.message);
+                    $cordovaDialogs.confirm('程序员在干嘛啦！'+ error.code + " " + error.message, '糟糕了', '确定');
                     $ionicLoading.hide();
                     $scope.$broadcast('scroll.refreshComplete');
                 }
@@ -262,7 +263,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($ionicPlatform,$rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
+    .controller('AddXyCtrl', function ($cordovaDialogs,$ionicPlatform,$rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
         $ionicPlatform.registerBackButtonAction(function(success) {
             $ionicLoading.hide();
         });
@@ -278,7 +279,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         //TODO 增加一个许愿
         $scope.addXy = function () {
             if ($rootScope.user == null) {
-                alert("请先登录");
+                $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
+                    .then(function() {
+                        // callback success
+                    });
+
                 return;
             }
 
@@ -313,9 +318,13 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                             success: function (ddd) {
                                 $ionicLoading.hide();
                                 console.log("#增加许愿# 操作完毕");
-                                alert("你的毕业说已经到宣言墙啦");
+//                                alert("你的毕业说已经到宣言墙啦");
                                 var relation = ddd.relation("commentId");
-//                                window.history.back();
+                                $cordovaDialogs.confirm('你的毕业说已经到宣言墙啦', '太好了', '确定')
+                                    .then(function() {
+                                        // callback success
+                                        $scope.back();
+                                    });
                             },
                             error: function (ddd, error) {
                                 $ionicLoading.hide();
@@ -325,12 +334,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     }, function (error) {
                         // the save failed.
                         $ionicLoading.hide();
-                        alert("抱歉，学长，错了2。。"+ JSON.stringify(error));
+                        $cordovaDialogs.alert('网络在开小差'+ JSON.stringify(error), '糟糕啊', '确定');
                     });
 //                    alert("right");
                 }, function (error) {
                     // error
-                    alert("readAsBinaryString error---:" + JSON.stringify(error));
+                    $cordovaDialogs.alert('网络在开小差2'+ JSON.stringify(error), '糟糕啊', '确定');
                 });
             });
         };
@@ -402,7 +411,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $.fn.umshare.checkToken('sina', function (checkUser) {
                 console.log("fn.umshare.checkToken:" + JSON.stringify(checkUser));
                 if (checkUser.error != null && checkUser.error.length > 0) {
-                    alert("登陆出错啦," + checkUser.error);
+                    $cordovaDialogs.alert('登录出错了,'+ checkUser.error, '糟糕啊', '确定');
                     $scope.logout();
                     $scope.checkToken();
                     return;
@@ -414,7 +423,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 $http.get(showJsonUrl)
                     .success(function (response) {
                         console.log("$http.get user detail:" + JSON.stringify(response));
-
                         // FIXME 提交bmob，此处最好交给js云端处理
                         checkUserFromBmob(response.screen_name, function (isExist) {
                             if (isExist) {
@@ -449,13 +457,13 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                                 user.set("version", '');
                                 user.signUp(null, {
                                     success: function (user) {
-                                        alert('regist from bmob,user:' + user.avatar_large);
+                                        console.log('regist from bmob,user:' + user.avatar_large);
                                         initDataAfterLogin(user);
                                     },
                                     error: function (user, error) {
                                         $ionicLoading.hide();
                                         // Show the error message somewhere and let the user try again.
-                                        alert("Error: " + error.code + " " + error.message);
+                                        $cordovaDialogs.alert('出错了,'+ error.code + " " + error.message, '糟糕啊', '确定');
                                     }
                                 });
                             }
