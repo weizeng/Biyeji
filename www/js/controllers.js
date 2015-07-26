@@ -5,28 +5,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
  *许愿的列表
  */
     .controller('XYListCtrl', function ($cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
-//        var query = new Bmob.Query(XyList);
-//        // 查询评论总数，和赞数目
-//        query.descending("createdAt");
-//        query.find({
-//            success: function (results) {
-//                angular.forEach(results, function (result) {
-//                    result.set("image_url", result.get('image')._url);
-//                    result.save(null, {
-//                        success: function(objectUpdate) {
-////                            alert("create object success, object score:"+objectUpdate.get("score"));
-//                        },
-//                        error: function(model, error) {
-//                            alert("create object fail");
-//                        }
-//                    });
-//                    alert('done');
-//                });
-//            },
-//            error: function (ddd, error) {
-//                alert("抱歉，添加评论失败。。" + error.message);
-//            }
-//        });
         /**
          *增加对某一个评论点赞的方法
          */
@@ -317,19 +295,19 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     $ionicLoading.show({template: '发表中...'});
                     var file = new Bmob.File(name, success, "image/png");
                     console.log("#增加许愿#图片读取完毕:" + picDictionary);
-                    file.save().then(function (obj) {
+                    file.save().then(function (savedObject) {
                         // 生成缩略图
-                        Bmob.Image.thumbnail({"image": obj.url(), "mode": 0, "quality": 100, "width": 480}
-                        ).then(function (obj) {
-                                console.log("#增加许愿#图片上传完毕, 准备添加到URL:" + obj.url());
+                        Bmob.Image.thumbnail({"image": savedObject.url(), "mode": 0, "quality": 100, "width": 480}
+                        ).then(function (thumbnail) {
+                                console.log("#增加许愿#缩略图图片上传完毕, 准备添加到URL:" + thumbnail.url());
                                 var Xy_List = Bmob.Object.extend("Xy_List");
                                 // 插入许愿列表
                                 var ddd = new Xy_List();
                                 ddd.set("title", $scope.xy.content);
                                 // Pointer指针
                                 ddd.set("userId", $rootScope.user);
-                                ddd.set("image", obj);
-                                ddd.set("image_small", obj.url);
+                                ddd.set("image", savedObject);
+                                ddd.set("image_small", thumbnail.url);
                                 ddd.set("style", 1);
                                 ddd.save(null, {
                                     success: function (ddd) {
