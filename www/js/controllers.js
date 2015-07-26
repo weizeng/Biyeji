@@ -238,16 +238,18 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             var hourC = diffValue / hour;
             var minC = diffValue / minute;
             var result = '';
-            //if (monthC >= 1) {
-            //    result = "发表于" + parseInt(monthC) + "个月前";
-            //}
-            //else if (weekC >= 1) {
-            //    result = "发表于" + parseInt(weekC) + "周前";
-            //}
-            //else if (dayC >= 1) {
-            //    result = "发表于" + parseInt(dayC) + "天前";
-            //}
-            if (hourC >= 1) {
+            if (monthC >= 1) {
+                result = date;
+                //result = "发表于" + parseInt(monthC) + "个月前";
+            }
+            else if (weekC >= 1) {
+                result = date;
+                //result = "发表于" + parseInt(weekC) + "周前";
+            }
+            else if (dayC >= 1) {
+                result = parseInt(dayC) + "天前";
+            }
+            else if (hourC >= 1) {
                 result = parseInt(hourC) + "个小时前";
             }
             else if (minC >= 1) {
@@ -270,6 +272,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
 
         $scope.xy = {content: null};
+
+        //初始化加载先清空
+        function initData(){
+            $scope.xy = {content: null};
+            $scope.cameraimage = null;
+        };
+        initData();
+
         // 本地图片的路径,android需要转化URI，ios不需要
         var imageLocalPath;
 

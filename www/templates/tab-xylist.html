@@ -12,7 +12,7 @@
                     <img ng-src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
                     <div class="item-title-row">
                         <div class="item-title">{{item.get('userId').get('nick')}}</div>
-                        <div class="item-after">{{item.createdAt|filter:dateFn(item.createdAt)}}</div>
+                        <div class="item-after">{{dateFn(item.createdAt)}}</div>
                     </div>
                     <p ng-show="item.get('userId').get('description').length==0">{{item.get('userId').get('location')}}</p>
                     <p ng-show="item.get('userId').get('description').length>0">{{item.get('userId').get('description')}}</p>
@@ -55,12 +55,15 @@
                     <img ng-src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
                     <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
                     <p class="mb5">{{item.createdAt}}</p>
-                    <p class="ws-normal">{{item.get('userId').get('description')}}</p>
+                    <p ng-show="item.get('userId').get('description').length==0">{{item.get('userId').get('location')}}</p>
+                    <p class="ws-normal" ng-show="item.get('userId').get('description').length>0">{{item.get('userId').get('description')}}</p>
+                    <!--<p class="ws-normal">{{item.get('userId').get('description')}}</p>-->
                 </div>
 
                 <div class="item item-body">
-                    <img class="full-image" ng-show="item.get('image')._url"
-                         onerror="javascript:this.src='img/weibo.jpg'" src="{{item.get('image')._url}}">
+                    <ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">
+                        <img class="fit" style="width:100%" ng-src="{{item.get('image')._url}}" onerror="javascript:this.src='img/weibo.jpg'"/>
+                    </ion-scroll>
                     <div style="padding-left: 16px;">
                         <!--<p>{{item.get('title')}}</p>-->
                         <!--<p>{{item.createdAt}}</p>-->
