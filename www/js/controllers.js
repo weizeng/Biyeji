@@ -4,7 +4,29 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 /**
  *许愿的列表
  */
-    .controller('XYListCtrl', function ($cordovaDialogs,$sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
+    .controller('XYListCtrl', function ($cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
+//        var query = new Bmob.Query(XyList);
+//        // 查询评论总数，和赞数目
+//        query.descending("createdAt");
+//        query.find({
+//            success: function (results) {
+//                angular.forEach(results, function (result) {
+//                    result.set("image_url", result.get('image')._url);
+//                    result.save(null, {
+//                        success: function(objectUpdate) {
+////                            alert("create object success, object score:"+objectUpdate.get("score"));
+//                        },
+//                        error: function(model, error) {
+//                            alert("create object fail");
+//                        }
+//                    });
+//                    alert('done');
+//                });
+//            },
+//            error: function (ddd, error) {
+//                alert("抱歉，添加评论失败。。" + error.message);
+//            }
+//        });
         /**
          *增加对某一个评论点赞的方法
          */
@@ -113,7 +135,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
          */
         $scope.zanCount = [];
         $scope.commentCount = [];
-        $scope.imagesCount = [];
         $scope.more = true;
         $scope.results = [];
         var skip = 0;
@@ -153,7 +174,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
                         if (skip == 0) {
                             $scope.results.length = 0;
-                            $scope.imagesCount.length = 0;
                             $scope.commentCount.length = 0;
                             $scope.$broadcast('scroll.refreshComplete');
                         }
@@ -174,11 +194,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                                     $scope.commentCount.push(list.length);
                                 }
                             });
-                            // 产生缩略图
-                            Bmob.Image.thumbnail({"image": result.get('image')._url, "mode": 0, "quality": 100, "width": 480}
-                            ).then(function (obj) {
-                                    $scope.imagesCount.push('http://file.bmob.cn/' + obj.url);
-                                });
+
                             $scope.results.push(result);
                         });
                         skip += results.length;
@@ -192,7 +208,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                 },
                 error: function (error) {
-                    $cordovaDialogs.confirm('程序员在干嘛啦！'+ error.code + " " + error.message, '糟糕了', '确定');
+                    $cordovaDialogs.confirm('程序员在干嘛啦！' + error.code + " " + error.message, '糟糕了', '确定');
                     $ionicLoading.hide();
                     $scope.$broadcast('scroll.refreshComplete');
                 }
@@ -263,10 +279,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($cordovaDialogs,$ionicPlatform,$rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
-        $ionicPlatform.registerBackButtonAction(function(success) {
-            $ionicLoading.hide();
-        });
+    .controller('AddXyCtrl', function ($cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
+
         //返回
         $scope.back = function () {
             window.history.back();
@@ -280,7 +294,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.addXy = function () {
             if ($rootScope.user == null) {
                 $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
-                    .then(function() {
+                    .then(function () {
                         // callback success
                     });
 
@@ -304,42 +318,49 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     var file = new Bmob.File(name, success, "image/png");
                     console.log("#增加许愿#图片读取完毕:" + picDictionary);
                     file.save().then(function (obj) {
-                        console.log("#增加许愿#图片上传完毕, 准备添加到URL:" + obj.url());
-//                        alert("url:" + obj.url());
-                        var Xy_List = Bmob.Object.extend("Xy_List");
-                        // 插入许愿列表
-                        var ddd = new Xy_List();
-                        ddd.set("title", $scope.xy.content);
-                        // Pointer指针
-                        ddd.set("userId", $rootScope.user);
-                        ddd.set("image", obj);
-                        ddd.set("style", 1);
-                        ddd.save(null, {
-                            success: function (ddd) {
-                                $ionicLoading.hide();
-                                console.log("#增加许愿# 操作完毕");
+                        // 生成缩略图
+                        Bmob.Image.thumbnail({"image": obj.url(), "mode": 0, "quality": 100, "width": 480}
+                        ).then(function (obj) {
+                                console.log("#增加许愿#图片上传完毕, 准备添加到URL:" + obj.url());
+                                var Xy_List = Bmob.Object.extend("Xy_List");
+                                // 插入许愿列表
+                                var ddd = new Xy_List();
+                                ddd.set("title", $scope.xy.content);
+                                // Pointer指针
+                                ddd.set("userId", $rootScope.user);
+                                ddd.set("image", obj);
+                                ddd.set("image_small", obj.url);
+                                ddd.set("style", 1);
+                                ddd.save(null, {
+                                    success: function (ddd) {
+                                        $ionicLoading.hide();
+                                        console.log("#增加许愿# 操作完毕");
 //                                alert("你的毕业说已经到宣言墙啦");
-                                var relation = ddd.relation("commentId");
-                                $cordovaDialogs.confirm('你的毕业说已经到宣言墙啦', '太好了', '确定')
-                                    .then(function() {
-                                        // callback success
-                                        $scope.back();
-                                    });
-                            },
-                            error: function (ddd, error) {
-                                $ionicLoading.hide();
-                                alert("抱歉，学长，错了。。" + error.message);
-                            }
-                        });
+                                        var relation = ddd.relation("commentId");
+                                        $cordovaDialogs.confirm('你的毕业说已经到宣言墙啦', '太好了', '确定')
+                                            .then(function () {
+                                                // callback success
+                                                $scope.back();
+                                            });
+                                    },
+                                    error: function (ddd, error) {
+                                        $ionicLoading.hide();
+                                        alert("抱歉，学长，错了。。" + error.message);
+                                    }
+                                });
+
+                            });
+
+
                     }, function (error) {
                         // the save failed.
                         $ionicLoading.hide();
-                        $cordovaDialogs.alert('网络在开小差'+ JSON.stringify(error), '糟糕啊', '确定');
+                        $cordovaDialogs.alert('网络在开小差' + JSON.stringify(error), '糟糕啊', '确定');
                     });
 //                    alert("right");
                 }, function (error) {
                     // error
-                    $cordovaDialogs.alert('网络在开小差2'+ JSON.stringify(error), '糟糕啊', '确定');
+                    $cordovaDialogs.alert('网络在开小差2' + JSON.stringify(error), '糟糕啊', '确定');
                 });
             });
         };
@@ -351,14 +372,24 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 allowEdit: true,
                 encodingType: Camera.EncodingType.PNG,
                 popoverOptions: CameraPopoverOptions,
-                saveToPhotoAlbum: false
+                saveToPhotoAlbum: true
             };
 
             // udpate camera image directive
             $cordovaCamera.getPicture(options).then(function (imageURI) {
                 console.log('goCamera getPicture(options) :' + imageURI);
+                if (ionic.Platform.isAndroid()) {
+                    window.FilePath.resolveNativePath(imageURI, function (success) {
+                        imageLocalPath = success;
+                    }, function (error) {
+                        alert(error);
+                    });
+                } else {
+                    imageLocalPath = imageURI;
+                }
+
+                // 用于展示
                 $scope.cameraimage = imageURI;
-                imageLocalPath = imageURI;
             }, function (err) {
                 console.log('Failed because: ');
                 console.log(err);
@@ -411,7 +442,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $.fn.umshare.checkToken('sina', function (checkUser) {
                 console.log("fn.umshare.checkToken:" + JSON.stringify(checkUser));
                 if (checkUser.error != null && checkUser.error.length > 0) {
-                    $cordovaDialogs.alert('登录出错了,'+ checkUser.error, '糟糕啊', '确定');
+                    $cordovaDialogs.alert('登录出错了,' + checkUser.error, '糟糕啊', '确定');
                     $scope.logout();
                     $scope.checkToken();
                     return;
@@ -463,7 +494,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                                     error: function (user, error) {
                                         $ionicLoading.hide();
                                         // Show the error message somewhere and let the user try again.
-                                        $cordovaDialogs.alert('出错了,'+ error.code + " " + error.message, '糟糕啊', '确定');
+                                        $cordovaDialogs.alert('出错了,' + error.code + " " + error.message, '糟糕啊', '确定');
                                     }
                                 });
                             }

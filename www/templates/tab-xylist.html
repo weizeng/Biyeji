@@ -23,8 +23,8 @@
                 </div>
 
                 <div class="item item-body">
-                    <img class="full-image" ng-show="imagesCount" ng-click="goXyDetail(item)"
-                         onerror="javascript:this.src='img/weibo.jpg'" src="{{imagesCount[$index]}}">
+                    <img class="full-image" ng-show="item.get('image_small')" ng-click="goXyDetail(item)"
+                         onerror="javascript:this.src='img/weibo.jpg'" ng-src="http://file.bmob.cn/{{item.get('image_small')}}">
                     <p style="margin: 10px" >{{item.get('title')}}</p>
 
                     <div style="padding-left: 16px;" ng-init="item.showZan=false">
