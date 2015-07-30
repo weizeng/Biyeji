@@ -24,9 +24,9 @@
                     <p style="margin: 10px" >{{item.get('title')}}</p>
 
                     <div style="padding-left: 16px;" ng-init="item.showZan=false">
-                        <a class="button button-icon icon ion-ios-heart" ng-class="{'ion-ios-heart-outline':item.showZan==false}" ng-click="goZan(item,$index);item.showZan=!item.showZan">
-                            <span ng-show="!item.showZan">{{zanCount[$index]}}</span>
-                            <span ng-show="item.showZan">{{zanCount[$index]+1}}</span>
+                        <a class="button button-icon icon ion-ios-heart" ng-class="{'ion-ios-heart-outline':zanCount[$index].showZanSelf>0}" ng-click="goZan(item,$index);item.showZan=!item.showZan">
+                            <span ng-show="!item.showZan">{{zanCount[$index].showZanCount}}</span>
+                            <span ng-show="item.showZan">{{zanCount[$index].showZanCount+1}}</span>
                         </a>
 
                         <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goXyDetail(item)"> {{commentCount[$index]}}</a>
@@ -80,16 +80,27 @@
 
                     </div>
                 </div>
+
+                <ion-item class="xy-item" ng-repeat="item in commentResults|filter:''">
+                    <div class="item item-avatar">
+
+                        <div class="item-title-row">
+                            <div class="item-title">{{item.get('userId').get('nick')}}</div>
+                            <div class="item-after">{{dateFn(item.createdAt)}}</div>
+                        </div>
+                        <div>{{item.content}}</div>
+                    </div>
+                </ion-item>
             </ion-item>
-            <div style="height: 44px;width: 100%">
+            <div style="height: 64px;width: 100%">
             </div>
         </ion-content>
         <div class="bar bar-footer">
-            <form ng-submit="saveForm()">
-                <input placeholder="添加评论..." ng-model="msg" type="text" required>
+            <form ng-submit="saveForm(item, addCommentText)">
+                <input placeholder="添加评论..." ng-model="addCommentText" type="text" required>
             </form>
             <!--disabled="msg.length==0"-->
-            <button class="button button-clear pull-right"  ng-show="msg.length>0" ng-click="saveForm(item)">发送</button>
+            <button class="button button-clear pull-right"  ng-show="addCommentText.length>0" ng-click="saveForm(item,addCommentText)">发送</button>
         </div>
     </ion-modal-view>
 </script>

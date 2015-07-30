@@ -10,7 +10,16 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
          */
 
         $scope.goZan = function (xy) {
-            //alert(xy);
+            if ($rootScope.user == null) {
+                $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
+                    .then(function () {
+                        // callback success
+                    });
+
+                return;
+            }
+
+
             // 添加到赞列表
             var zanObject = Bmob.Object.extend("Zan");
             // 插入许愿列表
@@ -66,6 +75,20 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                         }
                     });
                 }
+                if($scope.item.get('commentId') != null){
+                    var commentIdQuery = $scope.item.get('commentId').query();
+                    commentIdQuery.include("userId");
+                    commentIdQuery.find({
+                        success: function (results) {
+                            $ionicLoading.hide();
+                            alert("查询失败: " + JSON.stringify(results));
+//                        $scope.article = results.get('extends');
+                        },
+                        error: function (error) {
+                            alert("查询失败: " + error.code + " " + error.message);
+                        }
+                    });
+                }
             });
 
         };
@@ -84,7 +107,15 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
 
         //TODO 保存简单的评论
-        $scope.saveForm = function (xy) {
+        $scope.saveForm = function (xy, addCommentText) {
+            if ($rootScope.user == null) {
+                $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
+                    .then(function () {
+                        // callback success
+                    });
+
+                return;
+            }
             $ionicLoading.show({template: '评论中...'});
             // 添加到赞列表
             var commentObject = Bmob.Object.extend("Comment");
@@ -93,15 +124,23 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             var comment = new commentObject();
             // Pointer指针
             comment.set("userId", $rootScope.user);
-            comment.set("content", $scope.msg);
+            comment.set("content", addCommentText);
             comment.save(null, {
                 success: function (comment) {
-                    $ionicLoading.hide();
+
                     // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
-                    var relation = xy.relation("commentId");
-                    relation.add(comment);
-                    xy.save();
-                    alert("添加评论成功");
+//                    var relation = xy.relation("commentId");
+//                    relation.add(comment);
+//                    xy.save().then(function(success){
+//                        $cordovaDialogs.confirm('添加评论成功', '温馨提示', '确定')
+////                        alert("添加评论成功"+JSON.stringify(success));
+//                        $ionicLoading.hide();
+//                    }, function(error){
+//                        $ionicLoading.hide();
+//                        $cordovaDialogs.alert('添加评论失败了'+JSON.stringify(error), '温馨提示', '确定')
+////                        alert("添加评论失败"+JSON.stringify(error));
+//                    });
+
                 },
                 error: function (ddd, error) {
                     alert("抱歉，添加评论失败。。" + error.message);
@@ -157,17 +196,39 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                         }
                         angular.forEach(results, function (result) {
                             result.htmlStr = $sce.trustAsHtml(result.get('title'));
-                            var zanRelation = result.relation("zan");
-                            zanRelation.query().find({
+                            var zanRelationQuery = result.relation("zan").query();
+                            zanRelationQuery.include("userId");
+                            zanRelationQuery.find({
                                 success: function (list) {
-                                    $scope.zanCount.push(list.length);
+                                    // 查询是否自己赞过
+                                    var pushObject = {
+                                        showZanCount:0,
+                                        showZanSelf:0   //是否自己赞过
+                                    };
+                                    angular.forEach(list, function (zanObj) {
+                                        if(zanObj.get('userId') != null && $rootScope.user != null) {
+                                            if($rootScope.user.objectId == zanObj.get('userId').get('objectId')){
+                                                pushObject.showZanSelf = 1;
+                                                return;
+                                            }
+                                        } else {
+                                            pushObject.showZanSelf = 0;
+                                            return;
+                                        }
+                                    });
+
+                                    pushObject.showZanCount = list.length;
+                                    $scope.zanCount.push(pushObject);
                                 }
                             });
 
-                            var commentIdRelation = result.relation("commentId");
-                            commentIdRelation.query().find({
+                            var commentQuery = result.relation("commentId").query();
+                            commentQuery.find({
                                 success: function (list) {
                                     $scope.commentCount.push(list.length);
+                                },
+                                error:function(error){
+                                    console.log("error:"+JSON.stringify(error));
                                 }
                             });
 
