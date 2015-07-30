@@ -46,7 +46,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 var uu = eval('(' + userStr + ')');
                 Bmob.User.logIn(uu.username, "123", {
                     success: function (user) {
-                        $rootScope.user = user;
+                        $rootScope.user = JSON.parse(JSON.stringify(user));
                         console.log(JSON.stringify($rootScope.user));
 //                        alert("success: " + JSON.stringify($rootScope.user));
                         $.fn.umshare.tip('自动登陆成功');
@@ -61,6 +61,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
             }
         });
+        //网页端测试
+        if(!ionic.Platform.isAndroid()&&!ionic.Platform.isIOS()){
+            Bmob.User.logIn('MegaGift', "123", {
+                success: function (user) {
+                    $rootScope.user = JSON.parse(JSON.stringify(user));
+                    console.log(JSON.stringify($rootScope.user));
+                    console.log(JSON.stringify($rootScope.user).replace(/\\"/g, '"'));
+                    $.fn.umshare.tip('自动登陆成功');
+                },
+                error: function (user, error) {
+                    // The login failed. Check error to see why.
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            });
+        }
 
         $ionicPlatform.registerBackButtonAction(function() {
             $rootScope.hide();
@@ -70,6 +85,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             $ionicLoading.hide();
         }
     })
+
 
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 

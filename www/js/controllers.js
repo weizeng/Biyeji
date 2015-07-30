@@ -75,20 +75,20 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                         }
                     });
                 }
-                if($scope.item.get('commentId') != null){
-                    var commentIdQuery = $scope.item.get('commentId').query();
-                    commentIdQuery.include("userId");
-                    commentIdQuery.find({
-                        success: function (results) {
-                            $ionicLoading.hide();
-                            alert("查询失败: " + JSON.stringify(results));
-//                        $scope.article = results.get('extends');
-                        },
-                        error: function (error) {
-                            alert("查询失败: " + error.code + " " + error.message);
-                        }
-                    });
-                }
+//                if($scope.item.get('commentId') != null){
+//                    var commentIdQuery = $scope.item.get('commentId').query();
+//                    commentIdQuery.include("userId");
+//                    commentIdQuery.find({
+//                        success: function (results) {
+//                            $ionicLoading.hide();
+//                            alert("查询失败: " + JSON.stringify(results));
+////                        $scope.article = results.get('extends');
+//                        },
+//                        error: function (error) {
+//                            alert("查询失败: " + error.code + " " + error.message);
+//                        }
+//                    });
+//                }
             });
 
         };
@@ -317,7 +317,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             else if (minC < 1) {
                 result = "刚刚";
             } else
-                result = date;
+                result = str;
             return result;
         }
     })
@@ -468,6 +468,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
         //选择照片
         $scope.goPhoto = function () {
+            //if(!ionic.Platform.isAndroid()&&!ionic.Platform.isIOS()){
+            //    imageLocalPath = document.getElementById('imgFile').files[0].name;
+            //}
             var options = {
                 destinationType: Camera.DestinationType.FILE_URI,
                 sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
