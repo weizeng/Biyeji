@@ -7,8 +7,8 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-    .run(function ($ionicPlatform, $cordovaDevice, $rootScope,$ionicLoading) {
-        $ionicPlatform.registerBackButtonAction(function(success) {
+    .run(function ($ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
+        $ionicPlatform.registerBackButtonAction(function (success) {
             $ionicLoading.hide();
         });
         $ionicPlatform.ready(function () {
@@ -40,6 +40,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
             // 本地读取user的信息，这个user通常是bmob返回的信息
             // 包含字段:uid, screen_name, token, avatar, avatar_large
+
+            // 真实环境
             var userStr = localStorage.getItem('user');
             if (userStr) {
                 // 把字符串转化成json对象，变成对象厚可以取
@@ -57,30 +59,32 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                         alert("Error: " + error.code + " " + error.message);
                     }
                 });
-            } else {}
+            }
+
         });
-        //网页端测试
-        if(!ionic.Platform.isAndroid()&&!ionic.Platform.isIOS()){
+
+        $ionicPlatform.registerBackButtonAction(function () {
+            $rootScope.hide();
+        }, 100);
+
+        $rootScope.forceLoading = function () {
+            $ionicLoading.hide();
+        }
+
+        // 针对非手机版本
+        if(!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()){
             Bmob.User.logIn('MegaGift', "123", {
                 success: function (user) {
-                    $rootScope.user = JSON.parse(JSON.stringify(user));
+                    $rootScope.user = user;
                     console.log(JSON.stringify($rootScope.user));
                     console.log(JSON.stringify($rootScope.user).replace(/\\"/g, '"'));
-                    $.fn.umshare.tip('自动登陆成功');
+                    $.fn.umshare.tip('MegaGift 自动登陆成功');
                 },
                 error: function (user, error) {
                     // The login failed. Check error to see why.
                     alert("Error: " + error.code + " " + error.message);
                 }
             });
-        }
-
-        $ionicPlatform.registerBackButtonAction(function() {
-            $rootScope.hide();
-        }, 100);
-
-        $rootScope.forceLoading = function(){
-            $ionicLoading.hide();
         }
     })
 
