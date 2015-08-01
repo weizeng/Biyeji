@@ -34,9 +34,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     xy.save();
 
                     xy.increment("zanCount");
-                    xy.save().then(function(success){
+                    xy.save().then(function (success) {
                         console.log(xy.showZan);
-                    }, function(error){
+                    }, function (error) {
                     });
 
 
@@ -58,7 +58,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.modal = modal;
         });
 
-        $scope.comments=[];
+        $scope.comments = [];
         $scope.openModal = function () {
             $scope.modal.show().then(function (obj) {
                 loadComment();
@@ -66,7 +66,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
         };
 
-        var loadComment = function() {
+        var loadComment = function () {
 
             // 检测类型，看是否加载更多内容
             var style = $scope.item.get('style');
@@ -92,8 +92,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 });
             }
             // 查询评论
-            $scope.comments.length=0;
-            if($scope.item.get('comment') != null){
+            $scope.comments.length = 0;
+            if ($scope.item.get('comment') != null) {
                 $ionicLoading.show({template: '加载评论中...'});
                 var commentIdQuery = $scope.item.relation('comment').query();
                 commentIdQuery.include("userId");
@@ -119,7 +119,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         //Cleanup the modal when we're done with it!
         $scope.$on('$destroy', function () {
             $scope.comments.length = 0;
-            $scope.item=null;
+            $scope.item = null;
             $scope.modal.remove();
         });
 
@@ -180,7 +180,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.results = [];
         var skip = 0;
 
-        loadMore = function () {
+        var loadMore = function () {
             // 宣言列表
             var XyList = Bmob.Object.extend("Xy_List");
 
@@ -189,6 +189,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             query.skip(skip);
             // 查询关联的用户信息
             query.include("userId");
+            query.equalTo("hide", null);
             // 查询评论总数，和赞数目
             query.descending("createdAt");
             console.log("查询前:" + skip);
@@ -475,7 +476,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
     // 我的毕业脚印
-    .controller('MyBoardCtrl', function ($cordovaDialogs, $rootScope, $scope, $http, $ionicLoading) {
+    .controller('MyBoardCtrl', function ($sce,$cordovaDialogs, $rootScope, $scope, $http, $ionicLoading) {
         $scope.logout = function () {
             var result = $.fn.umshare.delToken("sina");
             localStorage.removeItem('user');
@@ -550,6 +551,62 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             });
         };
 
+        var skip = 0;
+        $scope.results=[];
+        $scope.more=false;
+        var loadMyXy = function () {
+            var XyList = Bmob.Object.extend("Xy_List");
+
+            var query = new Bmob.Query(XyList);
+            query.limit(20);
+            query.skip(skip);
+            query.equalTo("hide", null);
+            // 查询关联的用户信息
+            query.equalTo("userId", $rootScope.user.objectId);
+            // 查询评论总数，和赞数目
+            query.descending("createdAt");
+            console.log("查询前:" + skip);
+            query.find({
+                success: function (results) {
+                    console.log(''+JSON.stringify(results));
+                    if (results.length > 0) {
+                        $scope.more = true;
+                        if (skip == 0) {
+                            $scope.results.length = 0;
+//                            $scope.$broadcast('scroll.refreshComplete');
+                        }
+                        //对查询的结果递归
+                        angular.forEach(results, function (result) {
+                            result.htmlStr = $sce.trustAsHtml(result.get('title'));
+                            $scope.results.push(result);
+                        });
+                        skip += results.length;
+//                        $scope.$broadcast('scroll.infiniteScrollComplete');
+                    } else {
+                        if (skip == 0) {
+
+                        }
+                        $scope.more = false;
+                    }
+                }, error: function (error) {
+                    console.log(''+JSON.stringify(error));
+                }});
+        };
+
+        $scope.delete = function (xy) {
+            $ionicLoading.show({
+                template: '正在删除...'
+            });
+            xy.set("hide","1");
+            xy.save().then(function(success) {
+                $ionicLoading.hide();
+                $scope.results.remove(xy);
+                alert("已经删除");
+            }, function (error) {
+
+            });
+        };
+
         $scope.logIn = function () {
             $ionicLoading.show({
                 template: '正在登陆...'
@@ -586,6 +643,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         //FIXME
 
         $scope.user = JSON.parse(JSON.stringify($rootScope.user));
+        loadMyXy();
     })
 
 /**
