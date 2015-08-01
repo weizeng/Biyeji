@@ -57,6 +57,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }).then(function (modal) {
             $scope.modal = modal;
         });
+
+        $scope.comments=[];
         $scope.openModal = function () {
             $scope.modal.show().then(function (obj) {
                 // 检测类型，看是否加载更多内容
