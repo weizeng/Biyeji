@@ -92,6 +92,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 });
             }
             // 查询评论
+            $scope.comments.length=0;
             if($scope.item.get('comment') != null){
                 $ionicLoading.show({template: '加载评论中...'});
                 var commentIdQuery = $scope.item.relation('comment').query();
@@ -106,13 +107,19 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                         alert("查询失败: " + error.code + " " + error.message);
                     }
                 });
+            } else {
+
             }
         }
         $scope.closeModal = function () {
+            $scope.comments.length = 0;
+//            $scope.item=null;
             $scope.modal.hide();
         };
         //Cleanup the modal when we're done with it!
         $scope.$on('$destroy', function () {
+            $scope.comments.length = 0;
+            $scope.item=null;
             $scope.modal.remove();
         });
 
