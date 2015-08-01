@@ -46,7 +46,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 var uu = eval('(' + userStr + ')');
                 Bmob.User.logIn(uu.username, "123", {
                     success: function (user) {
-                        $rootScope.user = JSON.parse(JSON.stringify(user));
+                        $rootScope.user = user;//
+                        // JSON.parse(JSON.stringify(user));
                         console.log(JSON.stringify($rootScope.user));
 //                        alert("success: " + JSON.stringify($rootScope.user));
                         $.fn.umshare.tip('自动登陆成功');
@@ -56,10 +57,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                         alert("Error: " + error.code + " " + error.message);
                     }
                 });
-            } else {
-//            alert('未登陆');
-
-            }
+            } else {}
         });
         //网页端测试
         if(!ionic.Platform.isAndroid()&&!ionic.Platform.isIOS()){

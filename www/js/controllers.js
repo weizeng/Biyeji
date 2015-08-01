@@ -19,7 +19,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 return;
             }
 
-
             // 添加到赞列表
             var zanObject = Bmob.Object.extend("Zan");
             // 插入许愿列表
@@ -29,14 +28,22 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             zan.set("userId", $rootScope.user);
             zan.save(null, {
                 success: function (zan) {
-                    // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
+
                     var relation = xy.relation("zan");
                     relation.add(zan);
                     xy.save();
+
+                    xy.increment("zanCount");
+                    xy.save().then(function(success){
+                        console.log(xy.showZan);
+                    }, function(error){
+                    });
+
+
                     //xy.showZan = true;
-                    console.log(xy.showZan);
+
                     //alert("赞成");
-                    $cordovaDialogs.confirm('已赞', '太好了', '确定');
+//                    $cordovaDialogs.confirm('已赞', '太好了', '确定');
                 },
                 error: function (ddd, error) {
                     alert("抱歉，没赞成功。。" + error.message);
@@ -75,20 +82,24 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                         }
                     });
                 }
-//                if($scope.item.get('commentId') != null){
-//                    var commentIdQuery = $scope.item.get('commentId').query();
-//                    commentIdQuery.include("userId");
-//                    commentIdQuery.find({
-//                        success: function (results) {
-//                            $ionicLoading.hide();
+                // 查询评论
+                if($scope.item.get('comment') != null){
+                    $ionicLoading.show({template: '加载评论中...'});
+                    var commentIdQuery = $scope.item.relation('comment').query();
+                    commentIdQuery.include("userId");
+                    commentIdQuery.find({
+                        success: function (results) {
+                            $ionicLoading.hide();
+
+                            $scope.comments.push(results);
 //                            alert("查询失败: " + JSON.stringify(results));
-////                        $scope.article = results.get('extends');
-//                        },
-//                        error: function (error) {
-//                            alert("查询失败: " + error.code + " " + error.message);
-//                        }
-//                    });
-//                }
+//                        $scope.article = results.get('extends');
+                        },
+                        error: function (error) {
+                            alert("查询失败: " + error.code + " " + error.message);
+                        }
+                    });
+                }
             });
 
         };
@@ -125,21 +136,23 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             // Pointer指针
             comment.set("userId", $rootScope.user);
             comment.set("content", addCommentText);
+
             comment.save(null, {
                 success: function (comment) {
 
                     // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
-//                    var relation = xy.relation("commentId");
-//                    relation.add(comment);
-//                    xy.save().then(function(success){
-//                        $cordovaDialogs.confirm('添加评论成功', '温馨提示', '确定')
-////                        alert("添加评论成功"+JSON.stringify(success));
-//                        $ionicLoading.hide();
-//                    }, function(error){
-//                        $ionicLoading.hide();
-//                        $cordovaDialogs.alert('添加评论失败了'+JSON.stringify(error), '温馨提示', '确定')
-////                        alert("添加评论失败"+JSON.stringify(error));
-//                    });
+                    xy.increment("commentCount");
+                    xy.save();
+
+                    var relation = xy.relation("comment");
+                    relation.add(comment);
+                    xy.save().then(function (success) {
+                        $cordovaDialogs.confirm('添加评论成功', '温馨提示', '确定')
+                        $ionicLoading.hide();
+                    }, function (error) {
+                        $ionicLoading.hide();
+                        $cordovaDialogs.alert('添加评论失败了' + JSON.stringify(error), '温馨提示', '确定');
+                    });
 
                 },
                 error: function (ddd, error) {
@@ -150,30 +163,13 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         /**
          * 查询内容
          */
-        $scope.zanCount = [];
-        $scope.commentCount = [];
         $scope.more = true;
         $scope.results = [];
         var skip = 0;
 
         loadMore = function () {
             // 宣言列表
-            var XyList = Bmob.Object.extend("Xy_List", {
-                // 实例方法
-                test1: function () {
-                    return "YES";
-                }
-            }, {
-                // 静态方法
-                test2: function () {
-                    return new XyList();
-                },
-
-                test3: function () {
-                    return "YES3";
-                }
-            });
-            $ionicLoading.show({template: '加载中...'});
+            var XyList = Bmob.Object.extend("Xy_List");
 
             var query = new Bmob.Query(XyList);
             query.limit(10);
@@ -182,72 +178,35 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             query.include("userId");
             // 查询评论总数，和赞数目
             query.descending("createdAt");
-
+            console.log("查询前:" + skip);
             query.find({
                 success: function (results) {
                     $ionicLoading.hide();
                     if (results.length > 0) {
                         $scope.more = true;
-
                         if (skip == 0) {
                             $scope.results.length = 0;
-                            $scope.commentCount.length = 0;
                             $scope.$broadcast('scroll.refreshComplete');
                         }
+                        //对查询的结果递归
                         angular.forEach(results, function (result) {
                             result.htmlStr = $sce.trustAsHtml(result.get('title'));
-                            var zanRelationQuery = result.relation("zan").query();
-                            zanRelationQuery.include("userId");
-                            zanRelationQuery.find({
-                                success: function (list) {
-                                    // 查询是否自己赞过
-                                    var pushObject = {
-                                        showZanCount:0,
-                                        showZanSelf:0   //是否自己赞过
-                                    };
-                                    angular.forEach(list, function (zanObj) {
-                                        if(zanObj.get('userId') != null && $rootScope.user != null) {
-                                            if($rootScope.user.objectId == zanObj.get('userId').get('objectId')){
-                                                pushObject.showZanSelf = 1;
-                                                return;
-                                            }
-                                        } else {
-                                            pushObject.showZanSelf = 0;
-                                            return;
-                                        }
-                                    });
-
-                                    pushObject.showZanCount = list.length;
-                                    $scope.zanCount.push(pushObject);
-                                }
-                            });
-
-                            var commentQuery = result.relation("commentId").query();
-                            commentQuery.find({
-                                success: function (list) {
-                                    $scope.commentCount.push(list.length);
-                                },
-                                error:function(error){
-                                    console.log("error:"+JSON.stringify(error));
-                                }
-                            });
-
                             $scope.results.push(result);
                         });
                         skip += results.length;
-                        console.log("skip:" + skip);
+                        $scope.$broadcast('scroll.infiniteScrollComplete');
                     } else {
                         if (skip == 0) {
 
                         }
                         $scope.more = false;
                     }
-                    $scope.$broadcast('scroll.infiniteScrollComplete');
+
                 },
                 error: function (error) {
                     $cordovaDialogs.confirm('程序员在干嘛啦！' + error.code + " " + error.message, '糟糕了', '确定');
                     $ionicLoading.hide();
-                    $scope.$broadcast('scroll.refreshComplete');
+//                    $scope.$broadcast('scroll.refreshComplete');
                 }
             });
         }
@@ -404,13 +363,13 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                                 success: function (ddd) {
                                     $ionicLoading.hide();
                                     console.log("#增加许愿# 操作完毕");
-                                    var relation = ddd.relation("commentId");
-                                        $cordovaDialogs.confirm('你的毕业说已经到宣言墙啦', '太好了', '确定')
-                                            .then(function () {
-                                                // callback success
-                                                window.sessionStorage.setItem('doRefresh', true);
-                                                $scope.back();
-                                            });
+                                    var relation = ddd.relation("comment");
+                                    $cordovaDialogs.confirm('你的毕业说已经到宣言墙啦', '太好了', '确定')
+                                        .then(function () {
+                                            // callback success
+                                            window.sessionStorage.setItem('doRefresh', true);
+                                            $scope.back();
+                                        });
                                 },
                                 error: function (ddd, error) {
                                     $ionicLoading.hide();
@@ -503,7 +462,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
     // 我的毕业脚印
-    .controller('MyBoardCtrl', function ($cordovaDialogs,$rootScope, $scope, $http, $ionicLoading) {
+    .controller('MyBoardCtrl', function ($cordovaDialogs, $rootScope, $scope, $http, $ionicLoading) {
         $scope.logout = function () {
             var result = $.fn.umshare.delToken("sina");
             localStorage.removeItem('user');
@@ -606,13 +565,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             // 保存成功之后,设置到全局，并且保存本地local
             // FIXME
             $rootScope.user = user;
-            $scope.user = $rootScope.user;
+            $scope.user = JSON.parse(JSON.stringify($rootScope.user));
             // 对象转化成json的字符串保存
             localStorage.setItem('user', JSON.stringify(user));
         };
 
         //FIXME
-        $scope.user = $rootScope.user;
+
+        $scope.user = JSON.parse(JSON.stringify($rootScope.user));
     })
 
 /**
@@ -620,6 +580,57 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
  * 不经常用到
  *
  *
+ */
+
+/**
+ *
+ *
+ *
+ * //                        var commentQuery = results[0].relation("comment").query();
+ //                        commentQuery.find({
+//                                success: function (list) {
+////                                    $scope.commentCount.push(list.length);
+//                                    alert(JSON.stringify(list));
+//                                },
+//                                error: function (error) {
+//                                    console.log("error:" + JSON.stringify(error));
+//                                }
+//                            });
+
+ var commentQuery = result.relation("comment").query();
+ commentQuery.find({
+                                success: function (list) {
+                                    $scope.commentCount.push(list.length);
+                                },
+                                error: function (error) {
+                                    console.log("error:" + JSON.stringify(error));
+                                }
+                            });
+ *  var zanRelationQuery = result.relation("zan").query();
+ zanRelationQuery.include("userId");
+ zanRelationQuery.find({
+                                success: function (list) {
+                                    // 查询是否自己赞过
+                                    var pushObject = {
+                                        showZanCount: 0,
+                                        showZanSelf: 0   //是否自己赞过
+                                    };
+                                    angular.forEach(list, function (zanObj) {
+                                        if (zanObj.get('userId') != null && $rootScope.user != null) {
+                                            if ($rootScope.user.objectId == zanObj.get('userId').get('objectId')) {
+                                                pushObject.showZanSelf = 1;
+                                                return;
+                                            }
+                                        } else {
+                                            pushObject.showZanSelf = 0;
+                                            return;
+                                        }
+                                    });
+
+                                    pushObject.showZanCount = list.length;
+                                    $scope.zanCount.push(pushObject);
+                                }
+                            });
  */
     .controller('DashCtrl', function ($scope, $cordovaDevice, $cordovaActionSheet) {
         $scope.checkWeChatInstalled = function (id) {
