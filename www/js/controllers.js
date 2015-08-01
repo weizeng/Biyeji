@@ -61,50 +61,53 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.comments=[];
         $scope.openModal = function () {
             $scope.modal.show().then(function (obj) {
-                // 检测类型，看是否加载更多内容
-                var style = $scope.item.get('style');
-                var detailId = $scope.item.get('detailId');
-                if (style == 1) {
-                    //短信息，直接显示
-                    $scope.article = $scope.item.get('title');
-                } else {
-                    $ionicLoading.show({template: '加载中...'});
-                    // 实例方法
-                    var XyDetail = Bmob.Object.extend("Xy_Detail");
-                    var query = new Bmob.Query(XyDetail);
-                    query.equalTo("objectId", detailId.id);
-                    // 查询所有数据
-                    query.first({
-                        success: function (results) {
-                            $ionicLoading.hide();
-                            $scope.article = results.get('extends');
-                        },
-                        error: function (error) {
-                            alert("查询失败: " + error.code + " " + error.message);
-                        }
-                    });
-                }
-                // 查询评论
-                if($scope.item.get('comment') != null){
-                    $ionicLoading.show({template: '加载评论中...'});
-                    var commentIdQuery = $scope.item.relation('comment').query();
-                    commentIdQuery.include("userId");
-                    commentIdQuery.find({
-                        success: function (results) {
-                            $ionicLoading.hide();
-
-                            $scope.comments.push(results);
-//                            alert("查询失败: " + JSON.stringify(results));
-//                        $scope.article = results.get('extends');
-                        },
-                        error: function (error) {
-                            alert("查询失败: " + error.code + " " + error.message);
-                        }
-                    });
-                }
+                loadComment();
             });
 
         };
+
+        var loadComment = function() {
+
+            // 检测类型，看是否加载更多内容
+            var style = $scope.item.get('style');
+            var detailId = $scope.item.get('detailId');
+            if (style == 1) {
+                //短信息，直接显示
+                $scope.article = $scope.item.get('title');
+            } else {
+                $ionicLoading.show({template: '加载详细内容...'});
+                // 实例方法
+                var XyDetail = Bmob.Object.extend("Xy_Detail");
+                var query = new Bmob.Query(XyDetail);
+                query.equalTo("objectId", detailId.id);
+                // 查询所有数据
+                query.first({
+                    success: function (results) {
+                        $ionicLoading.hide();
+                        $scope.article = results.get('extends');
+                    },
+                    error: function (error) {
+                        alert("查询失败: " + error.code + " " + error.message);
+                    }
+                });
+            }
+            // 查询评论
+            if($scope.item.get('comment') != null){
+                $ionicLoading.show({template: '加载评论中...'});
+                var commentIdQuery = $scope.item.relation('comment').query();
+                commentIdQuery.include("userId");
+                commentIdQuery.find({
+                    success: function (results) {
+                        $ionicLoading.hide();
+
+                        $scope.comments = results;
+                    },
+                    error: function (error) {
+                        alert("查询失败: " + error.code + " " + error.message);
+                    }
+                });
+            }
+        }
         $scope.closeModal = function () {
             $scope.modal.hide();
         };
@@ -149,8 +152,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     var relation = xy.relation("comment");
                     relation.add(comment);
                     xy.save().then(function (success) {
-                        $cordovaDialogs.confirm('添加评论成功', '温馨提示', '确定')
+//                        $cordovaDialogs.confirm('添加评论成功', '温馨提示', '确定')
                         $ionicLoading.hide();
+                        loadComment();
                     }, function (error) {
                         $ionicLoading.hide();
                         $cordovaDialogs.alert('添加评论失败了' + JSON.stringify(error), '温馨提示', '确定');
