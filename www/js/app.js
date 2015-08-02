@@ -146,6 +146,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 controller: 'AddXyCtrl'
             })
 
+            // 我的宣传列表
+            .state('XyByMe', {
+                url: '/XyByMe',
+                templateUrl: 'templates/xy-byme.html',
+                controller: 'XyByMeCtrl'
+            })
+
             .state('tab.chats', {
                 url: '/chats',
                 views: {
