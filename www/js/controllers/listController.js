@@ -111,7 +111,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             } else {
 
             }
-        }
+        };
         $scope.closeModal = function () {
             $scope.comments.length = 0;
 //            $scope.item=null;
@@ -128,6 +128,24 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.goXyDetail = function (detail) {
             $scope.item = detail;
             $scope.openModal();
+        };
+
+        //TODO 许愿详情
+        $ionicModal.fromTemplateUrl('img-modal.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function (modal) {
+            $scope.imgModal = modal;
+        });
+
+        $scope.closeImgModal = function () {
+            $scope.imgModal.hide();
+            $scope.img='';
+        };
+
+        $scope.showLarge= function (img) {
+            $scope.img = img;
+            $scope.imgModal.show();
         };
 
         //TODO 保存简单的评论

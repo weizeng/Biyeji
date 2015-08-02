@@ -5,7 +5,7 @@
 
 angular.module('starter.controllers')
 
-.controller('MyBoardCtrl', ['$sce','$cordovaDialogs', '$rootScope', '$scope', '$http', '$ionicLoading',function ($sce,$cordovaDialogs, $rootScope, $scope, $http, $ionicLoading) {
+.controller('MyBoardCtrl', ['$sce','$cordovaDialogs', '$rootScope', '$scope', '$http', '$ionicLoading','$cordovaInAppBrowser',function ($sce,$cordovaDialogs, $rootScope, $scope, $http, $ionicLoading,$cordovaInAppBrowser) {
     $scope.logout = function () {
         var result = $.fn.umshare.delToken("sina");
         localStorage.removeItem('user');
@@ -117,5 +117,20 @@ angular.module('starter.controllers')
 
     //FIXME
     $scope.user = JSON.parse(JSON.stringify($rootScope.user));
+
+    $scope.goUrl = function(){
+        document.addEventListener('deviceready', function () {
+            var options = {
+                location: "no"
+            };
+
+            $cordovaInAppBrowser.open('http://www.baidu.com', '_blank', options).then(function () {
+                console.log("InAppBrowser opened http://ngcordova.com successfully");
+            }, function (error) {
+                console.log("Error: " + error);
+            });
+
+        }, false);
+    }
 
 }]);

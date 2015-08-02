@@ -105,3 +105,17 @@
 .mb5{
     margin-bottom: 5px;
 }
+.bar.bar-dark{
+    background-color: #000;
+    border: #000;
+    background-image: none;
+}
+.has-vertical .scroll {
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+.has-vertical .tc {
+    display: table-cell;
+    vertical-align: middle;
+}

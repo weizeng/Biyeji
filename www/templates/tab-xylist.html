@@ -76,10 +76,10 @@
                 </div>
 
                 <div class="item item-body">
-                    <ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">
-                        <img class="fit" style="width:100%" ng-src="{{item.get('image')._url}}"
+                    <!--<ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">-->
+                        <img class="fit" style="width:100%" ng-src="{{item.get('image')._url}}" ng-click="showLarge()"
                              onerror="javascript:this.src='img/weibo.jpg'"/>
-                    </ion-scroll>
+                    <!--</ion-scroll>-->
                     <div style="padding-left: 16px;">
                         <!--<p>{{item.get('title')}}</p>-->
                         <!--<p>{{item.createdAt}}</p>-->
@@ -118,12 +118,28 @@
         </ion-content>
         <div class="bar bar-footer">
             <form ng-submit="saveForm(item, addCommentText)">
-                <input placeholder="添加评论..." ng-model="addCommentText" type="text" required>
+                <input placeholder="添加评论..." ng-model="addCommentText2" type="text" required>
             </form>
             <!--disabled="msg.length==0"-->
-            <button class="button button-clear pull-right" ng-show="addCommentText.length>0"
-                    ng-click="saveForm(item,addCommentText)">发送
+            <button class="button button-clear pull-right" ng-show="addCommentText2.length>0"
+                    ng-click="saveForm(item,addCommentText2)">发送
             </button>
         </div>
+    </ion-modal-view>
+</script>
+
+<script id="img-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar class="bar-assertive bar-dark">
+            <button class="button button-clear" ng-click="closeImgModal()">返回</button>
+        </ion-header-bar>
+        <ion-content scroll="false" style="background: #000" class="has-vertical">
+
+            <ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit tc">
+            <img class="fit tc" style="width:100%" ng-src="{{item.get('image')._url}}" ng-click="showLarge()"
+                 onerror="javascript:this.src='img/weibo.jpg'"/>
+            </ion-scroll>
+
+        </ion-content>
     </ion-modal-view>
 </script>
