@@ -9,8 +9,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
     .run(function ($ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
         $ionicPlatform.registerBackButtonAction(function (success) {
-            $ionicLoading.hide();
-        });
+            //$ionicLoading.hide();
+            window.plugins.BackgroundTask.execute();
+        }, 100);
         $ionicPlatform.ready(function () {
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
