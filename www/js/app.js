@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-    .run(function ($ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
+    .run(function ($ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
         $ionicPlatform.registerBackButtonAction(function (success) {
             //$ionicLoading.hide();
             window.plugins.BackgroundTask.execute();
@@ -61,7 +61,29 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     }
                 });
             }
+            $cordovaAppVersion.getAppVersion().then(function (version) {
+//                alert(version);
+                var appVersion = version;
+                var systemObject = Bmob.Object.extend("System");
+                var query = new Bmob.Query(systemObject);
+                query.descending("updatedAt");
+                // 查询所有数据
+                query.first({
+                    success: function (result) {
 
+                        var serverVersion = result.get('version');
+                        if ($cordovaDevice.getPlatform() == 'Android') {
+                            if (serverVersion > appVersion) {
+                                versionCheck(result);
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        alert("查询失败: " + JSON.parse(error));
+                    }
+                });
+
+            });
         });
 
         $ionicPlatform.registerBackButtonAction(function () {
@@ -72,8 +94,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             $ionicLoading.hide();
         }
 
-        // 针对非手机版本
-        if(!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()){
+// 针对非手机版本
+        if (!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()) {
             Bmob.User.logIn('MegaGift', "123", {
                 success: function (user) {
                     $rootScope.user = user;
@@ -87,10 +109,25 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 }
             });
         }
+
+        var versionCheck = function (result) {
+            var confirmPopup = $ionicPopup.confirm({
+                title: '版本升级',
+                template: "版本升级提示 " + JSON.stringify(result)
+            });
+            confirmPopup.then(function (res) {
+                if (res) {
+                    console.log('You are sure');
+                } else {
+                    console.log('You are not sure');
+                }
+            });
+        }
     })
 
 
-    .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+    .
+    config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
         $ionicConfigProvider.tabs.position('bottom');
         $ionicConfigProvider.navBar.alignTitle('center');
