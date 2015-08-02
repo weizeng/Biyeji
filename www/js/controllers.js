@@ -80,6 +80,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 var XyDetail = Bmob.Object.extend("Xy_Detail");
                 var query = new Bmob.Query(XyDetail);
                 query.equalTo("objectId", detailId.id);
+                query.descending("updatedAt");
                 // 查询所有数据
                 query.first({
                     success: function (results) {

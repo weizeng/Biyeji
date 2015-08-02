@@ -1,0 +1,33 @@
+<ion-view title="我">
+    <ion-content>
+        <ion-refresher on-refresh="refreshMyXy()"></ion-refresher>
+
+
+        <ion-list>
+            <ion-item class="xy-item" ng-repeat="item in results|filter:''">
+
+
+                <div class="item item-body">
+                    <img class="full-image" ng-show="item.get('image_small')" ng-click="goXyDetail(item)"
+                         onerror="javascript:this.src='img/weibo.jpg'"
+                         ng-src="http://file.bmob.cn/{{item.get('image_small')}}">
+
+                    <p style="margin: 10px">{{item.get('title')}}</p>
+
+                    <div style="padding-left: 16px;" ng-init="item.showZan=false">
+                        <a class="button button-icon icon ion-ios-heart"
+                           ng-class="{'ion-ios-heart-outline':item.get('zanCount')>0}"
+                           ng-click="goZan(item,$index);item.showZan=!item.showZan">
+                            <span ng-show="!item.showZan">{{item.get('zanCount')}}</span>
+                            <span ng-show="item.showZan">{{item.get('zanCount')+1}}</span>
+                        </a>
+
+                        <a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goXyDetail(item)">
+                            {{item.get('commentCount')}}</a>
+                        <button ng-click="delete(item)">删除</button>
+                    </div>
+                </div>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
