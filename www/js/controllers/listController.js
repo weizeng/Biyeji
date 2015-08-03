@@ -147,7 +147,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.img = img;
             $scope.imgModal.show();
         };
-
+        $scope.view = {addCommentText2: null};
         //TODO 保存简单的评论
         $scope.saveForm = function (xy, addCommentText) {
             if ($rootScope.user == null) {
@@ -170,6 +170,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
             comment.save(null, {
                 success: function (comment) {
+
+                    $scope.view.addCommentText2 = null;
 
                     // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
                     xy.increment("commentCount");
