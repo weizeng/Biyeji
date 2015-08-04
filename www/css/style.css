@@ -172,7 +172,7 @@
 .p0{
    padding: 0;
 }
-.ui-btn {
+.ui-btn, .ui-btn-lg{
     height: 30px;
     line-height: 30px;
     padding: 0 11px;
@@ -230,4 +230,33 @@
 }
 .item-area{
     border-radius: 6px;
+}
+.white{
+    color: #fff;
+}
+.text-shadow{
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+}
+.ui-btn-wrap {
+    padding: 15px 10px;
+}
+.ui-btn-lg {
+    font-size: 18px;
+    height: 44px;
+    line-height: 44px;
+    display: block;
+    width: 100%;
+    border-radius: 5px;
+}
+.ui-btn-danger {
+    background-color: #f75549;
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0.5,#fc6156),to(#f75549));
+    color: #fff;
+    border-color: #f43d30;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+.ui-btn-lg, .ui-btn-s {
+    position: relative;
+    border: 0;
 }

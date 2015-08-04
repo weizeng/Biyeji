@@ -1,9 +1,52 @@
-<ion-view view-title="Account">
-  <ion-content>
-    <ion-list>
-    <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
-    </ion-toggle>
-    </ion-list>
+<ion-view view-title="账号信息">
+    <ion-nav-buttons side="left">
+        <button class="button button-clear" ng-click="back()">
+            返回
+        </button>
+    </ion-nav-buttons>
+
+    <ion-content>
+        <ion-list>
+
+            <a class="item" href="#">
+                昵称
+                 <span class="item-note">
+                         {{user.nick}}
+                 </span>
+            </a>
+
+            <a class="item" href="#">
+                性别
+                 <span class="item-note" ng-if="user.sex=='m'">
+                         男
+                 </span>
+                 <span class="item-note" ng-if="user.sex=='w'">
+                         女
+                 </span>
+            </a>
+
+            <a class="item" href="#">
+               城市
+                 <span class="item-note">
+                         {{user.location}}
+                 </span>
+            </a>
+
+
+            <a class="item" href="#" ng-if="user.description.length">
+                简介
+                 <span class="item-note">
+                         {{user.description}}
+                 </span>
+            </a>
+
+
+            <div class="ui-btn-wrap">
+                <button class="ui-btn-lg ui-btn-danger" ng-click="logout()">
+                    注销
+                </button>
+            </div>
+
+        </ion-list>
   </ion-content>
 </ion-view>

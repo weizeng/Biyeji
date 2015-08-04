@@ -5,7 +5,7 @@
 
 angular.module('starter.controllers')
 
-.controller('MyBoardCtrl', ['$sce','$cordovaDialogs', '$rootScope', '$scope', '$http', '$ionicLoading','$cordovaInAppBrowser',function ($sce,$cordovaDialogs, $rootScope, $scope, $http, $ionicLoading,$cordovaInAppBrowser) {
+.controller('MyBoardCtrl', ['$sce','$cordovaDialogs', '$rootScope', '$scope','$state','$http', '$ionicLoading','$cordovaInAppBrowser',function ($sce,$cordovaDialogs, $rootScope, $scope, $state,$http, $ionicLoading,$cordovaInAppBrowser) {
     $scope.logout = function () {
         var result = $.fn.umshare.delToken("sina");
         localStorage.removeItem('user');
@@ -114,9 +114,11 @@ angular.module('starter.controllers')
         // 对象转化成json的字符串保存
         localStorage.setItem('user', JSON.stringify(user));
     };
-
     //FIXME
-    $scope.user = JSON.parse(JSON.stringify($rootScope.user));
+
+    if(!$rootScope.user&&ionic.Platform.isAndroid()||ionic.Platform.isIOS()){
+        $scope.logIn();
+    }else $scope.user = JSON.parse(JSON.stringify($rootScope.user));
 
     $scope.goUrl = function(){
         document.addEventListener('deviceready', function () {
@@ -124,8 +126,8 @@ angular.module('starter.controllers')
                 location: "no"
             };
 
-            $cordovaInAppBrowser.open('http://www.baidu.com', '_blank', options).then(function () {
-                console.log("InAppBrowser opened http://ngcordova.com successfully");
+            $cordovaInAppBrowser.open('http://m.weibo.cn/'+$scope.user.profile_url, '_blank', options).then(function () {
+                console.log("InAppBrowser opened http://m.weibo.cn successfully");
             }, function (error) {
                 console.log("Error: " + error);
             });
@@ -133,4 +135,26 @@ angular.module('starter.controllers')
         }, false);
     }
 
-}]);
+}])
+// 账号信息
+.controller('AccountCtrl', function ($scope,$rootScope,$state,$timeout) {
+
+    $scope.user = JSON.parse(JSON.stringify($rootScope.user));
+
+    $scope.back = function () {
+        window.history.back();
+    };
+
+    //注销登录
+    $scope.logout = function () {
+        var result = $.fn.umshare.delToken("sina");
+        localStorage.removeItem('user');
+        $rootScope.user = null;
+        $scope.user = null;
+        $state.go('tab.xylist');
+        $timeout(function () {
+            window.location.reload();
+        }, 1000);
+    };
+
+});

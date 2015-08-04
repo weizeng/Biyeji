@@ -509,11 +509,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
     })
 
-    .controller('AccountCtrl', function ($scope) {
-        $scope.settings = {
-            enableFriends: true
-        };
-    })
 // 预留可以删除
     .controller('FriendsCtrl', function ($scope, Friends) {
         $scope.friends = Friends.all();
