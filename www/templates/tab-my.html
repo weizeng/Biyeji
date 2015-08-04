@@ -1,6 +1,5 @@
 <ion-view title="我">
     <ion-content>
-        <ion-refresher on-refresh="refreshMyXy()"></ion-refresher>
         <div class="me-bg">
             <img ng-show="!user.avatar_large" src="img/ionic.png" style="border-radius: 50%;">
             <img ng-show="user.avatar_large" ng-src="{{user.avatar_large}}">
@@ -36,13 +35,12 @@
             </div>
 
             <a class="item" href="#">
-                当前版本
+                当前版本 {{$rootScope.appVersion}}
             </a>
             <a class="item" href="#">
                 #风斗士#
             </a>
         </div>
-
 
     </ion-content>
 </ion-view>

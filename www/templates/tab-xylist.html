@@ -7,7 +7,7 @@
     <ion-content>
         <ion-refresher on-refresh="hardRefresh()"></ion-refresher>
         <ion-list>
-            <ion-item class="xy-item" ng-repeat="item in results|filter:''">
+            <ion-item class="xy-item" ng-repeat="item in results">
                 <div class="item item-avatar" ng-click="goXyDetail(item)">
                     <img ng-src="{{item.get('userId').get('avatar_large')}}"
                          onerror="javascript:this.src='img/ionic.png'">
@@ -99,7 +99,7 @@
 
             </ion-item>
             <div class="item item-divider" style="margin-top: 10px;">
-                精彩评论
+                最新评论
             </div>
             <div class="list">
                 <a class="item item-avatar" href="#" ng-repeat="item in comments">

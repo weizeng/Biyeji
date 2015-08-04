@@ -53,7 +53,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                         // JSON.parse(JSON.stringify(user));
                         console.log(JSON.stringify($rootScope.user));
 //                        alert("success: " + JSON.stringify($rootScope.user));
-                        $.fn.umshare.tip('自动登陆成功');
+                        $.fn.umshare.tip('欢迎回来！'+$rootScope.user.get('nick'));
                     },
                     error: function (user, error) {
                         // The login failed. Check error to see why.
@@ -64,6 +64,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             $cordovaAppVersion.getAppVersion().then(function (version) {
 //                alert(version);
                 var appVersion = version;
+                $rootScope.appVersion = appVersion;
                 var systemObject = Bmob.Object.extend("System");
                 var query = new Bmob.Query(systemObject);
                 query.descending("updatedAt");

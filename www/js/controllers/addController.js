@@ -3,7 +3,7 @@
  */
 angular.module('starter.controllers')
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
+    .controller('AddXyCtrl', function ($ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
 
         //返回
         $scope.back = function () {
@@ -84,13 +84,22 @@ angular.module('starter.controllers')
                                 success: function (ddd) {
                                     $ionicLoading.hide();
                                     console.log("#增加许愿# 操作完毕");
-                                    var relation = ddd.relation("comment");
-                                    $cordovaDialogs.confirm('你的毕业说已经到宣言墙啦', '太好了', '确定')
-                                        .then(function () {
-                                            // callback success
-                                            window.sessionStorage.setItem('doRefresh', true);
-                                            $scope.back();
-                                        });
+
+                                    $rootScope.$emit("RefreshEvent");
+                                    var confirmPopup = $ionicPopup.confirm({
+                                        title: '太好了',
+                                        template: "已经到宣言墙啦",
+                                        buttons: [
+                                            {
+                                                text: '<b>确定</b>',
+                                                type: 'button-positive',
+                                                onTap: function(e) {
+                                                    // Returning a value will cause the promise to resolve with the given value.
+                                                    window.sessionStorage.setItem('doRefresh', true);
+                                                    $scope.back();
+                                                }
+                                            }]
+                                    });
                                 },
                                 error: function (ddd, error) {
                                     $ionicLoading.hide();

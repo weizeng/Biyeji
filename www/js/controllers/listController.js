@@ -65,7 +65,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             });
 
         };
-
+        var newPost;
         var loadComment = function () {
 
             // 检测类型，看是否加载更多内容
@@ -94,10 +94,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             }
             // 查询评论
             $scope.comments.length = 0;
-            if ($scope.item.get('comment') != null) {
+
+            if ($scope.item.get('commentCount') > 0 || newPost) {
                 $ionicLoading.show({template: '加载评论中...'});
                 var commentIdQuery = $scope.item.relation('comment').query();
                 commentIdQuery.include("userId");
+                commentIdQuery.descending("-createdAt");
                 commentIdQuery.find({
                     success: function (results) {
                         $ionicLoading.hide();
@@ -112,9 +114,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
             }
         };
+
         $scope.closeModal = function () {
             $scope.comments.length = 0;
-//            $scope.item=null;
+            $scope.item=null;
             $scope.modal.hide();
         };
         //Cleanup the modal when we're done with it!
@@ -126,6 +129,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
         // 弹出毕业墙的详情
         $scope.goXyDetail = function (detail) {
+            $scope.item=null;
             $scope.item = detail;
             $scope.openModal();
         };
@@ -141,6 +145,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.closeImgModal = function () {
             $scope.imgModal.hide();
             $scope.img='';
+            newPost = false;
         };
 
         $scope.showLarge= function (img) {
@@ -182,6 +187,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     xy.save().then(function (success) {
 //                        $cordovaDialogs.confirm('添加评论成功', '温馨提示', '确定')
                         $ionicLoading.hide();
+                        newPost = true;
                         loadComment();
                     }, function (error) {
                         $ionicLoading.hide();
@@ -260,14 +266,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
         $ionicLoading.show({template: '加载中...'});
-
-        //TODO 优化刷新。
-        window.setInterval(function(){
-            if (window.sessionStorage.getItem('doRefresh')) {
-                window.sessionStorage.removeItem('doRefresh');
-                $scope.hardRefresh();
-            }
-        },1000);
+        $rootScope.$on("RefreshEvent", function (event, x) {
+            $scope.hardRefresh();
+        });
 
         //TODO dateFn 日期格式化
         $scope.dateFn = function (date) {
@@ -320,12 +321,15 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
     })
 
-    .controller('XyByMeCtrl', function ($rootScope,$sce, $scope, $cordovaDevice, $cordovaActionSheet) {
+
+
+    .controller('XyByMeCtrl', function ($ionicLoading,$rootScope,$sce, $scope, $cordovaDevice, $cordovaActionSheet) {
         // FEF
         var skip = 0;
         $scope.results=[];
         $scope.more=false;
         var loadMyXy = function () {
+
             var XyList = Bmob.Object.extend("Xy_List");
 
             var query = new Bmob.Query(XyList);
@@ -340,6 +344,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             query.find({
                 success: function (results) {
                     console.log(''+JSON.stringify(results));
+                    $ionicLoading.hide();
                     if (results.length > 0) {
                         $scope.more = true;
                         if (skip == 0) {
@@ -377,14 +382,21 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             });
             xy.set("hide","1");
             xy.save().then(function(success) {
-                $ionicLoading.hide();
-                $scope.results.remove(success);
+//                $ionicLoading.hide();
+//                $scope.results.remove(success);
 //                alert("已经删除");
+                $ionicLoading.show({
+                    template: '已删除...'
+                });
                 skip = 0;
                 loadMyXy();
             }, function (error) {
 
             });
+        };
+
+        $scope.back = function () {
+            window.history.back();
         };
 
         loadMyXy();
