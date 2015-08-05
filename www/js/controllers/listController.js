@@ -373,7 +373,70 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.refreshMyXy = function () {
             skip = 0;
             loadMyXy();
-        }
+        };
+
+        //TODO dateFn 日期格式化
+        $scope.dateFn2 = function (date) {
+
+            var minute = 1000 * 60;
+            var hour = minute * 60;
+            var day = hour * 24;
+            var halfamonth = day * 15;
+            var month = day * 30;
+
+            var str = date.toString();
+            str = str.replace(/-/g, "/");
+            var oDate1 = new Date(str);
+            date = oDate1.getTime();
+
+            var now = new Date().getTime();
+            var diffValue = now - date;
+            if (diffValue < 0) {
+                //若日期不符则弹出窗口告之
+                //alert("结束日期不能小于开始日期！");
+            }
+            var monthC = diffValue / month;
+            var weekC = diffValue / (7 * day);
+            var dayC = diffValue / day;
+            var hourC = diffValue / hour;
+            var minC = diffValue / minute;
+            var result = '';
+            str = str.split(' ')[1];
+            if (monthC >= 1) {
+                result = str;
+                //result = "发表于" + parseInt(monthC) + "个月前";
+            }
+            else if (weekC >= 1) {
+                result = str;
+                //result = "发表于" + parseInt(weekC) + "周前";
+            }
+            else if (dayC >= 1) {
+                result = str;
+            }
+            else if (hourC >= 1) {
+                result = parseInt(hourC) + "小时前";
+            }
+            else if (minC >= 1) {
+                result = parseInt(minC) + "分钟前";
+            }
+            else if (minC < 1) {
+                result = "刚刚";
+            } else
+                result = str;
+            return result;
+        };
+        //获取第几天
+        $scope.getDay = function (date) {
+            var str = date.toString();
+            str = str.replace(/-/g, "/");
+            return new Date(str).getDate();
+        };
+        //获取第几月
+        $scope.getMonth = function (date) {
+            var str = date.toString();
+            str = str.replace(/-/g, "/");
+            return new Date(str).getMonth()+1+'月';
+        };
 
 
         $scope.delete = function (xy) {

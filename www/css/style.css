@@ -260,3 +260,142 @@
     position: relative;
     border: 0;
 }
+.wrap{
+    margin:0px auto;
+    width:800px;
+}
+#dataYear{
+    position:absolute;
+    background:#ED473B;
+    left:60%;
+    top:0px;
+    color:white;
+    padding:0px 10px;
+}
+
+.header{
+    min-width:400px;
+    width:90%;
+    position:fixed;
+    top:0px;
+    margin:0px auto;
+    background:#fff;
+    z-index:1;
+    padding-left:15%;
+    padding-right:15%;
+    font-size:35px;
+    color:#c9c9c9;
+    box-shadow:0 0 5px 0px #ccc;
+}
+.timeline{
+    width:100%;
+    margin:10px 0px 10px 0px;
+    padding-top: 20px;
+    margin-top: -20px;
+    position: relative;
+    overflow:auto;
+}
+.timeline:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 42px;
+    top: 100px;
+    width: 3px;
+    height: 100%;
+    background: rgba(153, 153, 153, 0.5);
+}
+.year{
+    transition: all 0.4s ease-in-out;
+    width:100%;
+    margin-bottom:50px;
+    position: relative;
+    overflow:auto;
+}
+.evt{
+    min-height:100px;
+    width:100%;
+    margin-bottom:20px;
+    position:relative;
+}
+
+.evt:nth-child(even) .in{
+    float: none;
+    margin-left: 86px;
+}
+.evt:nth-child(odd) .in{
+    float: none;
+    margin-left: 86px;
+}
+.timeline p{
+    padding: 10px;
+    margin: 0;
+    font-size: 14px;
+    background: #f1f1f1;
+    color: #656565;
+}
+h2{
+    padding: 15px;
+    margin: 0;
+    color: #333;
+    font-size: 20px;
+    letter-spacing: -1px;
+    position: relative;
+}
+
+.in h2{
+    /*border-radius: 5px 5px 0 0;*/
+    background:#F1F1F1;
+    color: #666;
+    font-size: 14px;
+    padding: 10px 5px 10px 5px;
+}
+.date{
+    transition: all 0.2s ease-in-out;
+    display: block;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    line-height:60px;
+    border-radius: 100%;
+    font-size: 16px;
+    background: #EF473A;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight:900;
+    text-align:center;
+    border: 2px solid #fff;
+}
+.in{
+    margin: 5px 0 0 0;
+    width: 100%;
+    float: left;
+    padding-right: 96px;
+}
+.activeYear{
+    background:#ED473B;
+    color:#fff;
+    border-color:#fff;
+}
+.data{
+    padding: 5px;
+}
+.data .item-note{
+    line-height: 48px;
+}
+.del-btn{
+    background-color: rgb(239, 71, 58);
+    border: 0;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    color: white;
+    border-bottom-left-radius: 50%;
+}
+.date .day{
+    font-size: 24px;
+}
+.date .month{
+    font-size: 12px;
+}

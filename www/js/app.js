@@ -8,10 +8,6 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
     .run(function ($ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
-        $ionicPlatform.registerBackButtonAction(function (success) {
-            //$ionicLoading.hide();
-            window.plugins.BackgroundTask.execute();
-        }, 100);
         $ionicPlatform.ready(function () {
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -107,13 +103,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             });
         });
 
-        $ionicPlatform.registerBackButtonAction(function () {
-            $rootScope.hide();
+        $ionicPlatform.registerBackButtonAction(function() {
+            if(window.history.length<2){
+                window.plugins.BackgroundTask.execute();
+            }
+            else window.history.back();
         }, 100);
+
 
         $rootScope.forceLoading = function () {
             $ionicLoading.hide();
-        }
+        };
 
 // 针对非手机版本
         if (!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()) {
