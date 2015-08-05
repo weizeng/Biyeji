@@ -36,7 +36,7 @@ angular.module('starter.controllers')
                             console.log("bmob EXIST user. then login");
                             Bmob.User.logIn(response.screen_name, "123", {
                                 success: function (user) {
-                                    initDataAfterLogin(eval('(' + JSON.stringify(user) + ')'));
+                                    initDataAfterLogin(user);
                                 },
                                 error: function (user, error) {
                                     alert("Error: " + error.code + " " + error.message);
@@ -110,15 +110,15 @@ angular.module('starter.controllers')
         // 保存成功之后,设置到全局，并且保存本地local
         // FIXME
         $rootScope.user = user;
+
         $scope.user = JSON.parse(JSON.stringify($rootScope.user));
         // 对象转化成json的字符串保存
         localStorage.setItem('user', JSON.stringify(user));
     };
     //FIXME
-
-    if(!$rootScope.user&&ionic.Platform.isAndroid()||ionic.Platform.isIOS()){
-        $scope.logIn();
-    }else $scope.user = JSON.parse(JSON.stringify($rootScope.user));
+    if($rootScope.user){
+        $scope.user = JSON.parse(JSON.stringify($rootScope.user));
+    }
 
     $scope.goUrl = function(){
         document.addEventListener('deviceready', function () {
