@@ -52,8 +52,28 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                         $rootScope.user = user;//
                         // JSON.parse(JSON.stringify(user));
                         console.log(JSON.stringify($rootScope.user));
-//                        alert("success: " + JSON.stringify($rootScope.user));
-                        $.fn.umshare.tip('欢迎回来！'+$rootScope.user.get('nick'));
+                        if (user.updatedAt) {
+                            var currentDate = new Date().format("yyyy-MM-dd");
+                            console.log("本地时间:"+currentDate);
+                            var serverDate = new Date(user.updatedAt).format("yyyy-MM-dd");
+                            console.log("上次更新时间:"+serverDate);
+                            if (currentDate >= serverDate) {
+//                            alert("同一天，判断是否增加过金币");
+                                var LastLoginTime = localStorage.getItem('LastLoginTime');
+                                if(LastLoginTime != serverDate) {
+                                    // 给自己加积分
+                                    user.increment("coin",10);
+                                    user.save().then(function(success){
+                                        $rootScope.user = user;
+                                        localStorage.setItem('LastLoginTime', currentDate);
+                                        $.fn.umshare.tip('每天登陆 +10金币');
+                                    });
+                                }
+
+                            }
+                        }
+
+                        $.fn.umshare.tip('欢迎回来！' + $rootScope.user.get('nick'));
                     },
                     error: function (user, error) {
                         // The login failed. Check error to see why.
@@ -102,6 +122,28 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     $rootScope.user = user;
                     console.log(JSON.stringify($rootScope.user));
                     console.log(JSON.stringify($rootScope.user).replace(/\\"/g, '"'));
+
+                    if (user.updatedAt) {
+                        var currentDate = new Date().format("yyyy-MM-dd");
+                        console.log("本地时间:" + currentDate);
+                        var serverDate = new Date(user.updatedAt).format("yyyy-MM-dd");
+                        console.log("上次更新时间:" + serverDate);
+                        if (currentDate >= serverDate) {
+//                            alert("同一天，判断是否增加过金币");
+                            var LastLoginTime = localStorage.getItem('LastLoginTime');
+                            if (LastLoginTime != serverDate) {
+                                // 给自己加积分
+                                user.increment("coin", 10);
+                                user.save().then(function (success) {
+                                    $rootScope.user = user;
+                                    localStorage.setItem('LastLoginTime', currentDate);
+                                    $.fn.umshare.tip('每天登陆 +10金币');
+                                });
+                            }
+
+                        }
+                    }
+
                     $.fn.umshare.tip('MegaGift 自动登陆成功');
                 },
                 error: function (user, error) {
@@ -124,6 +166,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 }
             });
         }
+
+
     })
 
 
@@ -190,6 +234,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 url: '/XyByMe',
                 templateUrl: 'templates/xy-byme.html',
                 controller: 'XyByMeCtrl'
+            })
+
+            .state('SubmitBugs', {
+                url: '/SubmitBugs',
+                templateUrl: 'templates/submit-bugs.html',
+                controller: 'SubmitBugsCtrl'
             })
 
             .state('tab.chats', {

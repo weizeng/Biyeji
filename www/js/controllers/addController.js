@@ -86,6 +86,13 @@ angular.module('starter.controllers')
                                     console.log("#增加许愿# 操作完毕");
 
                                     $rootScope.$emit("RefreshEvent");
+                                    // 发布新内容有积分
+                                    $rootScope.user.increment("coin",30);
+                                    $rootScope.user.save().then(function(user){
+                                        $rootScope.user = user;
+                                        $.fn.umshare.tip('增加 +30金币');
+                                    });
+
                                     var confirmPopup = $ionicPopup.confirm({
                                         title: '太好了',
                                         template: "已经到宣言墙啦",
