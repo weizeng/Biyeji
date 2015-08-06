@@ -19,14 +19,14 @@
                         <span class="day">{{getDay(item.createdAt)}}</span>
                         <span class="month">{{getMonth(item.createdAt)}}</span>
                       </span>
-                        <h2>{{item.get('title')}}</h2>
+                        <h2 ng-click="goXyDetail(item)">{{item.get('title')}}</h2>
                         <p class="data">
-                            <img class="full-image" ng-show="item.get('image_small')" ng-click="goXyDetail(item)"
+                            <img class="full-image" ng-show="item.get('image_small')" ng-click="showLarge('http://file.bmob.cn/'+item.get('image_small'))"
                                               onerror="javascript:this.src='img/weibo.jpg'"
                                               ng-src="http://file.bmob.cn/{{item.get('image_small')}}">
 
                             <a class="button button-icon icon ion-ios-heart"
-                               ng-class="{'ion-ios-heart-outline':item.get('zanCount')>0}"
+                               ng-class="{'ion-ios-heart-outline':!item.showZan}"
                                ng-click="goZan(item,$index);item.showZan=!item.showZan">
                                 <span ng-show="!item.showZan">{{item.get('zanCount')}}</span>
                                 <span ng-show="item.showZan">{{item.get('zanCount')+1}}</span>
@@ -98,3 +98,109 @@
         </ion-list>
     </ion-content>
 </ion-view>
+<script id="xy-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar class="bar-assertive">
+            <button class="button button-clear" ng-click="closeModal()">返回</button>
+            <h1 class="title">{{item.get('userId').get('nick')}}</h1>
+        </ion-header-bar>
+        <ion-content>
+
+            <ion-item class="xy-item bt0">
+                <div class="item item-avatar">
+                    <img ng-src="{{item.get('userId').get('avatar_large')}}"
+                         onerror="javascript:this.src='img/ionic.png'">
+                    <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
+                    <p class="mb5"><span class="f12">发表于</span> {{item.createdAt}}</p>
+
+                    <p ng-show="item.get('userId').get('description').length==0">
+                        {{item.get('userId').get('location')}}</p>
+
+                    <p class="ws-normal" ng-show="item.get('userId').get('description').length>0">
+                        {{item.get('userId').get('description')}}</p>
+                    <!--<p class="ws-normal">{{item.get('userId').get('description')}}</p>-->
+                </div>
+
+                <div class="item item-body">
+                    <!--<ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">-->
+                    <img class="fit" style="width:100%" ng-src="{{item.get('image')._url}}" ng-click="showLarge()"
+                         onerror="javascript:this.src='img/weibo.jpg'"/>
+                    <!--</ion-scroll>-->
+                    <div style="padding-left: 16px;">
+                        <!--<p>{{item.get('title')}}</p>-->
+                        <!--<p>{{item.createdAt}}</p>-->
+                        <!--<a class="button button-icon icon ion-ios-heart">1</a>-->
+                        <!--<a class="button button-icon icon ion-ios-chatbubble-outline" ng-click="goChat(item)"> 1</a>-->
+                        <!--<a class="subdued" ng-click="goZan(item)">1</a>-->
+                        <!--<a href="#" class="subdued">5 Comments</a>-->
+                        <!--</p>-->
+                        <div ng-bind-html="article"></div>
+                        <a class="button button-icon icon ion-ios-heart"
+                           ng-class="{'ion-ios-heart-outline':!item.showZan}"
+                           ng-click="goZan(item,$index);item.showZan=!item.showZan">
+                            <span ng-show="!item.showZan">{{item.get('zanCount')}}</span>
+                            <span ng-show="item.showZan">{{item.get('zanCount')+1}}</span>
+                        </a>
+
+                        <!--<a class="button button-icon icon ion-ios-heart-outline" ng-click="goZan(item)"> 1</a>-->
+                        <!--<form ng-submit="saveForm()">-->
+                        <!--<input placeholder="添加评论..." type="text">-->
+                        <!--</form>-->
+
+                    </div>
+                </div>
+
+            </ion-item>
+            <div class="item item-divider" style="margin-top: 10px;">
+                最新评论
+            </div>
+            <div class="list">
+                <a class="item item-avatar" href="#" ng-repeat="item in comments">
+                    <img ng-src="{{item.get('userId').get('avatar_large')}}"
+                         onerror="javascript:this.src='img/ionic.png'">
+
+                    <div class="item-title-row">
+                        <div class="item-title">{{item.get('userId').get('nick')}}</div>
+                        <div class="item-after">{{dateFn(item.createdAt)}}</div>
+                    </div>
+
+                    <p>{{item.get('content')}}</p>
+                </a>
+            </div>
+            <div style="height: 64px;width: 100%">
+            </div>
+        </ion-content>
+        <div class="bar bar-footer p0">
+            <section class="ui-input-wrap ui-border-t">
+                <div class="ui-input ui-border-radius">
+                    <input type="text" ng-model="view.addCommentText2" placeholder="我也说一句...">
+                </div>
+                <button class="ui-btn" ng-disabled="!view.addCommentText2" ng-click="saveForm(item,view.addCommentText2)">评论</button>
+            </section>
+
+            <!--<form ng-submit="saveForm(item, addCommentText)">-->
+            <!--<input placeholder="添加评论..." ng-model="addCommentText2" type="text" required>-->
+            <!--</form>-->
+            <!--disabled="msg.length==0"-->
+            <!--<button class="button button-clear pull-right" ng-show="addCommentText2.length>0"-->
+            <!--ng-click="saveForm(item,addCommentText2)">发送-->
+            <!--</button>-->
+        </div>
+    </ion-modal-view>
+</script>
+<script id="img-modal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar class="bar-assertive bar-dark">
+            <button class="button button-clear" ng-click="closeImgModal()">返回</button>
+        </ion-header-bar>
+        <ion-content scroll="false" class="has-vertical">
+
+            <ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">
+                <img class="fit tc" style="width:100%" ng-src="{{img}}"
+                     onerror="javascript:this.src='img/weibo.jpg'"/>
+            </ion-scroll>
+
+        </ion-content>
+    </ion-modal-view>
+</script>
+

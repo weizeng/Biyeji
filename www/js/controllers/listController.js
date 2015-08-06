@@ -32,14 +32,18 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     var relation = xy.relation("zan");
                     relation.add(zan);
                     xy.save();
-
-                    xy.increment("zanCount");
+                    //点赞
+                    if(xy.showZan==true){
+                        xy.increment("zanCount");
+                    }
+                    //取消赞
+                    else {
+                        xy.increment("zanCount",-1);
+                    }
                     xy.save().then(function (success) {
-                        console.log(xy.showZan);
+                        //console.log(xy.showZan);
                     }, function (error) {
                     });
-
-
                     //xy.showZan = true;
 
                     //alert("赞成");
@@ -80,7 +84,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 var XyDetail = Bmob.Object.extend("Xy_Detail");
                 var query = new Bmob.Query(XyDetail);
                 query.equalTo("objectId", detailId.id);
-                query.descending("updatedAt");
+                query.ascending("createdAt");
                 // 查询所有数据
                 query.first({
                     success: function (results) {
@@ -148,8 +152,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             newPost = false;
         };
 
-        $scope.showLarge= function (img) {
-            $scope.img = img;
+        $scope.showLarge= function () {
             $scope.imgModal.show();
         };
         $scope.view = {addCommentText2: null};
@@ -323,7 +326,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
 
 
-    .controller('XyByMeCtrl', function ($ionicLoading,$rootScope,$sce, $scope, $cordovaDevice, $cordovaActionSheet) {
+    .controller('XyByMeCtrl', function ($ionicLoading,$rootScope,$sce, $scope, $cordovaDevice, $cordovaActionSheet,$ionicModal) {
         // FEF
         var skip = 0;
         $scope.results=[];
@@ -438,6 +441,97 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             return new Date(str).getMonth()+1+'月';
         };
 
+        //查看大图
+        $ionicModal.fromTemplateUrl('img-modal.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function (modal) {
+            $scope.imgModal = modal;
+        });
+        $scope.closeImgModal = function () {
+            $scope.imgModal.hide();
+            $scope.img='';
+        };
+        $scope.showLarge= function (img) {
+            $scope.img = img;
+            $scope.imgModal.show();
+        };
+
+        //TODO 许愿详情
+        $ionicModal.fromTemplateUrl('xy-modal.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function (modal) {
+            $scope.modal = modal;
+        });
+
+        var loadComment = function () {
+
+            // 检测类型，看是否加载更多内容
+            var style = $scope.item.get('style');
+            var detailId = $scope.item.get('detailId');
+            if (style == 1) {
+                //短信息，直接显示
+                $scope.article = $scope.item.get('title');
+            } else {
+                $ionicLoading.show({template: '加载详细内容...'});
+                // 实例方法
+                var XyDetail = Bmob.Object.extend("Xy_Detail");
+                var query = new Bmob.Query(XyDetail);
+                query.equalTo("objectId", detailId.id);
+                query.ascending("createdAt");
+                // 查询所有数据
+                query.first({
+                    success: function (results) {
+                        $ionicLoading.hide();
+                        $scope.article = results.get('extends');
+                    },
+                    error: function (error) {
+                        alert("查询失败: " + error.code + " " + error.message);
+                    }
+                });
+            }
+            // 查询评论
+            $scope.comments.length = 0;
+
+            if ($scope.item.get('commentCount') > 0 || newPost) {
+                $ionicLoading.show({template: '加载评论中...'});
+                var commentIdQuery = $scope.item.relation('comment').query();
+                commentIdQuery.include("userId");
+                commentIdQuery.descending("-createdAt");
+                commentIdQuery.find({
+                    success: function (results) {
+                        $ionicLoading.hide();
+
+                        $scope.comments = results;
+                    },
+                    error: function (error) {
+                        alert("查询失败: " + error.code + " " + error.message);
+                    }
+                });
+            } else {
+
+            }
+        };
+        $scope.closeModal = function () {
+            $scope.comments.length = 0;
+            $scope.item=null;
+            $scope.modal.hide();
+        };
+
+        $scope.comments = [];
+        $scope.openModal = function () {
+            $scope.modal.show().then(function (obj) {
+                loadComment();
+            });
+
+        };
+        // 弹出毕业墙的详情
+        $scope.goXyDetail = function (detail) {
+            $scope.item=null;
+            $scope.item = detail;
+            $scope.openModal();
+        };
 
         $scope.delete = function (xy) {
             $ionicLoading.show({
