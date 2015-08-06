@@ -117,6 +117,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 // 针对非手机版本
         if (!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()) {
+            $rootScope.appVersion = 1;
             Bmob.User.logIn('MegaGift', "123", {
                 success: function (user) {
                     $rootScope.user = user;
