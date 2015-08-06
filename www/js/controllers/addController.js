@@ -21,7 +21,7 @@ angular.module('starter.controllers')
 
         // 本地图片的路径,android需要转化URI，ios不需要
         var imageLocalPath;
-
+        $scope.checked = true;
         //TODO 增加一个许愿
         $scope.addXy = function () {
             if ($rootScope.user == null) {
@@ -67,7 +67,7 @@ angular.module('starter.controllers')
                     Bmob.Image.thumbnail({"image": savedObject.url(), "mode": 0, "quality": 100, "width": 480}
                     ).then(function (obj) {
                             $ionicLoading.show({
-                                template: ('正在发布到毕业墙... ' + "<i class = 'ion-close-round' ng-click='forceLoading()'></i>")
+                                template: ('正在发布... ' + "<i class = 'ion-close-round' ng-click='forceLoading()'></i>")
                             });
                             console.log("-------- filename:" + JSON.stringify(obj));
 
@@ -92,6 +92,9 @@ angular.module('starter.controllers')
                                         $rootScope.user = user;
                                         $.fn.umshare.tip('增加 +30金币');
                                     });
+                                    if($scope.checked) {
+                                        shareMyMood($scope.xy.content, picDictionary + name);
+                                    }
 
                                     var confirmPopup = $ionicPopup.confirm({
                                         title: '太好了',
@@ -124,6 +127,8 @@ angular.module('starter.controllers')
                     console.log("保存图错误" + JSON.stringify(error));
                     $cordovaDialogs.alert('网络在开小差2222' + JSON.stringify(error), '糟糕啊', '确定');
                 });
+
+
             }, function (error) {
                 // error
                 console.log('文件读取错误' + JSON.stringify(error));
@@ -131,6 +136,24 @@ angular.module('starter.controllers')
             });
 
         };
+
+        var shareMyMood = function(content, img){
+            var opt = {
+                'data':{
+                    'content' : {
+                        'text' : "#毕业五年# @毕业季疯了 "+content, //要分享的文字
+//                        'furl' : '', //在线图片URL
+                        'img' : img //本地图片地址
+                    }
+                },
+                'topic': {  //主题，用于数据统计，非必须
+                    'dc': 'default',  //主题描述
+                    'name':'default', //主题名称
+                    'ni':1            //是否为新主题(1:是,0:否)
+                }
+            }
+            $.fn.umshare.shareSubmit('sina',opt);
+        }
         //选择拍照
         $scope.goCamera = function () {
             var options = {

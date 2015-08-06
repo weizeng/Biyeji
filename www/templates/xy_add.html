@@ -1,4 +1,4 @@
-<ion-view title="在宣言墙上涂鸦">
+<ion-view title="一些感悟">
     <ion-nav-buttons side="left">
         <!--<a class="button icon-left ion-chevron-left button-clear button-dark">Back</a>-->
 
@@ -20,17 +20,8 @@
             <label class="item item-area">
                 <textarea class="w100" rows="4" placeholder="我想说.." ng-model="xy.content"></textarea>
             </label>
+            <ion-toggle class="toggle-assertive item item-toggle toggle-large" ng-model="checked" ng-checked="checked">发布到新浪微博</ion-toggle>
 
-            <!--<div class="item item-input item-select">-->
-                <!--<div class="input-label">-->
-                    <!--#话题-->
-                <!--</div>-->
-                <!--<select>-->
-                    <!--<option>毕业旅行</option>-->
-                    <!--<option selected>毕业照</option>-->
-                    <!--<option>毕业感言</option>-->
-                <!--</select>-->
-            <!--</div>-->
             <div class="item item-image" ng-show="cameraimage">
                 <img class="item" ng-src="{{cameraimage}}" style="height: 350px;"/>
             </div>

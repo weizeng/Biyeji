@@ -5,7 +5,7 @@
 
 angular.module('starter.controllers')
 
-    .controller('MyBoardCtrl', ['$sce', '$cordovaDialogs', '$rootScope', '$scope', '$state', '$http', '$ionicLoading', '$cordovaInAppBrowser', function ($sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser) {
+    .controller('MyBoardCtrl', function ($cordovaDevice, $cordovaAppVersion, $sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser) {
         $scope.logout = function () {
             var result = $.fn.umshare.delToken("sina");
             localStorage.removeItem('user');
@@ -65,6 +65,12 @@ angular.module('starter.controllers')
                                 user.signUp(null, {
                                     success: function (user) {
                                         console.log('regist from bmob,user:' + user.avatar_large);
+
+                                        user.increment("coin", 40);
+                                        user.save().then(function(user){
+                                            $rootScope.user = user;
+                                            $.fn.umshare.tip('首次注册，赠送 +40金币');
+                                        });
                                         initDataAfterLogin(user);
                                     },
                                     error: function (user, error) {
@@ -136,8 +142,7 @@ angular.module('starter.controllers')
             }, false);
         }
 
-        $scope.checkVersion = function () {
-            ffff
+        $scope.gotoProfile = function () {
             document.addEventListener('deviceready', function () {
                 var options = {
                     location: "no",
@@ -152,7 +157,37 @@ angular.module('starter.controllers')
 
             }, false);
         }
-    }])
+
+        $scope.checkVersion = function () {
+            $cordovaAppVersion.getAppVersion().then(function (version) {
+                var appVersion = version;
+                var systemObject = Bmob.Object.extend("System");
+                var query = new Bmob.Query(systemObject);
+                query.descending("updatedAt");
+                // 查询所有数据
+                query.first({
+                    success: function (result) {
+                        var serverVersion = result.get('version');
+//                        $.fn.umshare.tip('result:'+JSON.stringify(result) +","+serverVersion);
+                        if (ionic.Platform.isAndroid()) {
+                            if (serverVersion > appVersion) {
+//                                versionCheck(result);
+                                $.fn.umshare.tip('发现新版本'+serverVersion);
+                            } else {
+                                $.fn.umshare.tip('当前最新版本');
+                            }
+                        } else {
+                            $.fn.umshare.tip('iOS版本未发现最新');
+                        }
+                    },
+                    error: function (error) {
+                        alert("查询失败: " + JSON.parse(error));
+                    }
+                });
+
+            });
+        }
+    })
 // 账号信息
     .controller('AccountCtrl', function ($scope, $rootScope, $state, $timeout) {
 
