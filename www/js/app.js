@@ -21,6 +21,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
         // 初始化平台信息
         document.addEventListener("deviceready", function () {
+            //初始化友盟统计配置
+            window.plugins.umengAnalyticsPlugin.init();
+            //调试模式
+            window.plugins.umengAnalyticsPlugin.setDebugMode(true);
+
+            //注意，这段代码是应用退出前保存统计数据，请在退出应用前调用
+            //window.plugins.umengAnalyticsPlugin.onKillProcess();
+
+
             var device = $cordovaDevice.getDevice();
             var cordova = $cordovaDevice.getCordova();
             var model = $cordovaDevice.getModel();
@@ -106,6 +115,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         $ionicPlatform.registerBackButtonAction(function() {
             if(window.history.length<2){
                 window.plugins.BackgroundTask.execute();
+                //注意，这段代码是应用退出前保存统计数据，请在退出应用前调用
+                window.plugins.umengAnalyticsPlugin.onKillProcess();
             }
             else window.history.back();
         }, 100);

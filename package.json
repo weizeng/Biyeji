@@ -38,7 +38,8 @@
     {
       "locator": "https://github.com/havefive/com.twnav.plugins.backgroundtask.git",
       "id": "com.twnav.plugins.backgroundtask"
-    }
+    },
+    "cn.zxj.cordova.UmengAnalyticsPlugin"
   ],
   "cordovaPlatforms": [
     "android",
