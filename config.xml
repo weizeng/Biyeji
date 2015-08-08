@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.biyeji" version="1" xmlns="http://www.w3.org/ns/widgets"
+<widget id="com.ionicframework.challenge" version="1" xmlns="http://www.w3.org/ns/widgets"
         xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>毕业季</name>
+    <name>极限挑战</name>
     <description>
         An Ionic Framework and Cordova project.
     </description>
