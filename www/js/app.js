@@ -18,7 +18,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             }
         });
 
-        Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
+        Bmob.initialize("078d92d4a26a374fa437fd6b22044254", "7ff5b76eef5354dfc4bc100a921580f5");
         // 初始化平台信息
         document.addEventListener("deviceready", function () {
             //初始化友盟统计配置
@@ -38,10 +38,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             var version = $cordovaDevice.getVersion();
 
             if (platform == 'Android') {
-                window.umappkey = '5598edc167e58e4247001e1e';
+                window.umappkey = '55c5ce1ae0f55af98f0001be';
 
             } else {
-                window.umappkey = '5598ee6867e58e42e9002113';
+                window.umappkey = '55c5ce3a67e58ea903007738';
             }
 
             // 本地读取user的信息，这个user通常是bmob返回的信息

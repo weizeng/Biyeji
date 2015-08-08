@@ -1,5 +1,5 @@
 {
-  "name": "biyeji",
+  "name": "challenge",
   "version": "1.0.0",
   "description": "Biyeji: An Ionic project",
   "dependencies": {
@@ -39,7 +39,9 @@
       "locator": "https://github.com/havefive/com.twnav.plugins.backgroundtask.git",
       "id": "com.twnav.plugins.backgroundtask"
     },
-    "cn.zxj.cordova.UmengAnalyticsPlugin"
+    "cn.zxj.cordova.UmengAnalyticsPlugin",
+    "uk.co.whiteoctober.cordova.appversion",
+    "cordova-plugin-dialogs"
   ],
   "cordovaPlatforms": [
     "android",
