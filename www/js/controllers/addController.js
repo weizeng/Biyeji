@@ -3,7 +3,7 @@
  */
 angular.module('starter.controllers')
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
+    .controller('AddXyCtrl', function (locationService,$cordovaGeolocation, $ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile) {
 
         //返回
         $scope.back = function () {
@@ -18,6 +18,42 @@ angular.module('starter.controllers')
             $scope.xy = {content: null};
             $scope.cameraimage = null;
         };
+
+        locationService.locate(function(result){
+            alert(JSON.stringify(result));
+        });
+//        //获取定位iOS
+//        if(ionic.Platform.isIOS()){
+//            var posOptions = {timeout: 20000, enableHighAccuracy: false};
+//            $cordovaGeolocation
+//                .getCurrentPosition(posOptions)
+//                .then(function (position) {
+//                    //与百度误差
+//                    var latitude  = position.coords.latitude+0.0034;
+//                    var longitude = position.coords.longitude+0.011;
+//                    alert(JSON.stringify(position));
+//                }, function(err) {
+//                    alert(JSON.stringify(err));
+//                });
+//        }
+//        //获取定位android
+//        else if(ionic.Platform.isAndroid()){
+//            document.addEventListener('deviceready', function () {
+//                //通过百度sdk来获取经纬度,并且alert出经纬度信息
+//                var noop = function(){};
+//                window.locationService.getCurrentPosition(function(position){
+//                    var latitude = position.coords.latitude;
+//                    var longitude = position.coords.longitude;
+//                    //停止地位
+//                    window.locationService.stop(noop,noop);
+//                    alert(JSON.stringify(position));
+//
+//                },function(err){
+//                    alert(JSON.stringify(err));
+//                });
+//            })
+//
+//        }
 
         // 本地图片的路径,android需要转化URI，ios不需要
         var imageLocalPath;
