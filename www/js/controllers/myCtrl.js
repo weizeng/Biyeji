@@ -86,13 +86,13 @@ angular.module('starter.controllers')
             });
         };
 
-
         $scope.logIn = function () {
             $ionicLoading.show({
                 template: '正在登陆...'
             });
             $scope.checkToken();
         };
+
         //获取定位iOS
         if(ionic.Platform.isIOS()){
             var posOptions = {timeout: 20000, enableHighAccuracy: false};
@@ -107,6 +107,7 @@ angular.module('starter.controllers')
                     alert(JSON.stringify(err));
                 });
         }
+
         //获取定位android
         else if(ionic.Platform.isAndroid()){
             document.addEventListener('deviceready', function () {
