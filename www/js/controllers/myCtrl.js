@@ -67,7 +67,7 @@ angular.module('starter.controllers')
                                         console.log('regist from bmob,user:' + user.avatar_large);
 
                                         user.increment("coin", 40);
-                                        user.save().then(function(user){
+                                        user.save().then(function (user) {
                                             $rootScope.user = user;
                                             $.fn.umshare.tip('首次注册，赠送 +40金币');
                                         });
@@ -142,6 +142,43 @@ angular.module('starter.controllers')
             }, false);
         }
 
+        $scope.gotoActivity = function (url) {
+            document.addEventListener('deviceready', function () {
+                var options = {
+                    location: "no",
+                    toolbar: 'yes'
+                };
+
+                $cordovaInAppBrowser.open(url, '_blank', options).then(function () {
+                    console.log("InAppBrowser opened http://m.weibo.cn successfully");
+                }, function (error) {
+                    console.log("Error: " + error);
+                });
+
+            }, false);
+        }
+
+        $scope.activity = {title:'', url:''};
+        var fetchActivity = function () {
+            var systemObject = Bmob.Object.extend("Activity");
+            var query = new Bmob.Query(systemObject);
+            query.descending("createdAt");
+            // 查询所有数据
+            query.first({
+                success: function (result) {
+                    var url = result.get('url');
+                    if(url!=null && url.length > 9) {
+                        $scope.activity.title = result.get('title');
+                        $scope.activity.url = result.get('url');
+                    }
+                },
+                error: function (result) {
+
+                }
+            });
+        }
+        fetchActivity();
+
         $scope.gotoProfile = function () {
             document.addEventListener('deviceready', function () {
                 var options = {
@@ -172,7 +209,7 @@ angular.module('starter.controllers')
                         if (ionic.Platform.isAndroid()) {
                             if (serverVersion > appVersion) {
 //                                versionCheck(result);
-                                $.fn.umshare.tip('发现新版本'+serverVersion);
+                                $.fn.umshare.tip('发现新版本' + serverVersion);
                             } else {
                                 $.fn.umshare.tip('当前最新版本');
                             }
@@ -187,6 +224,8 @@ angular.module('starter.controllers')
 
             });
         }
+
+
     })
 // 账号信息
     .controller('AccountCtrl', function ($scope, $rootScope, $state, $timeout) {
