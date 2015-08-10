@@ -1,7 +1,7 @@
 /**
  * Created by lizhaocai on 15/8/2.
  */
-angular.module('starter.controllers',['starter.services'])
+angular.module('starter.controllers')
 // 增加我的毕业说
     .controller('AddXyCtrl', function ($locationService,$cordovaGeolocation, $ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile,$http) {
 
@@ -86,6 +86,10 @@ angular.module('starter.controllers',['starter.services'])
                             // Pointer指针
                             ddd.set("userId", $rootScope.user);
                             ddd.set("image", savedObject);
+                            if (point != null) {
+                                ddd.set("location", point);
+                                ddd.set("locationDes", $scope.location);
+                            }
                             ddd.set("image_small", obj.error == null ? obj.url : savedObject.url());
                             ddd.set("style", 1);
                             ddd.save(null, {
