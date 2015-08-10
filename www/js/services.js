@@ -1,4 +1,4 @@
-angular.module('starter.services', [])
+angular.module('starter.otherservices', [])
 
     .factory('Chats', function ($scope, $cordovaDevice, $rootScope) {
 

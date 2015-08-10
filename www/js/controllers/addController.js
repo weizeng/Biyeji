@@ -1,9 +1,9 @@
 /**
  * Created by lizhaocai on 15/8/2.
  */
-angular.module('starter.controllers')
+angular.module('starter.controllers',['starter.services'])
 // 增加我的毕业说
-    .controller('AddXyCtrl', function (locationService,$cordovaGeolocation, $ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile,$http) {
+    .controller('AddXyCtrl', function ($locationService,$cordovaGeolocation, $ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile,$http) {
 
         //返回
         $scope.back = function () {
@@ -18,64 +18,14 @@ angular.module('starter.controllers')
             $scope.xy = {content: null};
             $scope.cameraimage = null;
         };
-
-        //获取定位iOS
-        if(ionic.Platform.isIOS()){
-            var posOptions = {timeout: 20000, enableHighAccuracy: false};
-            $cordovaGeolocation
-                .getCurrentPosition(posOptions)
-                .then(function (position) {
-                    //与百度误差
-                    var latitude  = position.coords.latitude+0.0034;
-                    var longitude = position.coords.longitude+0.011;
-
-                    $http({
-                        method: 'GET',
-                        url: 'http://api.map.baidu.com/geocoder/v2/?ak=fe3SKZ5DnQh2IdEGotsdUlnR'+"&location=" + latitude + "," + longitude+"&output=json"+'&pois=1'
-                    }).success(function(data, status, headers, config) {
-                        console.log(JSON.stringify(data));
-                        if(data && data.status === 0){
-                            //alert(JSON.stringify(data));
-                            alert(data.result.formatted_address);
-                            //TODO 保存位置
-                        }
-                    });
-                    //alert(JSON.stringify(position));
-                }, function(err) {
-                    alert(JSON.stringify(err));
-                });
-        }
-        //获取定位android
-        else if(ionic.Platform.isAndroid()){
-            document.addEventListener('deviceready', function () {
-                //通过百度sdk来获取经纬度,并且alert出经纬度信息
-                var noop = function(){};
-                window.locationService.getCurrentPosition(function(position){
-                    var latitude = position.coords.latitude;
-                    var longitude = position.coords.longitude;
-                    //停止地位
-                    window.locationService.stop(noop,noop);
-
-                    $http({
-                        method: 'GET',
-                        url: 'http://api.map.baidu.com/geocoder/v2/?ak=fe3SKZ5DnQh2IdEGotsdUlnR'+"&location=" + latitude + "," + longitude+"&output=json"+'&pois=1'
-                    }).success(function(data, status, headers, config) {
-                        //console.log(JSON.stringify(data));
-                        if(data && data.status === 0){
-                            //alert(JSON.stringify(data));
-                            alert(data.result.formatted_address);
-                            //TODO 保存位置
-                        }
-                    });
-
-                    //alert(JSON.stringify(position));
-
-                },function(err){
-                    alert(JSON.stringify(err));
-                });
-            })
-
-        }
+        var point;
+        $scope.location='';
+        $locationService.locate(function(latitude, longitude){
+            console.log(latitude+","+longitude);
+            point = new Bmob.GeoPoint({latitude: latitude, longitude: longitude});
+        }, function(locationResult) {
+            $scope.location = locationResult;
+        });
 
         // 本地图片的路径,android需要转化URI，ios不需要
         var imageLocalPath;

@@ -4,10 +4,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 /**
  *许愿的列表
  */
-    .controller('XYListCtrl', function ($cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout,locationService) {
-        //locationService.locate(function(result){
-        //    alert(JSON.stringify(result));
-        //});
+    .controller('XYListCtrl', function ($cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
+
         /**
          *增加对某一个评论点赞的方法
          */
