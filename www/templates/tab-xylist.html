@@ -16,11 +16,10 @@
                         <div class="item-title">{{item.get('userId').get('nick')}}</div>
                         <div class="item-after">{{dateFn(item.createdAt)}}</div>
                     </div>
-                    <p ng-show="item.get('userId').get('description').length==0">
-                        {{item.get('userId').get('location')}}</p>
 
                     <p ng-show="item.get('userId').get('description').length>0">
                         {{item.get('userId').get('description')}}</p>
+                    <p>{{item.get('locationDes')}}</p>
                 </div>
 
                 <div class="item item-body">
