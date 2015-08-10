@@ -17,19 +17,15 @@
         <ion-nav-back-button></ion-nav-back-button>
 
         <div class="list">
-            <label class="item item-area">
+            <label class="item item-area mb-10">
                 <textarea class="w100" rows="4" placeholder="我想说.." ng-model="xy.content"></textarea>
+                <span ng-show="location" class="loc-span"><i class="ion ion-ios-location"></i> {{location}}</span>
             </label>
-            <div>{{location}}</div>
             <ion-toggle class="toggle-assertive item item-toggle toggle-large" ng-model="checked" ng-checked="checked">发布到新浪微博</ion-toggle>
 
             <div class="item item-image" ng-show="cameraimage">
                 <img class="item" ng-src="{{cameraimage}}" style="height: 350px;"/>
             </div>
-
-            <!--<div class="item">-->
-                <!--<input type="file" ng-model="cameraimage" id="imgFile">-->
-            <!--</div>-->
 
         </div>
     </ion-content>

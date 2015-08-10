@@ -102,24 +102,24 @@
     <ion-modal-view>
         <ion-header-bar class="bar-assertive">
             <button class="button button-clear" ng-click="closeModal()">返回</button>
-            <h1 class="title">{{item.get('userId').get('nick')}}</h1>
+            <h1 class="title">发表于</span> {{item.createdAt}}</h1>
         </ion-header-bar>
         <ion-content>
 
             <ion-item class="xy-item bt0">
-                <div class="item item-avatar">
-                    <img ng-src="{{item.get('userId').get('avatar_large')}}"
-                         onerror="javascript:this.src='img/ionic.png'">
+                <!--<div class="item item-avatar">-->
+                    <!--<img ng-src="{{item.get('userId').get('avatar_large')}}"-->
+                         <!--onerror="javascript:this.src='img/ionic.png'">-->
                     <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
-                    <p class="mb5"><span class="f12">发表于</span> {{item.createdAt}}</p>
+                    <!--<p class="mb5"><span class="f12">发表于</span> {{item.createdAt}}</p>-->
 
-                    <p ng-show="item.get('userId').get('description').length==0">
-                        {{item.get('userId').get('location')}}</p>
+                    <!--<p ng-show="item.get('userId').get('description').length==0">-->
+                        <!--{{item.get('userId').get('location')}}</p>-->
 
-                    <p class="ws-normal" ng-show="item.get('userId').get('description').length>0">
-                        {{item.get('userId').get('description')}}</p>
+                    <!--<p class="ws-normal" ng-show="item.get('userId').get('description').length>0">-->
+                        <!--{{item.get('userId').get('description')}}</p>-->
                     <!--<p class="ws-normal">{{item.get('userId').get('description')}}</p>-->
-                </div>
+                <!--</div>-->
 
                 <div class="item item-body">
                     <!--<ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">-->

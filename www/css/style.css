@@ -299,7 +299,7 @@
     position: absolute;
     left: 42px;
     top: 100px;
-    width: 3px;
+    width: 1px;
     height: 100%;
     background: rgba(153, 153, 153, 0.5);
 }
@@ -359,7 +359,7 @@ h2{
     line-height:60px;
     border-radius: 100%;
     font-size: 16px;
-    background: #EF473A;
+    background: #3988EF;;
     color: rgba(255, 255, 255, 0.5);
     font-weight:900;
     text-align:center;
@@ -383,7 +383,7 @@ h2{
     line-height: 48px;
 }
 .del-btn{
-    background-color: rgb(239, 71, 58);
+    background-color: #F47A71;
     border: 0;
     position: absolute;
     top: 0px;
@@ -396,4 +396,25 @@ h2{
 }
 .date .month{
     font-size: 12px;
+}
+.mb-10{
+    margin-bottom: -10px;
+}
+.loc-span{
+    color: #8BA7E5;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 1px solid #9FB7E9;
+    padding: 2px 6px;
+    margin-left: 4px;
+}
+.ion-social-usd-outline{
+   color:#F89959
+}
+.log-span{
+    background-color: red;
+    color: white;
+    border-top-left-radius: 12px;
+    padding: 0 6px;
+    border-bottom-right-radius: 12px;
 }

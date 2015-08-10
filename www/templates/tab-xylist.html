@@ -19,7 +19,6 @@
 
                     <p ng-show="item.get('userId').get('description').length>0">
                         {{item.get('userId').get('description')}}</p>
-                    <p>{{item.get('locationDes')}}</p>
                 </div>
 
                 <div class="item item-body">
@@ -27,7 +26,8 @@
                          onerror="javascript:this.src='img/weibo.jpg'"
                          ng-src="http://file.bmob.cn/{{item.get('image_small')}}">
 
-                    <p style="margin: 10px">{{item.get('title')}}</p>
+                    <span class="loc-span" ng-show="item.get('locationDes')"><i class="ion ion-ios-location"></i> {{item.get('locationDes')}}</span>
+                    <p style="margin: 10px;margin-bottom: 0">{{item.get('title')}}</p>
 
                     <div style="padding-left: 16px;" ng-init="item.showZan=false">
                         <a class="button button-icon icon ion-ios-heart"

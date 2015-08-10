@@ -210,7 +210,7 @@ angular.module('starter.controllers')
 //                                versionCheck(result);
                                 $.fn.umshare.tip('发现新版本' + serverVersion);
                             } else {
-                                $.fn.umshare.tip('当前最新版本');
+                                $.fn.umshare.tip('当前已是最新版本');
                             }
                         } else {
                             $.fn.umshare.tip('iOS版本未发现最新');

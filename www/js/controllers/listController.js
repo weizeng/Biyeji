@@ -495,7 +495,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             // 查询评论
             $scope.comments.length = 0;
 
-            if ($scope.item.get('commentCount') > 0 || newPost) {
+            if ($scope.item.get('commentCount') > 0) {
                 $ionicLoading.show({template: '加载评论中...'});
                 var commentIdQuery = $scope.item.relation('comment').query();
                 commentIdQuery.include("userId");
