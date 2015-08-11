@@ -556,6 +556,53 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.back = function () {
             window.history.back();
         };
+        $scope.view = {addCommentText2: null};
+        $scope.saveForm = function (xy, addCommentText) {
+            if ($rootScope.user == null) {
+                $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
+                    .then(function () {
+                        // callback success
+                    });
+
+                return;
+            }
+            $ionicLoading.show({template: '评论中...'});
+            // 添加到赞列表
+            var commentObject = Bmob.Object.extend("Comment");
+            // 插入许愿列表
+            //var aa = Bmob.Query(Xy_List);
+            var comment = new commentObject();
+            // Pointer指针
+            comment.set("userId", $rootScope.user);
+            comment.set("content", addCommentText);
+
+            comment.save(null, {
+                success: function (comment) {
+
+                    $scope.view.addCommentText2 = null;
+
+                    // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
+                    xy.increment("commentCount");
+                    xy.save();
+
+                    var relation = xy.relation("comment");
+                    relation.add(comment);
+                    xy.save().then(function (success) {
+//                        $cordovaDialogs.confirm('添加评论成功', '温馨提示', '确定')
+                        $ionicLoading.hide();
+                        newPost = true;
+                        loadComment();
+                    }, function (error) {
+                        $ionicLoading.hide();
+                        $cordovaDialogs.alert('添加评论失败了' + JSON.stringify(error), '温馨提示', '确定');
+                    });
+
+                },
+                error: function (ddd, error) {
+                    alert("抱歉，添加评论失败。。" + error.message);
+                }
+            });
+        };
 
         loadMyXy();
     })

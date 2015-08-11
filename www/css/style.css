@@ -360,7 +360,7 @@ h2{
     border-radius: 100%;
     font-size: 16px;
     background: #3988EF;;
-    color: rgba(255, 255, 255, 0.5);
+    color: #fff;
     font-weight:900;
     text-align:center;
     border: 2px solid #fff;
@@ -417,4 +417,7 @@ h2{
     border-top-left-radius: 12px;
     padding: 0 6px;
     border-bottom-right-radius: 12px;
+}
+.item-icon-right{
+    padding-right: 36px;
 }

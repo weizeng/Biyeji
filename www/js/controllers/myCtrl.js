@@ -155,8 +155,8 @@ angular.module('starter.controllers')
                 });
 
             }, false);
-        }
-
+        };
+        //获取活动
         $scope.activity = {title:'', url:''};
         var fetchActivity = function () {
             var systemObject = Bmob.Object.extend("Activity");
@@ -175,8 +175,27 @@ angular.module('starter.controllers')
 
                 }
             });
-        }
+        };
         fetchActivity();
+        $scope.slogan  = {title:'人可以穷，只要他有目标敢于追求，他就是伟大的！'};
+
+        //获取口号
+        var fetchSlogan = function () {
+            var systemObject = Bmob.Object.extend("Slogan");
+            var query = new Bmob.Query(systemObject);
+            query.descending("createdAt");
+            // 查询所有数据
+            query.first({
+                success: function (result) {
+                    $scope.slogan.title = result.get('slogan');
+                },
+                error: function (result) {
+                }
+            });
+        };
+        fetchSlogan();
+
+
 
         $scope.gotoProfile = function () {
             document.addEventListener('deviceready', function () {
