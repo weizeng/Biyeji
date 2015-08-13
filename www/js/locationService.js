@@ -9,8 +9,7 @@ angular.module('starter.services',[])
                 console.log(JSON.stringify(data));
                 if(data.status === 0){
                     //alert(JSON.stringify(data));
-                    var address = data.result.addressComponent.province+","+data.result.addressComponent.city+","+data.result.addressComponent.district+""+data.result.addressComponent.street;
-                    //TODO 保存位置
+                    var address = data.result.addressComponent.province+","+data.result.addressComponent.city+","+data.result.addressComponent.district+","+data.result.addressComponent.street;
                     parseLocationResult(address);
                 }
             });
