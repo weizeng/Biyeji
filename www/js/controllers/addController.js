@@ -3,8 +3,16 @@
  */
 angular.module('starter.controllers')
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($locationService,$cordovaGeolocation, $ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile,$http) {
-
+    .controller('AddXyCtrl', function ($ionicScrollDelegate,$cordovaKeyboard,$locationService,$cordovaGeolocation, $ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile,$http) {
+        $scope.onScrollTimeline = function(){
+            if ($ionicScrollDelegate.getScrollPosition().top > 20 || $ionicScrollDelegate.getScrollPosition().top < -20) {
+//                console.log("$ionicScrollDelegate.getScrollPosition().top :"+$ionicScrollDelegate.getScrollPosition().top );
+                var isVisible = $cordovaKeyboard.isVisible();
+                if(isVisible) {
+                    $cordovaKeyboard.close();
+                }
+            }
+        }
         //返回
         $scope.back = function () {
             window.history.back();
@@ -171,7 +179,7 @@ angular.module('starter.controllers')
             var options = {
                 destinationType: Camera.DestinationType.FILE_URI,
                 sourceType: Camera.PictureSourceType.CAMERA,
-                allowEdit: true,
+                allowEdit: !ionic.Platform.isAndroid(),
                 encodingType: Camera.EncodingType.PNG,
                 popoverOptions: CameraPopoverOptions,
                 saveToPhotoAlbum: true

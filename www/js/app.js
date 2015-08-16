@@ -254,6 +254,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 controller: 'SubmitBugsCtrl'
             })
 
+            .state('address', {
+                url: '/address/:log/:lat',
+                templateUrl: 'templates/xy-address.html',
+                controller: 'AddressCtrl'
+            })
+
             .state('tab.chats', {
                 url: '/chats',
                 views: {

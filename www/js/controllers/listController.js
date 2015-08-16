@@ -4,7 +4,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 /**
  *许愿的列表
  */
-    .controller('XYListCtrl', function ($cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
+    .controller('XYListCtrl', function ($state, $cordovaKeyboard,$ionicScrollDelegate,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
 
         /**
          *增加对某一个评论点赞的方法
@@ -158,6 +158,19 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
         $scope.view = {addCommentText2: null};
 
+        $scope.onScrollTimeline = function(){
+            if ($ionicScrollDelegate.getScrollPosition().top > 20 || $ionicScrollDelegate.getScrollPosition().top < -20) {
+//                console.log("$ionicScrollDelegate.getScrollPosition().top :"+$ionicScrollDelegate.getScrollPosition().top );
+                var isVisible = $cordovaKeyboard.isVisible();
+                if(isVisible) {
+                    $cordovaKeyboard.close();
+                }
+            }
+        }
+
+        $scope.goUserLocation = function(item){
+            $state.go('address', {log:item.get('location')._longitude,lat:item.get('location')._latitude});
+        };
         //TODO 保存简单的评论
         $scope.saveForm = function (xy, addCommentText) {
             if ($rootScope.user == null) {

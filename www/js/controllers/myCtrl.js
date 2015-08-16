@@ -5,7 +5,7 @@
 
 angular.module('starter.controllers')
 
-    .controller('MyBoardCtrl', function ($cordovaDevice, $cordovaAppVersion, $sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser,$cordovaGeolocation) {
+    .controller('MyBoardCtrl', function ($state,$cordovaDevice, $cordovaAppVersion, $sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser,$cordovaGeolocation) {
         $scope.logout = function () {
             var result = $.fn.umshare.delToken("sina");
             localStorage.removeItem('user');
@@ -156,6 +156,12 @@ angular.module('starter.controllers')
 
             }, false);
         };
+
+
+        $scope.goAddress = function(){
+            $state.go('address');
+        };
+
         //获取活动
         $scope.activity = {title:'', url:''};
         var fetchActivity = function () {

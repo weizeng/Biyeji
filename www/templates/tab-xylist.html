@@ -26,7 +26,7 @@
                          onerror="javascript:this.src='img/weibo.jpg'"
                          ng-src="http://file.bmob.cn/{{item.get('image_small')}}">
 
-                    <span class="loc-span" ng-show="item.get('locationDes')"><i class="ion ion-ios-location"></i> {{item.get('locationDes')}}</span>
+                    <span class="loc-span" ng-click="goUserLocation(item)" ng-show="item.get('locationDes')"><i class="ion ion-ios-location"></i> {{item.get('locationDes')}}</span>
                     <p style="margin: 10px;margin-bottom: 0">{{item.get('title')}}</p>
 
                     <div style="padding-left: 16px;" ng-init="item.showZan=false">
@@ -56,7 +56,7 @@
             <button class="button button-clear" ng-click="closeModal()">返回</button>
             <h1 class="title">{{item.get('userId').get('nick')}}</h1>
         </ion-header-bar>
-        <ion-content>
+        <ion-content  on-touch="onDragUpTimeline()" on-scroll="onScrollTimeline()">
 
             <ion-item class="xy-item bt0">
                 <div class="item item-avatar">
