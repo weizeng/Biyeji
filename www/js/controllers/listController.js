@@ -1,10 +1,53 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
+//介绍页面
+    .controller('SplashCtrl',['$scope','$rootScope','$ionicSlideBoxDelegate', function($scope,$rootScope,$ionicSlideBoxDelegate) {
+
+        $rootScope.barClass = "bar-clear";
+
+        $scope.back = function() {
+            window.localStorage['didTutorial'] = true;
+            window.history.back();
+        };
+
+        $scope.next = function() {
+            $ionicSlideBoxDelegate.next();
+        };
+
+        $scope.previous = function() {
+            $ionicSlideBoxDelegate.previous();
+        };
+
+        $scope.slideChanged = function(index) {
+            $scope.slideIndex = index;
+        };
+
+    }])
+    .controller('TabsController',function($scope,$state) {
+
+        $scope.shouldHide = function() {
+            console.log($state.current.name);
+            if ($state.current.name == "tab.addXy") {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+
+    })
 
 /**
  *许愿的列表
  */
-    .controller('XYListCtrl', function ($cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout) {
+    .controller('XYListCtrl', function ($cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $timeout,$state) {
+
+        //首次登录跳转到splash页面
+        $timeout(function() {
+            if(window.localStorage['didTutorial'] !== "true") {
+                $state.go('splash');
+            }
+        });
 
         /**
          *增加对某一个评论点赞的方法
@@ -101,13 +144,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.comments.length = 0;
 
             if ($scope.item.get('commentCount') > 0 || newPost) {
-                $ionicLoading.show({template: '加载评论中...' + "<i class = 'ion-close-round' ng-click='forceLoading()'></i>"});
+                $scope.detailLoading = true;
+                //$ionicLoading.show({template: '加载评论中...' + "<i class = 'ion-close-round' ng-click='forceLoading()'></i>"});
                 var commentIdQuery = $scope.item.relation('comment').query();
                 commentIdQuery.include("userId");
                 commentIdQuery.descending("-createdAt");
                 commentIdQuery.find({
                     success: function (results) {
-                        $ionicLoading.hide();
+                        //$ionicLoading.hide();
 
                         $scope.comments = results;
                     },
@@ -273,7 +317,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             loadMore();
         }
 
-        $ionicLoading.show({template: '加载中...'});
+        $scope.listLoading = true;
+        //$ionicLoading.show({template: '加载中...'});
         $rootScope.$on("RefreshEvent", function (event, x) {
             $scope.hardRefresh();
         });

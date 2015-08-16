@@ -198,7 +198,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             .state('tab', {
                 url: "/tab",
                 abstract: true,
-                templateUrl: "templates/tabs.html"
+                templateUrl: "templates/tabs.html",
+                controller: 'TabsController'
             })
 
             // Each tab has its own nav history stack:
@@ -224,6 +225,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             })
 
             // 许愿列表
+            .state('splash', {
+                url: '/splash',
+                //views: {
+                //    'tab-xylist': {
+                        templateUrl: 'templates/splash.html',
+                        controller: 'SplashCtrl'
+                    //}
+                //}
+            })
+
+            // 许愿列表
             .state('tab.xylist', {
                 url: '/xylist',
                 views: {
@@ -235,11 +247,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             })
 
             // 增加许愿
-            .state('addXy', {
+            .state('tab.addXy', {
                 url: '/addXy',
-                templateUrl: 'templates/xy_add.html',
-                controller: 'AddXyCtrl'
+                views:{
+                    'tab-xylist': {
+                        templateUrl: 'templates/xy_add.html',
+                        controller: 'AddXyCtrl'
+                    }
+                }
             })
+
+            //.state('tab.chat-detail', {
+            //    url  : '/chats/:chatId',
+            //    views: {
+            //        'tab-cart': {
+            //            templateUrl: 'templates/chat-detail.html',
+            //            controller : 'ChatDetailCtrl'
+            //        }
+            //    }
+            //})
+
 
             // 我的宣传列表
             .state('XyByMe', {

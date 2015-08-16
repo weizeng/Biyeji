@@ -1,0 +1,47 @@
+<ion-view title="" class="splash">
+  <ion-nav-buttons side="left">
+    <button class="button button-light button-clear no-animation"
+            ng-click="back()" ng-if="!slideIndex">
+      跳过
+    </button>
+    <button class="button button-light button-clear no-animation"
+            ng-click="previous()" ng-if="slideIndex > 0">
+      上一步
+    </button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-light button-clear no-animation"
+            ng-click="next()" ng-if="slideIndex != 3">
+      下一步
+    </button>
+    <button class="button button-light button-clear no-animation"
+            ng-click="back()" ng-if="slideIndex == 3">
+      开始使用
+    </button>
+  </ion-nav-buttons>
+  <ion-slide-box on-slide-changed="slideChanged(index)">
+    <ion-slide style="background-image: url('./img/splash/bg1.png');
+                      background-size: cover;
+                      background-repeat: no-repeat;" class="padding" >
+    </ion-slide>
+
+    <ion-slide style="background-image: url('./img/splash/bg1.png');
+                      background-size: contain;
+                      background-position-x: 50%;
+                      background-repeat: no-repeat;" class="padding">
+    </ion-slide>
+
+    <ion-slide style="background-image: url('./img/splash/bg2.png');
+                      background-size: contain;
+                      background-position-x: 50%;
+                      background-repeat: no-repeat;" class="padding">
+    </ion-slide>
+
+    <ion-slide style="background-image: url('./img/splash/bg3.png');
+                  background-size: contain;
+                  background-position-x: 50%;
+                  background-repeat: no-repeat;" class="padding">
+    </ion-slide>
+
+  </ion-slide-box>
+</ion-view>

@@ -421,3 +421,12 @@ h2{
 .item-icon-right{
     padding-right: 36px;
 }
+.slider{
+    height: 100%;
+}
+.tc{
+    text-align: center;
+}
+.tabs-item-hide ion-tab{
+    display: none;
+}

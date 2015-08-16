@@ -1,6 +1,6 @@
 <ion-view title="后毕业">
     <ion-nav-buttons side="right">
-        <button class="button button-clear icon ion-ios-compose-outline" ui-sref="addXy()">
+        <button class="button button-clear icon ion-ios-compose-outline" ui-sref="tab.addXy">
         </button>
     </ion-nav-buttons>
 
@@ -44,7 +44,6 @@
         </ion-list>
         <ion-infinite-scroll
                 ng-if="more"
-                icon="ion-loading-c"
                 on-infinite="loadMorePost()"
                 distance="1%">
         </ion-infinite-scroll>
@@ -105,6 +104,10 @@
             </ion-item>
             <div class="item item-divider" style="margin-top: 10px;">
                 最新评论
+            </div>
+            <div class="icon-refreshing tc" ng-show="detailLoading">
+            <!--<ion-spinner ng-if="showSpinner" icon="" class="spinner spinner-ios">-->
+            <!--</ion-spinner>-->
             </div>
             <div class="list">
                 <a class="item item-avatar" href="#" ng-repeat="item in comments">
