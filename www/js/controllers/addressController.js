@@ -67,7 +67,7 @@ angular.module('starter.controllers')
         var map = new BMap.Map("l-map");
 //        map.centerAndZoom(new BMap.Point(116.328749,40.026922), 13);
         map.enableScrollWheelZoom(true);
-        map.addControl(new BMap.ScaleControl());
+//        map.addControl(new BMap.ScaleControl());
 
 //        initMap();
         var index = 0;
@@ -114,7 +114,7 @@ angular.module('starter.controllers')
                     userImageUrl = JSON.parse(adds[i].include.get('userId').get('weiboMes'));//.get('profile_image_url')
                 }
 
-                var mySquare = new SquareOverlay(adds[i].point, 52, 104, userImageUrl);
+                var mySquare = new SquareOverlay(adds[i].point, 52, 104, userImageUrl.profile_image_url);
 
                 map.addOverlay(mySquare);
                 mySquare.addEventListener('click', adds[i], function (e) {//这里是自定义覆盖物的事件
