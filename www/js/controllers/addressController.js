@@ -3,16 +3,80 @@
  */
 angular.module('starter.controllers')
     .controller('AddressCtrl', function ($stateParams, $ionicScrollDelegate, $cordovaKeyboard, $locationService, $cordovaGeolocation, $ionicPopup, $timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile, $http) {
+        //返回
+        $scope.back = function () {
+            window.history.back();
+        };
+
+        function SquareOverlay(center, width, height, img) {
+            this._center = center;
+            this._width = width;
+            this._height = height;
+            this._img = img;
+        }
+
+        // 继承API的BMap.Overlay
+        SquareOverlay.prototype = new BMap.Overlay();
+
+        //2、初始化自定义覆盖物
+        // 实现初始化方法
+        SquareOverlay.prototype.initialize = function (map) {
+            // 保存map对象实例
+            this._map = map;
+            // 创建div元素，作为自定义覆盖物的容器
+            var div = document.createElement("div");
+            div.style.position = "absolute";
+            // 可以根据参数设置元素外观
+            div.style.width = this._width + "px";
+            div.style.height = this._height + "px";
+            div.style.background = "url(img/maker.png)";
+
+            var img = document.createElement("img");
+            img.setAttribute("src", this._img);
+            img.setAttribute("style", "border-radius: 50%;border: 1px solid #F78181;margin-top: 10px;");
+
+            div.appendChild(img);
+            // 将div添加到覆盖物容器中
+            map.getPanes().markerPane.appendChild(div);
+            // 保存div实例
+            this._div = div;
+            // 需要将div元素作为方法的返回值，当调用该覆盖物的show、
+            // hide方法，或者对覆盖物进行移除时，API都将操作此元素。
+            return div;
+        }
+
+
+//3、绘制覆盖物
+// 实现绘制方法
+        SquareOverlay.prototype.draw = function () {
+// 根据地理坐标转换为像素坐标，并设置给容器
+            var position = this._map.pointToOverlayPixel(this._center);
+//                this._div.style.left = position.x - this._length / 2 + "px";
+//                this._div.style.top = position.y - this._length / 2 + "px";
+            this._div.style.left = position.x - this._width / 2 + "px";
+            this._div.style.top = position.y - this._height + "px";
+        }
+
+        //6、自定义覆盖物添加事件方法
+        SquareOverlay.prototype.addEventListener = function (event, data, fun) {
+            this._div['on' + event] = fun;
+//                this._div['lng'] = location;
+            this._div['data'] = data;
+        }
+
         var map = new BMap.Map("l-map");
 //        map.centerAndZoom(new BMap.Point(116.328749,40.026922), 13);
         map.enableScrollWheelZoom(true);
+        map.addControl(new BMap.ScaleControl());
+
+//        initMap();
         var index = 0;
 //        var location= $stateParams.lat;
 //        alert($stateParams.lat+','+$stateParams.log);
         var adds = [];
         if ($stateParams.lat != "" && $stateParams.log != "") {
             adds = [
-                new BMap.Point($stateParams.log, $stateParams.lat)
+                {point: new BMap.Point($stateParams.log, $stateParams.lat), include: null}
             ];
             map.centerAndZoom(new BMap.Point($stateParams.log, $stateParams.lat), 13);
             startCanvas(adds);
@@ -31,55 +95,55 @@ angular.module('starter.controllers')
                 success: function (results) {
                     angular.forEach(results, function (result) {
                         var location = result.get('location');
-                        adds.push(new BMap.Point(location._longitude, location._latitude));
+                        adds.push({point: new BMap.Point(location._longitude, location._latitude), include: result});
 
                     });
-                    map.centerAndZoom(adds[0], 13);
+                    map.centerAndZoom(adds[0].point, 13);
                     startCanvas(adds);
-
                 }, error: function (result) {
-                    console.log("error:"+result);
+                    console.log("error:" + result);
                 }
             });
         }
 
-        function startCanvas(adds){
-            var myGeo = new BMap.Geocoder();
-
+        function startCanvas(adds) {
             for (var i = 0; i < adds.length; i++) {
-                var myIcon = new BMap.Icon("img/maker.png", new BMap.Size(52, 104));
-                var marker = new BMap.Marker(adds[i], {icon: myIcon});//,{icon:myIcon}
-                map.addOverlay(marker);
-                marker.setLabel(new BMap.Label("我是商圈:" + (i + 1), {offset: new BMap.Size(20, -10)}));
-//            marker.setAnimation(BMAP_ANIMATION_BOUNCE);
-                marker.addEventListener("click", getAttr);
+                var userImageUrl = null;
+                if (adds[i].include != null) {
+//                // 增加用户头像
+                    userImageUrl = JSON.parse(adds[i].include.get('userId').get('weiboMes'));//.get('profile_image_url')
+                }
+
+                var mySquare = new SquareOverlay(adds[i].point, 52, 104, userImageUrl);
+
+                map.addOverlay(mySquare);
+                mySquare.addEventListener('click', adds[i], function (e) {//这里是自定义覆盖物的事件
+                    getAttr(e.currentTarget.data);
+                });
             }
         }
 
 
         function getAttr(marker) {
-            var point = new BMap.Point(marker.target.getPosition().lng, marker.target.getPosition().lat);
+            if (marker.include == null) {
+                return;
+            }
+            var point = new BMap.Point(marker.point.lng, marker.point.lat);
 
-//                var opts = {
-//                    width : 250,     // 信息窗口宽度
-//                    height: 80,     // 信息窗口高度
-//                    title : "信息窗口" , // 信息窗口标题
-//                    enableMessage:true//设置允许信息窗发送短息
-//                };
-
+            var opts = {
+                width: 250,     // 信息窗口宽度
+                height: 80,     // 信息窗口高度
+                title: "信息窗口", // 信息窗口标题
+                enableMessage: true//设置允许信息窗发送短息
+            };
+            var imageUrl = 'http://file.bmob.cn/' + marker.include.get('image_small');
             var content =
-                "marker的位置是" + point.lng + "," + point.lat +
-                "<img style='float:right;margin:4px' id='imgDemo' src='http://app.baidu.com/map/images/tiananmen.jpg' width='139' height='104' title='天安门'/>" +
-                "<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>天安门坐落在中国北京市中心,故宫的南侧,与天安门广场隔长安街相望,是清朝皇城的大门...</p>" +
-                "</div>";
+                marker.include.get('title') +
+                "<img style='float:right;margin:4px' src=" + imageUrl + ">";
 
 
             var infoWindow = new BMap.InfoWindow(content);  // 创建信息窗口对象
             map.openInfoWindow(infoWindow, point);
-
-//                var p = marker.getPosition();       //获取marker的位置
-//                alert("marker的位置是" + p.lng + "," + p.lat);
-//                infoWindow.redraw();
         }
 
         function bdGEO() {
@@ -97,6 +161,4 @@ angular.module('starter.controllers')
                 document.getElementById("result").innerHTML += index + ". " + adds[index - 1].lng + "," + adds[index - 1].lat + "：" + "商圈(" + rs.business + ")  结构化数据(" + addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber + ")<br/><br/>";
             });
         }
-
-
     });
