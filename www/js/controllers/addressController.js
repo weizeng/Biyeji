@@ -8,6 +8,8 @@ angular.module('starter.controllers')
             window.history.back();
         };
 
+        var map = new BMap.Map("l-map");
+
         function SquareOverlay(center, width, height, img) {
             this._center = center;
             this._width = width;
@@ -45,8 +47,7 @@ angular.module('starter.controllers')
             return div;
         }
 
-
-//3、绘制覆盖物
+        //3、绘制覆盖物
 // 实现绘制方法
         SquareOverlay.prototype.draw = function () {
 // 根据地理坐标转换为像素坐标，并设置给容器
@@ -63,24 +64,31 @@ angular.module('starter.controllers')
 //                this._div['lng'] = location;
             this._div['data'] = data;
         }
-
-        var map = new BMap.Map("l-map");
-//        map.centerAndZoom(new BMap.Point(116.328749,40.026922), 13);
-        map.enableScrollWheelZoom(true);
-//        map.addControl(new BMap.ScaleControl());
-
-//        initMap();
         var index = 0;
-//        var location= $stateParams.lat;
-//        alert($stateParams.lat+','+$stateParams.log);
         var adds = [];
+        var currentItem = {};
+        var currentUser = {};
         if ($stateParams.lat != "" && $stateParams.log != "") {
+            var de = localStorage.getItem('xy_item');
+            var currentU = localStorage.getItem('xy_item_userId');
+            if (de) {
+                // 把字符串转化成json对象，变成对象可以取
+                currentItem = eval('(' + de + ')');
+                currentUser = eval('(' + currentU + ')');
+                $scope.title = currentUser.username + "的脚印";
+            }
             adds = [
                 {point: new BMap.Point($stateParams.log, $stateParams.lat), include: null}
             ];
             map.centerAndZoom(new BMap.Point($stateParams.log, $stateParams.lat), 13);
+//            $timeout(function () {
+//                window.location.reload();
             startCanvas(adds);
-        } else {
+//            }, 1000);
+
+        }
+
+        $scope.showAll = function () {
             // 宣言列表
             var XyList = Bmob.Object.extend("Xy_List");
 
@@ -88,6 +96,7 @@ angular.module('starter.controllers')
             // 查询关联的用户信息
             query.include("userId");
             query.equalTo("hide", null);
+            query.equalTo("userId", currentUser.objectId);
             query.notEqualTo("location", null);
             // 查询评论总数，和赞数目
             query.descending("createdAt");
@@ -111,10 +120,13 @@ angular.module('starter.controllers')
                 var userImageUrl = null;
                 if (adds[i].include != null) {
 //                // 增加用户头像
-                    userImageUrl = JSON.parse(adds[i].include.get('userId').get('weiboMes'));//.get('profile_image_url')
+//                    userImageUrl = JSON.parse(adds[i].include.get('userId').get('weiboMes'));//.get('profile_image_url')
+                    userImageUrl = adds[i].include.get('userId').get('avatar_small');
+                } else {
+                    userImageUrl = currentUser.avatar_small;
                 }
 
-                var mySquare = new SquareOverlay(adds[i].point, 52, 104, userImageUrl.profile_image_url);
+                var mySquare = new SquareOverlay(adds[i].point, 52, 104, userImageUrl);
 
                 map.addOverlay(mySquare);
                 mySquare.addEventListener('click', adds[i], function (e) {//这里是自定义覆盖物的事件
@@ -125,10 +137,15 @@ angular.module('starter.controllers')
 
 
         function getAttr(marker) {
-            if (marker.include == null) {
+            if (marker.include == null || currentItem == null) {
                 return;
             }
-            var point = new BMap.Point(marker.point.lng, marker.point.lat);
+            var point = null;
+            if (marker.include == null) {
+                point = new BMap.Point(currentItem.get('location')._longitude, currentItem.get('location')._latitude);
+            } else {
+                point = new BMap.Point(marker.point.lng, marker.point.lat);
+            }
 
             var opts = {
                 width: 250,     // 信息窗口宽度
@@ -146,19 +163,5 @@ angular.module('starter.controllers')
             map.openInfoWindow(infoWindow, point);
         }
 
-        function bdGEO() {
-            var pt = adds[index];
-            geocodeSearch(pt);
-            index++;
-        }
-
-        function geocodeSearch(pt) {
-            if (index < adds.length - 1) {
-                setTimeout(window.bdGEO, 400);
-            }
-            myGeo.getLocation(pt, function (rs) {
-                var addComp = rs.addressComponents;
-                document.getElementById("result").innerHTML += index + ". " + adds[index - 1].lng + "," + adds[index - 1].lat + "：" + "商圈(" + rs.business + ")  结构化数据(" + addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber + ")<br/><br/>";
-            });
-        }
+        map.enableScrollWheelZoom(true);
     });

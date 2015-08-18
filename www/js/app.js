@@ -283,6 +283,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
             .state('address', {
                 url: '/address/:log/:lat',
+                cache:false,
                 templateUrl: 'templates/xy-address.html',
                 controller: 'AddressCtrl'
             })

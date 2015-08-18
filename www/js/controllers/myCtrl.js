@@ -59,6 +59,7 @@ angular.module('starter.controllers')
                                 user.set("nick", response.screen_name);
                                 user.set("description", response.description);
                                 user.set("platform", 'sina');
+                                user.set("image_small_v", response.profile_image_url);
                                 user.set("token", checkUser.token);
                                 // 用户设备信息
                                 user.set("version", '');

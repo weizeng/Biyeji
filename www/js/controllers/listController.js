@@ -213,6 +213,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
         $scope.goUserLocation = function(item){
+            localStorage.setItem('xy_item', JSON.stringify(item));
+            localStorage.setItem('xy_item_userId', JSON.stringify(item.get('userId')));
             $state.go('address', {log:item.get('location')._longitude,lat:item.get('location')._latitude});
         };
         //TODO 保存简单的评论
@@ -273,7 +275,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         var skip = 0;
 
         var loadMore = function () {
-            // 宣言列表
             var XyList = Bmob.Object.extend("Xy_List");
 
             var query = new Bmob.Query(XyList);
