@@ -213,9 +213,16 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
         $scope.goUserLocation = function(item){
-            localStorage.setItem('xy_item', JSON.stringify(item));
-            localStorage.setItem('xy_item_userId', JSON.stringify(item.get('userId')));
-            $state.go('address', {log:item.get('location')._longitude,lat:item.get('location')._latitude});
+            if (item) {
+                localStorage.setItem('xy_item', JSON.stringify(item));
+                localStorage.setItem('xy_item_userId', JSON.stringify(item.get('userId')));
+                $state.go('address', {log:item.get('location')._longitude,lat:item.get('location')._latitude});
+            } else {
+                localStorage.removeItem('xy_item');
+                localStorage.removeItem('xy_item_userId');
+                $state.go('address', {log:"",lat:""});
+            }
+
         };
         //TODO 保存简单的评论
         $scope.saveForm = function (xy, addCommentText) {

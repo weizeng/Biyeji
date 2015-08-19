@@ -2,13 +2,25 @@
  * Created by leo.wei on 15/8/15.
  */
 angular.module('starter.controllers')
-    .controller('AddressCtrl', function ($stateParams, $ionicScrollDelegate, $cordovaKeyboard, $locationService, $cordovaGeolocation, $ionicPopup, $timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile, $http) {
+    .controller('AddressCtrl', function ($locationService,$stateParams, $ionicScrollDelegate, $cordovaKeyboard, $locationService, $cordovaGeolocation, $ionicPopup, $timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile, $http) {
         //返回
         $scope.back = function () {
             window.history.back();
         };
 
         var map = new BMap.Map("l-map");
+        function ZoomControl(){
+            // 设置默认停靠位置和偏移量
+            this.defaultAnchor = BMAP_ANCHOR_TOP_LEFT;
+            this.defaultOffset = new BMap.Size(10, 10);
+        }
+// 通过JavaScript的prototype属性继承于BMap.Control
+        ZoomControl.prototype = new BMap.Control();
+
+        var opts = {type: BMAP_NAVIGATION_CONTROL_ZOOM};
+        map.addControl(new BMap.NavigationControl(opts));
+
+        map.addControl(new BMap.GeolocationControl());
 
         function SquareOverlay(center, width, height, img) {
             this._center = center;
@@ -61,8 +73,37 @@ angular.module('starter.controllers')
         //6、自定义覆盖物添加事件方法
         SquareOverlay.prototype.addEventListener = function (event, data, fun) {
             this._div['on' + event] = fun;
-//                this._div['lng'] = location;
             this._div['data'] = data;
+        }
+
+        //////////////////////////////
+        $scope.showAll = function () {
+            // 宣言列表
+            var XyList = Bmob.Object.extend("Xy_List");
+
+            var query = new Bmob.Query(XyList);
+            // 查询关联的用户信息
+            query.include("userId");
+            query.equalTo("hide", null);
+            if (currentUser!= null) {
+                query.equalTo("userId", currentUser.objectId);
+            }
+            query.notEqualTo("location", null);
+            // 查询评论总数，和赞数目
+            query.descending("createdAt");
+            query.find({
+                success: function (results) {
+                    angular.forEach(results, function (result) {
+                        var location = result.get('location');
+                        adds.push({point: new BMap.Point(location._longitude, location._latitude), include: result});
+
+                    });
+                    map.centerAndZoom(adds[0].point, 13);
+                    startCanvas(adds);
+                }, error: function (result) {
+                    console.log("error:" + result);
+                }
+            });
         }
         var index = 0;
         var adds = [];
@@ -81,39 +122,19 @@ angular.module('starter.controllers')
                 {point: new BMap.Point($stateParams.log, $stateParams.lat), include: null}
             ];
             map.centerAndZoom(new BMap.Point($stateParams.log, $stateParams.lat), 13);
-//            $timeout(function () {
-//                window.location.reload();
             startCanvas(adds);
-//            }, 1000);
-
+        } else {
+            $scope.title = "附近的人";
+            $scope.showAll();
         }
 
-        $scope.showAll = function () {
-            // 宣言列表
-            var XyList = Bmob.Object.extend("Xy_List");
-
-            var query = new Bmob.Query(XyList);
-            // 查询关联的用户信息
-            query.include("userId");
-            query.equalTo("hide", null);
-            query.equalTo("userId", currentUser.objectId);
-            query.notEqualTo("location", null);
-            // 查询评论总数，和赞数目
-            query.descending("createdAt");
-            query.find({
-                success: function (results) {
-                    angular.forEach(results, function (result) {
-                        var location = result.get('location');
-                        adds.push({point: new BMap.Point(location._longitude, location._latitude), include: result});
-
-                    });
-                    map.centerAndZoom(adds[0].point, 13);
-                    startCanvas(adds);
-                }, error: function (result) {
-                    console.log("error:" + result);
-                }
-            });
-        }
+        $scope.location='';
+        $locationService.locate(function(latitude, longitude){
+            console.log(latitude + "," + longitude);
+//            point = new Bmob.GeoPoint({latitude: latitude, longitude: longitude});
+        }, function(locationResult) {
+//            $scope.location = locationResult;
+        });
 
         function startCanvas(adds) {
             for (var i = 0; i < adds.length; i++) {
