@@ -422,7 +422,7 @@ h2{
     padding-right: 36px;
 }
 
-#l-map{height:600px;width:100%;}
+#l-map{height:100%;width:100%;}
 
 .slider{
     height: 100%;
@@ -432,4 +432,7 @@ h2{
 }
 .tabs-item-hide ion-tab{
     display: none;
+}
+.height100 .scroll{
+    height: 100%;
 }

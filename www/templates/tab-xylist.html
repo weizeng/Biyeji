@@ -19,6 +19,8 @@
 
                     <p ng-show="item.get('userId').get('description').length>0">
                         {{item.get('userId').get('description')}}</p>
+                    <p ng-show="item.get('userId').get('description').length==0">
+                        暂无介绍</p>
                 </div>
 
                 <div class="item item-body">
@@ -53,7 +55,7 @@
     <ion-modal-view>
         <ion-header-bar class="bar-assertive">
             <button class="button button-clear" ng-click="closeModal()">返回</button>
-            <h1 class="title">{{item.get('userId').get('nick')}}</h1>
+            <h1 class="title">详情</h1>
         </ion-header-bar>
         <ion-content  on-touch="onDragUpTimeline()" on-scroll="onScrollTimeline()">
 
@@ -62,7 +64,7 @@
                     <img ng-src="{{item.get('userId').get('avatar_large')}}"
                          onerror="javascript:this.src='img/ionic.png'">
                     <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
-                    <p class="mb5"><span class="f12">发表于</span> {{item.createdAt}}</p>
+                    <p class="mb5">{{item.get('userId').get('nick')}} <span class="f12">发表于</span> {{item.createdAt}}</p>
 
                     <p ng-show="item.get('userId').get('description').length==0">
                         {{item.get('userId').get('location')}}</p>
@@ -102,8 +104,8 @@
                 </div>
 
             </ion-item>
-            <div class="item item-divider" style="margin-top: 10px;">
-                最新评论
+            <div class="item item-divider">
+                <span ng-show="comments.length==0">无</span>最新评论
             </div>
             <div class="icon-refreshing tc" ng-show="detailLoading">
             <!--<ion-spinner ng-if="showSpinner" icon="" class="spinner spinner-ios">-->
@@ -128,7 +130,7 @@
         <div class="bar bar-footer p0">
             <section class="ui-input-wrap ui-border-t">
                 <div class="ui-input ui-border-radius">
-                    <input type="text" ng-model="view.addCommentText2" placeholder="我也说一句...">
+                    <input type="text" ng-model="view.addCommentText2" placeholder="我来说一句...">
                 </div>
                 <button class="ui-btn" ng-disabled="!view.addCommentText2" ng-click="saveForm(item,view.addCommentText2)">评论</button>
             </section>

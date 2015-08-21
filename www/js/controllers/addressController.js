@@ -35,7 +35,7 @@ angular.module('starter.controllers')
 
             var img = document.createElement("img");
             img.setAttribute("src", this._img);
-            img.setAttribute("style", "border-radius: 50%;border: 1px solid #F78181;margin-top: 10px;");
+            img.setAttribute("style", "border-radius: 50%;border: 1px solid #D0B03A;margin-top: 10px;");
 
             div.appendChild(img);
             // 将div添加到覆盖物容器中
