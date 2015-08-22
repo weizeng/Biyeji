@@ -117,8 +117,8 @@ angular.module('starter.controllers')
                                     }
 
                                     var confirmPopup = $ionicPopup.confirm({
-                                        title: '太好了',
-                                        template: "已经到宣言墙啦",
+                                        title: '发布成功',
+                                        template: "",
                                         buttons: [
                                             {
                                                 text: '<b>确定</b>',
@@ -161,7 +161,7 @@ angular.module('starter.controllers')
             var opt = {
                 'data':{
                     'content' : {
-                        'text' : "#我听见你用唇语说爱情# "+content, //要分享的文字
+                        'text' : content, //要分享的文字
 //                        'furl' : '', //在线图片URL
                         'img' : img //本地图片地址
                     }

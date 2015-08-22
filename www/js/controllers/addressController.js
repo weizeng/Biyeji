@@ -116,7 +116,7 @@ angular.module('starter.controllers')
                 // 把字符串转化成json对象，变成对象可以取
                 currentItem = eval('(' + de + ')');
                 currentUser = eval('(' + currentU + ')');
-                $scope.title = currentUser.username + "的脚印";
+                $scope.title = currentUser.username + "的心情";
             }
             adds = [
                 {point: new BMap.Point($stateParams.log, $stateParams.lat), include: null}
@@ -124,7 +124,7 @@ angular.module('starter.controllers')
             map.centerAndZoom(new BMap.Point($stateParams.log, $stateParams.lat), 13);
             startCanvas(adds);
         } else {
-            $scope.title = "附近的人";
+            $scope.title = "唇边的轻声细语";
             $scope.showAll();
         }
 
@@ -151,13 +151,13 @@ angular.module('starter.controllers')
 
                 map.addOverlay(mySquare);
                 mySquare.addEventListener('click', adds[i], function (e) {//这里是自定义覆盖物的事件
-                    getAttr(e.currentTarget.data);
+                    getAttr(e.currentTarget.data,mySquare);
                 });
             }
         }
 
 
-        function getAttr(marker) {
+        function getAttr(marker,mySquare) {
             if (marker.include == null || currentItem == null) {
                 return;
             }
@@ -171,17 +171,18 @@ angular.module('starter.controllers')
             var opts = {
                 width: 250,     // 信息窗口宽度
                 height: 80,     // 信息窗口高度
-                title: "信息窗口", // 信息窗口标题
+                title: "她说", // 信息窗口标题
                 enableMessage: true//设置允许信息窗发送短息
             };
             var imageUrl = 'http://file.bmob.cn/' + marker.include.get('image_small');
-            var content =
-                marker.include.get('title') +
-                "<img style='float:right;margin:4px' src=" + imageUrl + ">";
-
+            var content = marker.include.get('userId').get('username')+"&nbsp;&nbsp;&nbsp;"+marker.include.createdAt+"</p>"
+                +marker.include.get('title')+"<p>";
 
             var infoWindow = new BMap.InfoWindow(content);  // 创建信息窗口对象
-            map.openInfoWindow(infoWindow, point);
+//            map.openInfoWindow(infoWindow, point);
+//            infoWindow.addEventListener("onclose", function () {
+//                mySquare.getLabel().hide();
+//            })
         }
 
         map.enableScrollWheelZoom(true);
