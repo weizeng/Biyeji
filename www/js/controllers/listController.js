@@ -40,11 +40,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     .controller('XYListCtrl', function ($cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
 
         //首次登录跳转到splash页面
-        $timeout(function() {
-            if(window.localStorage['didTutorial'] !== "true") {
-                $state.go('splash');
-            }
-        });
+        //$timeout(function() {
+        //    if(window.localStorage['didTutorial'] !== "true") {
+        //        $state.go('splash');
+        //    }
+        //});
 
         /**
          *增加对某一个评论点赞的方法
