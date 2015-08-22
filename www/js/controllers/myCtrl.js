@@ -5,7 +5,7 @@
 
 angular.module('starter.controllers')
 
-    .controller('MyBoardCtrl', function ($state,$cordovaDevice, $cordovaAppVersion, $sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser,$cordovaGeolocation) {
+    .controller('MyBoardCtrl', function ($appService,$state,$cordovaDevice, $cordovaAppVersion, $sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser,$cordovaGeolocation) {
         $scope.logout = function () {
             var result = $.fn.umshare.delToken("sina");
             localStorage.removeItem('user');
@@ -221,32 +221,8 @@ angular.module('starter.controllers')
         }
 
         $scope.checkVersion = function () {
-            $cordovaAppVersion.getAppVersion().then(function (version) {
-                var appVersion = version;
-                var systemObject = Bmob.Object.extend("System");
-                var query = new Bmob.Query(systemObject);
-                query.descending("updatedAt");
-                // 查询所有数据
-                query.first({
-                    success: function (result) {
-                        var serverVersion = result.get('version');
-//                        $.fn.umshare.tip('result:'+JSON.stringify(result) +","+serverVersion);
-                        if (ionic.Platform.isAndroid()) {
-                            if (serverVersion > appVersion) {
-//                                versionCheck(result);
-                                $.fn.umshare.tip('发现新版本' + serverVersion);
-                            } else {
-                                $.fn.umshare.tip('当前已是最新版本');
-                            }
-                        } else {
-                            $.fn.umshare.tip('iOS版本未发现最新');
-                        }
-                    },
-                    error: function (error) {
-                        alert("查询失败: " + JSON.parse(error));
-                    }
-                });
-
+            $appService.checkUpdate(function(result){
+                console.log(result);
             });
         }
 

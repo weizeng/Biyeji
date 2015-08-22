@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-    .run(function ($cordovaKeyboard, $ionicHistory,$location,$cordovaToast,$ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
+    .run(function ($appService,$timeout,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaKeyboard, $ionicHistory,$location,$cordovaToast,$ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
         $ionicPlatform.ready(function () {
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -28,7 +28,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
             //注意，这段代码是应用退出前保存统计数据，请在退出应用前调用
             //window.plugins.umengAnalyticsPlugin.onKillProcess();
-
 
             var device = $cordovaDevice.getDevice();
             var cordova = $cordovaDevice.getCordova();
@@ -86,30 +85,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     }
                 });
             }
-            $cordovaAppVersion.getAppVersion().then(function (version) {
-//                alert(version);
-                var appVersion = version;
-                $rootScope.appVersion = appVersion;
-                var systemObject = Bmob.Object.extend("System");
-                var query = new Bmob.Query(systemObject);
-                query.descending("updatedAt");
-                // 查询所有数据
-                query.first({
-                    success: function (result) {
 
-                        var serverVersion = result.get('version');
-                        if ($cordovaDevice.getPlatform() == 'Android') {
-                            if (serverVersion > appVersion) {
-                                versionCheck(result);
-                            }
-                        }
-                    },
-                    error: function (error) {
-                        alert("查询失败: " + JSON.parse(error));
-                    }
-                });
-
-            });
         });
 
         //双击退出
@@ -147,7 +123,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             $ionicLoading.hide();
         };
 
-// 针对非手机版本
+        // 针对非手机版本, 可以自动登陆
         if (!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()) {
             $rootScope.appVersion = 1;
             Bmob.User.logIn('MegaGift', "123", {
@@ -186,21 +162,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             });
         }
 
-        var versionCheck = function (result) {
-            var confirmPopup = $ionicPopup.confirm({
-                title: '版本升级',
-                template: "版本升级提示 " + JSON.stringify(result)
-            });
-            confirmPopup.then(function (res) {
-                if (res) {
-                    console.log('You are sure');
-                } else {
-                    console.log('You are not sure');
-                }
-            });
-        }
-
-
+        $appService.checkUpdate(function(result){
+            console.log(result);
+        });
     })
 
 
