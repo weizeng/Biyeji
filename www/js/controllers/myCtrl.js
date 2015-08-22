@@ -5,7 +5,7 @@
 
 angular.module('starter.controllers')
 
-    .controller('MyBoardCtrl', function ($cordovaNetwork,$appService,$state,$cordovaDevice, $cordovaAppVersion, $sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser,$cordovaGeolocation) {
+    .controller('MyBoardCtrl', function ($appService,$state,$cordovaDevice, $cordovaAppVersion, $sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser,$cordovaGeolocation) {
         $scope.logout = function () {
             var result = $.fn.umshare.delToken("sina");
             localStorage.removeItem('user');
@@ -91,11 +91,8 @@ angular.module('starter.controllers')
             $scope.isShowVersion = true;
         }
 
-        $scope.logIn = function () {
-            if($cordovaNetwork.isOffline){
-                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
-                return;
-            }
+        $scope.logIn = function(){
+
             $ionicLoading.show({
                 template: '正在登陆...'
             });
@@ -135,11 +132,6 @@ angular.module('starter.controllers')
         $scope.appVersion = $rootScope.appVersion;
 
         $scope.goUrl = function () {
-            if($cordovaNetwork.isOffline){
-                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
-                return;
-            }
-
             document.addEventListener('deviceready', function () {
                 var options = {
                     location: "no",
@@ -156,11 +148,6 @@ angular.module('starter.controllers')
         }
 
         $scope.gotoActivity = function (url) {
-            if($cordovaNetwork.isOffline){
-                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
-                return;
-            }
-
             document.addEventListener('deviceready', function () {
                 var options = {
                     location: "no",
@@ -184,11 +171,6 @@ angular.module('starter.controllers')
         //获取活动
         $scope.activity = {title:'', url:''};
         var fetchActivity = function () {
-            if($cordovaNetwork.isOffline){
-                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
-                return;
-            }
-
             var systemObject = Bmob.Object.extend("Activity");
             var query = new Bmob.Query(systemObject);
             query.descending("createdAt");
@@ -223,14 +205,11 @@ angular.module('starter.controllers')
                 }
             });
         };
-        fetchSlogan();
+        fetchSlan();
+
+
 
         $scope.gotoProfile = function () {
-            if($cordovaNetwork.isOffline){
-                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
-                return;
-            }
-
             document.addEventListener('deviceready', function () {
                 var options = {
                     location: "no",

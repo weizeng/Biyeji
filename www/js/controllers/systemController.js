@@ -5,13 +5,9 @@
 
 angular.module('starter.controllers')
 
-    .controller('SubmitBugsCtrl', function ($cordovaNetwork,$ionicPopup,$sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser) {
+    .controller('SubmitBugsCtrl', function ($ionicPopup,$sce, $cordovaDialogs, $rootScope, $scope, $state, $http, $ionicLoading, $cordovaInAppBrowser) {
         $scope.feedback= {content: null};
         $scope.submitBugs = function () {
-            if($cordovaNetwork.isOffline){
-                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
-                return;
-            }
             if ($scope.feedback.content.length < 10) {
                 $.fn.umshare.tip('请输入大于10个字哦');
                 return;
