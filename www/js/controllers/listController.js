@@ -105,9 +105,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.comments = [];
         $scope.openModal = function () {
             $scope.modal.show().then(function (obj) {
-                loadComment();
-            });
+                $timeout(function(){
+                    $scope.largeImage = $scope.item.get('image')._url;
+                    loadComment();
 
+                },1000);
+            });
         };
         var newPost;
         var loadComment = function () {
@@ -166,12 +169,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.closeModal = function () {
             $scope.comments.length = 0;
             $scope.item = null;
+            $scope.largeImage = null;
             $scope.modal.hide();
         };
         //Cleanup the modal when we're done with it!
         $scope.$on('$destroy', function () {
             $scope.comments.length = 0;
             $scope.item = null;
+            $scope.largeImage = null;
             $scope.modal.remove();
         });
 
@@ -263,7 +268,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                     relation.add(comment);
                     xy.save().then(function (xyNew) {
 //                        $cordovaDialogs.confirm('添加评论成功', '温馨提示', '确定')
-
+                        $ionicLoading.hide();
                         newPost = true;
 
                         relation.parent = null;
@@ -551,7 +556,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         });
 
         var loadComment = function () {
-
+            if(!$rootScope.isConnected){
+                return;
+            }
             // 检测类型，看是否加载更多内容
             var style = $scope.item.get('style');
             var detailId = $scope.item.get('detailId');
@@ -607,7 +614,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.comments = [];
         $scope.openModal = function () {
             $scope.modal.show().then(function (obj) {
-                loadComment();
+                $timeout(function(){
+                    $scope.largeImage = $scope.item.get('image')._url;
+                    loadComment();
+
+                },1000);
+
             });
 
         };
