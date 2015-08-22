@@ -87,6 +87,10 @@ angular.module('starter.controllers')
             });
         };
 
+        if (ionic.Platform.isAndroid()) {
+            $scope.isShowVersion = true;
+        }
+
         $scope.logIn = function () {
             $ionicLoading.show({
                 template: '正在登陆...'
