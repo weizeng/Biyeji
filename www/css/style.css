@@ -436,3 +436,10 @@ h2{
 .height100 .scroll{
     height: 100%;
 }
+.bar.bar-assertive{
+    background-color: rgb(234,103,162)
+}
+.tabs-striped.tabs-color-assertive .tab-item.tab-item-active{
+    color: rgb(234,103,162);
+    border: 0 solid rgb(234,103,162);
+}

@@ -2,7 +2,7 @@
 
     <ion-nav-buttons side="right">
         <button class="button button-clear" ng-click="addXy()">
-            发表
+            发布
         </button>
     </ion-nav-buttons>
 
@@ -11,7 +11,7 @@
 
         <div class="list">
             <label class="item item-area mb-10">
-                <textarea class="w100" rows="4" placeholder="我想说.." ng-model="xy.content"></textarea>
+                <textarea class="w100" rows="4" placeholder="#我听见你用唇语说爱情#" ng-model="xy.content"></textarea>
                 <span ng-show="location" class="loc-span"><i class="ion ion-ios-location"></i> {{location}}</span>
             </label>
             <ion-toggle class="toggle-assertive item item-toggle toggle-large" ng-model="checked" ng-checked="checked">发布到新浪微博</ion-toggle>

@@ -19,7 +19,7 @@ angular.module('starter.controllers')
             initData();
         };
 
-        $scope.xy = {content: null};
+        $scope.xy = {content: '#我听见你用唇语说爱情#'};
 
         //初始化加载先清空
         function initData() {
@@ -161,7 +161,7 @@ angular.module('starter.controllers')
             var opt = {
                 'data':{
                     'content' : {
-                        'text' : "#毕业五年# @毕业季疯了 "+content, //要分享的文字
+                        'text' : "#我听见你用唇语说爱情# "+content, //要分享的文字
 //                        'furl' : '', //在线图片URL
                         'img' : img //本地图片地址
                     }
