@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
-//介绍页面
+// 介绍页面
     .controller('SplashCtrl',['$scope','$rootScope','$ionicSlideBoxDelegate', function($scope,$rootScope,$ionicSlideBoxDelegate) {
 
         $rootScope.barClass = "bar-clear";
@@ -23,18 +23,15 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
 
     }])
+// tab菜单页面
     .controller('TabsController',function($scope,$state) {
-
         $scope.shouldHide = function() {
-            console.log($state.current.name);
             if ($state.current.name == "tab.addXy") {
                 return true;
             } else {
                 return false;
             }
         };
-
-
     })
 
 /**
