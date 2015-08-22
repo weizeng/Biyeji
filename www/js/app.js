@@ -46,9 +46,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             // 本地读取user的信息，这个user通常是bmob返回的信息
             // 包含字段:uid, screen_name, token, avatar, avatar_large
 
+            $rootScope.isConnected = $cordovaNetwork.isOnline();
             // 真实环境
             var userStr = localStorage.getItem('user');
-            if (userStr) {
+            if (userStr && $rootScope.isConnected) {
                 // 把字符串转化成json对象，变成对象厚可以取
                 var uu = eval('(' + userStr + ')');
                 Bmob.User.logIn(uu.username, "123", {
@@ -85,6 +86,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     }
                 });
             }
+
+            $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
+
+                $rootScope.isConnected = (networkState != Connection.NONE && networkState != Connection.UNKNOWN);
+//                alert("$cordovaNetwork:online"+$rootScope.isConnected);
+            })
+
+            // listen for Offline event
+            $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
+                $rootScope.isConnected = (networkState != Connection.NONE && networkState != Connection.UNKNOWN);
+//                alert("$cordovaNetwork:offline"+$rootScope.isConnected);
+            })
+
             if(!$cordovaNetwork.isOffline){
                 // 检查更新
                 $appService.checkUpdate(function(result){
@@ -131,6 +145,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         // 针对非手机版本, 可以自动登陆
         if (!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()) {
             $rootScope.appVersion = 1;
+            $rootScope.isConnected= true;
             Bmob.User.logIn('MegaGift', "123", {
                 success: function (user) {
                     $rootScope.user = user;

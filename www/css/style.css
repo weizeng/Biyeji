@@ -443,3 +443,6 @@ h2{
     color: rgb(234,103,162);
     border: 0 solid rgb(234,103,162);
 }
+.tabs-striped .tabs {
+    background-color: #F5F5F5;
+}

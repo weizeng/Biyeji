@@ -40,7 +40,10 @@ angular.module('starter.controllers')
         $scope.checked = true;
         //TODO 增加一个许愿
         $scope.addXy = function () {
-
+            if(!$rootScope.isConnected){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             if ($rootScope.user == null) {
                 $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
                     .then(function () {

@@ -92,7 +92,10 @@ angular.module('starter.controllers')
         }
 
         $scope.logIn = function(){
-
+            if(!$rootScope.isConnected){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             $ionicLoading.show({
                 template: '正在登陆...'
             });
@@ -171,6 +174,9 @@ angular.module('starter.controllers')
         //获取活动
         $scope.activity = {title:'', url:''};
         var fetchActivity = function () {
+            if(!$rootScope.isConnected){
+                return;
+            }
             var systemObject = Bmob.Object.extend("Activity");
             var query = new Bmob.Query(systemObject);
             query.descending("createdAt");
@@ -193,6 +199,9 @@ angular.module('starter.controllers')
 
         //获取口号
         var fetchSlogan = function () {
+            if(!$rootScope.isConnected){
+                return;
+            }
             var systemObject = Bmob.Object.extend("Slogan");
             var query = new Bmob.Query(systemObject);
             query.descending("createdAt");
@@ -205,11 +214,12 @@ angular.module('starter.controllers')
                 }
             });
         };
-        fetchSlan();
-
-
 
         $scope.gotoProfile = function () {
+            if(!$rootScope.isConnected){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             document.addEventListener('deviceready', function () {
                 var options = {
                     location: "no",
@@ -231,6 +241,7 @@ angular.module('starter.controllers')
             });
         }
 
+        fetchSlogan();
 
     })
 // 账号信息

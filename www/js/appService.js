@@ -56,7 +56,7 @@ angular.module('starter.services', [])
 
         return {
             checkUpdate: function (callback) {
-                if($cordovaNetwork.isOffline){
+                if(!$rootScope.isConnected){
                     $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
                     return;
                 }
@@ -76,7 +76,7 @@ angular.module('starter.services', [])
                                     if (serverVersion > appVersion) {
                                         versionCheck(result, result.get('android')._url, callback);
                                     } else {
-//                                        $.fn.umshare.tip('已是最新版本');
+                                        $.fn.umshare.tip('已是最新版本');
                                     }
                                 } else {
                                     $.fn.umshare.tip('ios 已是最新版本');
@@ -122,7 +122,7 @@ angular.module('starter.services', [])
 //                            alert(position);
                             console.log(JSON.stringify(position));
                             locationResult(latitude, longitude);
-                            if($cordovaNetwork.isOffline){
+                            if(!$rootScope.isConnected){
                                 return;
                             }
                             parseLocation(latitude, longitude, parseLocationResult);

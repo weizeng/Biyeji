@@ -111,7 +111,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
         var newPost;
         var loadComment = function () {
-            if($cordovaNetwork.isOffline()){
+            if(!$rootScope.isConnected){
                 $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
                 return;
             }
@@ -211,7 +211,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
         $scope.goUserLocation = function(item){
-            if($cordovaNetwork.isOffline()){
+            if(!$rootScope.isConnected){
                 $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
                 return;
             }
@@ -237,7 +237,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
                 return;
             }
-            if($cordovaNetwork.isOffline()){
+            if(!$rootScope.isConnected){
                 $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
                 return;
             }
@@ -289,11 +289,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         var skip = 0;
 
         var loadMore = function () {
-//            if($cordovaNetwork.isOffline()){
-//                $scope.$broadcast('scroll.refreshComplete');
-//                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
-//                return;
-//            }
+            if(!$rootScope.isConnected){
+                $scope.$broadcast('scroll.refreshComplete');
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             var XyList = Bmob.Object.extend("Xy_List");
 
             var query = new Bmob.Query(XyList);
@@ -408,13 +408,16 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
     })
 
 
-    .controller('XyByMeCtrl', function ($ionicLoading, $rootScope, $sce, $scope, $cordovaDevice, $cordovaActionSheet, $ionicModal) {
+    .controller('XyByMeCtrl', function ($cordovaDialogs, $ionicLoading, $rootScope, $sce, $scope, $cordovaDevice, $cordovaActionSheet, $ionicModal) {
         // FEF
         var skip = 0;
         $scope.results = [];
         $scope.more = false;
         var loadMyXy = function () {
-
+            if(!$rootScope.isConnected){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             var XyList = Bmob.Object.extend("Xy_List");
 
             var query = new Bmob.Query(XyList);
