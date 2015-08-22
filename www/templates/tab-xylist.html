@@ -1,7 +1,9 @@
 <ion-view title="唇唇欲动">
-    <ion-nav-buttons side="right">
+    <ion-nav-buttons side="left">
         <button class="button button-clear icon ion-ios-paw-outline" ng-click="goUserLocation()">
         </button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
         <button class="button button-clear icon ion-ios-compose-outline" ui-sref="tab.addXy">
         </button>
     </ion-nav-buttons>
@@ -28,7 +30,9 @@
                          onerror="javascript:this.src='img/weibo.jpg'"
                          ng-src="http://file.bmob.cn/{{item.get('image_small')}}">
 
-                    <span class="loc-span" ng-click="goUserLocation(item)" ng-show="item.get('locationDes')"><i class="ion ion-ios-location"></i> {{item.get('locationDes')}}</span>
+                    <span class="loc-span" ng-click="goUserLocation(item)" ng-show="item.get('locationDes')"><i
+                            class="ion ion-ios-location"></i> {{item.get('locationDes')}}</span>
+
                     <p style="margin: 10px;margin-bottom: 0">{{item.get('title')}}</p>
 
                     <div style="padding-left: 16px;" ng-init="item.showZan=false">
@@ -57,7 +61,7 @@
             <button class="button button-clear" ng-click="closeModal()">返回</button>
             <h1 class="title">{{item.get('userId').get('nick')}}</h1>
         </ion-header-bar>
-        <ion-content  on-touch="onDragUpTimeline()" on-scroll="onScrollTimeline()">
+        <ion-content on-touch="onDragUpTimeline()" on-scroll="onScrollTimeline()">
 
             <ion-item class="xy-item bt0">
                 <div class="item item-avatar">
@@ -76,8 +80,8 @@
 
                 <div class="item item-body">
                     <!--<ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">-->
-                        <img class="fit" style="width:100%" ng-src="{{item.get('image')._url}}" ng-click="showLarge()"
-                             onerror="javascript:this.src='img/weibo.jpg'"/>
+                    <img class="fit" style="width:100%" ng-src="{{item.get('image')._url}}" ng-click="showLarge()"
+                         onerror="javascript:this.src='img/weibo.jpg'"/>
                     <!--</ion-scroll>-->
                     <div style="padding-left: 16px;">
                         <!--<p>{{item.get('title')}}</p>-->
@@ -108,8 +112,8 @@
                 最新评论
             </div>
             <div class="icon-refreshing tc" ng-show="detailLoading">
-            <!--<ion-spinner ng-if="showSpinner" icon="" class="spinner spinner-ios">-->
-            <!--</ion-spinner>-->
+                <!--<ion-spinner ng-if="showSpinner" icon="" class="spinner spinner-ios">-->
+                <!--</ion-spinner>-->
             </div>
             <div class="list">
                 <a class="item item-avatar" href="#" ng-repeat="item in comments">
@@ -132,15 +136,17 @@
                 <div class="ui-input ui-border-radius">
                     <input type="text" ng-model="view.addCommentText2" placeholder="我也说一句...">
                 </div>
-                <button class="ui-btn" ng-disabled="!view.addCommentText2" ng-click="saveForm(item,view.addCommentText2)">评论</button>
+                <button class="ui-btn" ng-disabled="!view.addCommentText2"
+                        ng-click="saveForm(item,view.addCommentText2)">评论
+                </button>
             </section>
 
             <!--<form ng-submit="saveForm(item, addCommentText)">-->
-                <!--<input placeholder="添加评论..." ng-model="addCommentText2" type="text" required>-->
+            <!--<input placeholder="添加评论..." ng-model="addCommentText2" type="text" required>-->
             <!--</form>-->
             <!--disabled="msg.length==0"-->
             <!--<button class="button button-clear pull-right" ng-show="addCommentText2.length>0"-->
-                    <!--ng-click="saveForm(item,addCommentText2)">发送-->
+            <!--ng-click="saveForm(item,addCommentText2)">发送-->
             <!--</button>-->
         </div>
     </ion-modal-view>
@@ -154,8 +160,8 @@
         <ion-content scroll="false" class="has-vertical">
 
             <ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">
-            <img class="fit tc" style="width:100%" ng-src="{{item.get('image')._url}}"
-                 onerror="javascript:this.src='img/weibo.jpg'"/>
+                <img class="fit tc" style="width:100%" ng-src="{{item.get('image')._url}}"
+                     onerror="javascript:this.src='img/weibo.jpg'"/>
             </ion-scroll>
 
         </ion-content>
