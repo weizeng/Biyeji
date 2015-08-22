@@ -79,9 +79,8 @@
                 </div>
 
                 <div class="item item-body">
-                    <!--<ion-scroll direction="xy" zooming="true" min-zoom="1" max-zoom="3" class="image fit">-->
-                    <img class="fit" style="width:100%" ng-src="{{item.get('image')._url}}" ng-click="showLarge()"
-                         onerror="javascript:this.src='img/weibo.jpg'"/>
+                    <img class="fit" style="width:100%" ng-src="{{largeImage}}" ng-click="showLarge()"
+                         />
                     <!--</ion-scroll>-->
                     <div style="padding-left: 16px;">
                         <div ng-bind-html="article"></div>
