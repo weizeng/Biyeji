@@ -37,7 +37,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 /**
  *许愿的列表
  */
-    .controller('XYListCtrl', function ($cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
+    .controller('XYListCtrl', function ($cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
 
         //首次登录跳转到splash页面
         $timeout(function() {
@@ -49,8 +49,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         /**
          *增加对某一个评论点赞的方法
          */
-
         $scope.goZan = function (xy) {
+            if($cordovaNetwork.isOffline){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             if ($rootScope.user == null) {
                 $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
                     .then(function () {
@@ -85,10 +88,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                         //console.log(xy.showZan);
                     }, function (error) {
                     });
-                    //xy.showZan = true;
-
-                    //alert("赞成");
-//                    $cordovaDialogs.confirm('已赞', '太好了', '确定');
                 },
                 error: function (ddd, error) {
                     alert("抱歉，没赞成功。。" + error.message);
@@ -112,7 +111,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         };
         var newPost;
         var loadComment = function () {
-
+            if($cordovaNetwork.isOffline){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             // 检测类型，看是否加载更多内容
             var style = $scope.item.get('style');
             var detailId = $scope.item.get('detailId');
@@ -180,7 +182,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.openModal();
         };
 
-        //TODO 许愿详情
         $ionicModal.fromTemplateUrl('img-modal.html', {
             scope: $scope,
             animation: 'slide-in-up'
@@ -210,6 +211,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
         $scope.goUserLocation = function(item){
+            if($cordovaNetwork.isOffline){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
+
             if (item) {
                 localStorage.setItem('xy_item', JSON.stringify(item));
                 localStorage.setItem('xy_item_userId', JSON.stringify(item.get('userId')));
@@ -229,6 +235,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                         // callback success
                     });
 
+                return;
+            }
+            if($cordovaNetwork.isOffline){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
                 return;
             }
             $ionicLoading.show({template: '评论中...' + "<i class = 'ion-close-round' ng-click='forceLoading()'></i>"});
@@ -279,6 +289,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         var skip = 0;
 
         var loadMore = function () {
+            if($cordovaNetwork.isOffline){
+                $scope.$broadcast('scroll.refreshComplete');
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             var XyList = Bmob.Object.extend("Xy_List");
 
             var query = new Bmob.Query(XyList);

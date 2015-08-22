@@ -3,7 +3,7 @@
  */
 angular.module('starter.controllers')
 // 增加我的毕业说
-    .controller('AddXyCtrl', function ($ionicScrollDelegate,$cordovaKeyboard,$locationService,$cordovaGeolocation, $ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile,$http) {
+    .controller('AddXyCtrl', function ($cordovaNetwork,$ionicScrollDelegate,$cordovaKeyboard,$locationService,$cordovaGeolocation, $ionicPopup,$timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile,$http) {
         $scope.onScrollTimeline = function(){
             if ($ionicScrollDelegate.getScrollPosition().top > 20 || $ionicScrollDelegate.getScrollPosition().top < -20) {
 //                console.log("$ionicScrollDelegate.getScrollPosition().top :"+$ionicScrollDelegate.getScrollPosition().top );
@@ -40,6 +40,10 @@ angular.module('starter.controllers')
         $scope.checked = true;
         //TODO 增加一个许愿
         $scope.addXy = function () {
+            if($cordovaNetwork.isOffline){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
             if ($rootScope.user == null) {
                 $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
                     .then(function () {
@@ -48,6 +52,7 @@ angular.module('starter.controllers')
 
                 return;
             }
+
             if (imageLocalPath == null) {
                 $.fn.umshare.tip("请先选择一张照片");
                 return;

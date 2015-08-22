@@ -2,7 +2,7 @@
  * Created by leo.wei on 15/8/15.
  */
 angular.module('starter.controllers')
-    .controller('AddressCtrl', function ($locationService,$stateParams, $ionicScrollDelegate, $cordovaKeyboard, $cordovaGeolocation, $ionicPopup, $timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile, $http) {
+    .controller('AddressCtrl', function ($cordovaNetwork,$locationService,$stateParams, $ionicScrollDelegate, $cordovaKeyboard, $cordovaGeolocation, $ionicPopup, $timeout, $cordovaDialogs, $ionicPlatform, $rootScope, $scope, $ionicLoading, $cordovaCamera, $cordovaFile, $http) {
         //返回
         $scope.back = function () {
             window.history.back();

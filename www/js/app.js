@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-    .run(function ($appService,$timeout,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaKeyboard, $ionicHistory,$location,$cordovaToast,$ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
+    .run(function ($cordovaNetwork, $appService,$timeout,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaKeyboard, $ionicHistory,$location,$cordovaToast,$ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
         $ionicPlatform.ready(function () {
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -85,7 +85,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     }
                 });
             }
-
+            if(!$cordovaNetwork.isOffline){
+                // 检查更新
+                $appService.checkUpdate(function(result){
+                    console.log(result);
+                });
+            }
         });
 
         //双击退出
@@ -161,10 +166,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 }
             });
         }
-
-        $appService.checkUpdate(function(result){
-            console.log(result);
-        });
     })
 
 
