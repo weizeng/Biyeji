@@ -18,7 +18,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             }
         });
 
-        Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
+        Bmob.initialize("e0ee079dbf5f930552f66bc3bb58108a", "ad7c4e52ca3fdf2af23a9373afc4051b");
         // 初始化平台信息
         document.addEventListener("deviceready", function () {
             //初始化友盟统计配置
