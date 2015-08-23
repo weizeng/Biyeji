@@ -93,7 +93,7 @@ angular.module('starter.services', [])
         };
     })
 
-    .service('$locationService', function ($cordovaNetwork,$http, $cordovaGeolocation) {
+    .service('$locationService', function ($rootScope,$cordovaNetwork,$http, $cordovaGeolocation) {
         var parseLocation = function (latitude, longitude, parseLocationResult) {
             $http({
                 method: 'GET',
@@ -122,9 +122,6 @@ angular.module('starter.services', [])
 //                            alert(position);
                             console.log(JSON.stringify(position));
                             locationResult(latitude, longitude);
-                            if(!$rootScope.isConnected){
-                                return;
-                            }
                             parseLocation(latitude, longitude, parseLocationResult);
                         }, function (err) {
                             console.log(JSON.stringify(err));
