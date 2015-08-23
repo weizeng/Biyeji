@@ -346,13 +346,17 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.hardRefresh = function () {
             showLoading = false;
             skip = 0;
+
             loadMore();
         }
 
 
         $scope.loadMorePost = function () {
             showLoading = false;
-            loadMore();
+            // 让系统延迟1s 检测网络是否链接
+            $timeout(function(){
+                loadMore();
+            },1000);
         }
 
         $scope.listLoading = true;

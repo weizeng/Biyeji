@@ -17,7 +17,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 StatusBar.styleLightContent();
             }
         });
-
+        $rootScope.isDeviceReady = false;
         Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
         // 初始化平台信息
         document.addEventListener("deviceready", function () {
@@ -105,6 +105,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     console.log(result);
                 });
             }
+            $rootScope.isDeviceReady = true;
         });
 
         //双击退出
@@ -180,6 +181,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     alert("Error: " + error.code + " " + error.message);
                 }
             });
+        } else {
+
         }
     })
 
