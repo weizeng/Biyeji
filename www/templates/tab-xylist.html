@@ -65,9 +65,7 @@
 
             <ion-item class="xy-item bt0">
                 <div class="item item-avatar">
-                    <img ng-src="{{item.get('userId').get('avatar_large')}}"
-                         onerror="javascript:this.src='img/ionic.png'">
-                    <!--<img src="mcfly.jpg" onerror="javascript:this.src='img/ionic.png'">-->
+                    <img ng-src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
                     <p class="mb5"><span class="f12">发表于</span> {{item.createdAt}}</p>
 
                     <p ng-show="item.get('userId').get('description').length==0">
@@ -75,13 +73,10 @@
 
                     <p class="ws-normal" ng-show="item.get('userId').get('description').length>0">
                         {{item.get('userId').get('description')}}</p>
-                    <!--<p class="ws-normal">{{item.get('userId').get('description')}}</p>-->
                 </div>
 
                 <div class="item item-body">
-                    <img class="fit" ng-show="largeImage" style="width:100%" ng-src="{{largeImage}}" ng-click="showLarge()"
-                         />
-                    <!--</ion-scroll>-->
+                    <img class="fit" ng-show="largeImage" style="width:100%" onerror="javascript:this.src='img/default.png'" ng-src="{{largeImage}}" ng-click="showLarge()"/>
                     <div style="padding-left: 16px;">
                         <div ng-show="article" ng-bind-html="article"></div>
                         <a class="button button-icon icon ion-ios-heart"
@@ -102,8 +97,7 @@
             </div>
             <div class="list">
                 <a class="item item-avatar" href="#" ng-repeat="item in comments">
-                    <img ng-src="{{item.get('userId').get('avatar_large')}}"
-                         onerror="javascript:this.src='img/ionic.png'">
+                    <img ng-src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
 
                     <div class="item-title-row">
                         <div class="item-title">{{item.get('userId').get('nick')}}</div>
@@ -125,14 +119,6 @@
                         ng-click="saveForm(item,view.addCommentText2)">评论
                 </button>
             </section>
-
-            <!--<form ng-submit="saveForm(item, addCommentText)">-->
-            <!--<input placeholder="添加评论..." ng-model="addCommentText2" type="text" required>-->
-            <!--</form>-->
-            <!--disabled="msg.length==0"-->
-            <!--<button class="button button-clear pull-right" ng-show="addCommentText2.length>0"-->
-            <!--ng-click="saveForm(item,addCommentText2)">发送-->
-            <!--</button>-->
         </div>
     </ion-modal-view>
 </script>
