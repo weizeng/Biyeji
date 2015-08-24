@@ -83,7 +83,7 @@
                          />
                     <!--</ion-scroll>-->
                     <div style="padding-left: 16px;">
-                        <div ng-bind-html="article"></div>
+                        <div ng-show="article" ng-bind-html="article"></div>
                         <a class="button button-icon icon ion-ios-heart"
                            ng-class="{'ion-ios-heart-outline':!item.showZan}"
                            ng-click="goZan(item,$index);item.showZan=!item.showZan">

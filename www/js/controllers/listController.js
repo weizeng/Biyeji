@@ -170,6 +170,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.comments.length = 0;
             $scope.item = null;
             $scope.largeImage = null;
+            $scope.article=null;
             $scope.modal.hide();
         };
         //Cleanup the modal when we're done with it!
@@ -617,13 +618,13 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 
         $scope.comments = [];
         $scope.openModal = function () {
+            $scope.largeImage=null;
             $scope.modal.show().then(function (obj) {
                 $timeout(function(){
                     $scope.largeImage = $scope.item.get('image')._url;
                     loadComment();
 
-                },1000);
-
+                },500);
             });
 
         };
