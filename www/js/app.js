@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-    .run(function ($cordovaNetwork, $appService,$timeout,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaKeyboard, $ionicHistory,$location,$cordovaToast,$ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
+    .run(['$cordovaNetwork', '$appService','$timeout','$cordovaFileTransfer','$cordovaFileOpener2','$cordovaKeyboard', '$ionicHistory','$location','$cordovaToast','$ionicPopup', '$cordovaAppVersion', '$ionicPlatform', '$cordovaDevice', '$rootScope', '$ionicLoading',function ($cordovaNetwork, $appService,$timeout,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaKeyboard, $ionicHistory,$location,$cordovaToast,$ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
         $ionicPlatform.ready(function () {
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -184,11 +184,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         } else {
 
         }
-    })
+    }])
 
 
     .
-    config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+    config(['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
         $ionicConfigProvider.tabs.position('bottom');
         $ionicConfigProvider.navBar.alignTitle('center');
@@ -320,4 +320,4 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/dash');
 
-    });
+    }]);
