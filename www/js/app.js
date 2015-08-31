@@ -18,7 +18,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             }
         });
         $rootScope.isDeviceReady = false;
-        Bmob.initialize("44022f09eb84ad42e812bbbb9f2894c4", "629112d8473f92cc6780ace14a1ab5aa");
+        Bmob.initialize("d57f41849e40df714f46408b9a50f4b6", "64ab903f9d796b8a87fbdf1f2599f88d");
         // 初始化平台信息
         document.addEventListener("deviceready", function () {
             //初始化友盟统计配置
@@ -37,10 +37,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             var version = $cordovaDevice.getVersion();
 
             if (platform == 'Android') {
-                window.umappkey = '5598edc167e58e4247001e1e';
+                window.umappkey = '55e45f5d67e58e7c190009de';
 
             } else {
-                window.umappkey = '5598ee6867e58e42e9002113';
+                window.umappkey = '55e45fa8e0f55accd9002cda';
             }
 
             // 本地读取user的信息，这个user通常是bmob返回的信息
