@@ -9,6 +9,11 @@ cordova plugin rm cordova-plugin-console//去掉调试插件
 
 
 cordova build --release android
+
+新的方式已经不需要进行如下方式，会产生两个文件，成功后要验证是否签名过 
+jarsigner -verify /Users/leo/Documents/angular/Biyeji/platforms/android/build/outputs/apk/android-release.apk 
+
+################## 
 对生成的apk进行签名
 jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA1 -keystore myApp-release-key.keystore myApp-release-unsigned.apk myApp-release-key.keystore
 

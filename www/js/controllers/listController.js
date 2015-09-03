@@ -300,6 +300,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
                 return;
             }
+            // 检测系统是否配置完毕，用户显示审核内容，还是显示色图
+
             var XyList = Bmob.Object.extend("Xy_List");
 
             var query = new Bmob.Query(XyList);

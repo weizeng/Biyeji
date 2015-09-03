@@ -102,6 +102,17 @@ angular.module('starter.controllers')
             $scope.checkToken();
         };
 
+        $scope.registByRandom = function(){
+            if(!$rootScope.isConnected){
+                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                return;
+            }
+            $ionicLoading.show({
+                template: '自动注册中...'
+            });
+            $scope.registReallyByRandom();
+        };
+
         // 是否存在该用户
         var checkUserFromBmob = function (name, callback) {
             var User = Bmob.Object.extend("_User");
@@ -117,6 +128,53 @@ angular.module('starter.controllers')
                 }
             });
         };
+
+        $scope.registReallyByRandom = function () {
+            var name = RandomString(8);
+            checkUserFromBmob(name, function (isExist) {
+                if (isExist) {
+                    console.log("bmob EXIST user. then login");
+                    Bmob.User.logIn(name, "123", {
+                        success: function (user) {
+                            initDataAfterLogin(user);
+                        },
+                        error: function (user, error) {
+                            alert("Error: " + error.code + " " + error.message);
+                        }
+                    });
+                } else {
+                    // 不存在则
+                    console.log("bmob NOT EXIST user. then Regist");
+                    var user = new Bmob.User();
+                    user.set("username", name);
+                    user.set("password", "123");// bmob要求必须密码，默认123
+                    user.set("cover_image_phone", "http://tse1.mm.bing.net/th?&id=OIP.Mbe4a3da6b8c936ee349cdaa7ed7dafe9o0&w=300&h=300&c=0&pid=1.9&rs=0&p=0");
+                    user.set("platform", 'regist');
+                    user.set("image_small_v", "http://tse1.mm.bing.net/th?&id=OIP.Mbe4a3da6b8c936ee349cdaa7ed7dafe9o0&w=300&h=300&c=0&pid=1.9&rs=0&p=0");
+                    user.signUp(null, {
+                        success: function (user) {
+                            user.increment("coin", 40);
+                            user.save().then(function (user) {
+                                $rootScope.user = user;
+                                $.fn.umshare.tip('首次注册，赠送 +40金币');
+                            });
+                            initDataAfterLogin(user);
+                        },
+                        error: function (user, error) {
+                            $ionicLoading.hide();
+                            // Show the error message somewhere and let the user try again.
+                            $cordovaDialogs.alert('出错了,' + error.code + " " + error.message, '糟糕啊', '确定');
+                        }
+                    });
+                }
+            });
+        }
+        function RandomString(length) {
+            // http://www.outofmemory.cn
+            var str = '';
+            for ( ; str.length < length; str += Math.random().toString(36).substr(2) );
+            return str.substr(0, length);
+        }
 
         var initDataAfterLogin = function (user) {
             $ionicLoading.hide();
