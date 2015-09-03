@@ -39,6 +39,20 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
  */
     .controller('XYListCtrl', function ($cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
 
+        //显示地图
+        $scope.view = {showLocat:false};
+        var query = new Bmob.Query(Bmob.Object.extend("AppConf"));
+        // 查询配置数据
+        query.first({
+            success: function (result) {
+                if(result.get('hasLocat')&&result.get('hasLocat')=='true'){
+                    $scope.view.showLocat = true;
+                }
+            },
+            error: function (result) {
+            }
+        });
+
         //首次登录跳转到splash页面
         //$timeout(function() {
         //    if(window.localStorage['didTutorial'] !== "true") {
