@@ -37,29 +37,17 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 /**
  *许愿的列表
  */
-    .controller('XYListCtrl', function ($cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
-
-        //首次登录跳转到splash页面
-        //$timeout(function() {
-        //    if(window.localStorage['didTutorial'] !== "true") {
-        //        $state.go('splash');
-        //    }
-        //});
-
+    .controller('XYListCtrl', function ($appService,$cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
         /**
          *增加对某一个评论点赞的方法
          */
         $scope.goZan = function (xy) {
-//            if($cordovaNetwork.isOffline()){
-//                $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
-//                return;
-//            }
+
             if ($rootScope.user == null) {
                 $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
                     .then(function () {
                         // callback success
                     });
-
                 return;
             }
 
@@ -300,8 +288,32 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
                 return;
             }
-            // 检测系统是否配置完毕，用户显示审核内容，还是显示色图
+            // 检测系统是否配置完毕，用户显示审核内容
+            if(!$rootScope.appConf){
+                var appConf = Bmob.Object.extend("AppConf");
 
+                var appQuery = new Bmob.Query(appConf);
+                appQuery.find({
+                    success: function (results) {
+                        $rootScope.appConf = results[0];
+                        if($rootScope.appConf) {
+                            if($rootScope.appConf) {
+                                $scope.showLocate = $rootScope.appConf.get('hasLocate') != undefined && $rootScope.appConf.get('hasLocate');
+                            }
+
+                            loadReallyContent();
+                        } else {
+                            $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                        }
+                    },
+                    error: function(result) {
+                        $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                    }
+                });
+            }
+        }
+
+        var loadReallyContent = function () {
             var XyList = Bmob.Object.extend("Xy_List");
 
             var query = new Bmob.Query(XyList);
@@ -309,7 +321,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             query.skip(skip);
             // 查询关联的用户信息
             query.include("userId");
-            query.equalTo("hide", null);
+            if($rootScope.appConf.get('hasPass')) {
+                query.equalTo("hide", null);
+            } else {
+                query.equalTo("hide", "2");
+            }
+
             // 查询评论总数，和赞数目
             query.descending("createdAt");
             console.log("查询前:" + skip);
@@ -363,64 +380,19 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
         $scope.listLoading = true;
+
         //$ionicLoading.show({template: '加载中...'});
         $rootScope.$on("RefreshEvent", function (event, x) {
             $scope.hardRefresh();
         });
 
-        //TODO dateFn 日期格式化
-        $scope.dateFn = function (date) {
-
-            var minute = 1000 * 60;
-            var hour = minute * 60;
-            var day = hour * 24;
-            var halfamonth = day * 15;
-            var month = day * 30;
-
-            var str = date.toString();
-            str = str.replace(/-/g, "/");
-            var oDate1 = new Date(str);
-            date = oDate1.getTime();
-
-            var now = new Date().getTime();
-            var diffValue = now - date;
-            if (diffValue < 0) {
-                //若日期不符则弹出窗口告之
-                //alert("结束日期不能小于开始日期！");
-            }
-            var monthC = diffValue / month;
-            var weekC = diffValue / (7 * day);
-            var dayC = diffValue / day;
-            var hourC = diffValue / hour;
-            var minC = diffValue / minute;
-            var result = '';
-            if (monthC >= 1) {
-                result = str;
-                //result = "发表于" + parseInt(monthC) + "个月前";
-            }
-            else if (weekC >= 1) {
-                result = str;
-                //result = "发表于" + parseInt(weekC) + "周前";
-            }
-            else if (dayC >= 1) {
-                result = parseInt(dayC) + "天前";
-            }
-            else if (hourC >= 1) {
-                result = parseInt(hourC) + "小时前";
-            }
-            else if (minC >= 1) {
-                result = parseInt(minC) + "分钟前";
-            }
-            else if (minC < 1) {
-                result = "刚刚";
-            } else
-                result = str;
-            return result;
+        $scope.dateFn = function(date) {
+            return $appService.dateFn(date);
         }
     })
 
 
-    .controller('XyByMeCtrl', function ($cordovaDialogs, $ionicLoading, $rootScope, $sce, $scope, $cordovaDevice, $cordovaActionSheet, $ionicModal) {
+    .controller('XyByMeCtrl', function ($appService, $cordovaDialogs, $ionicLoading, $rootScope, $sce, $scope, $cordovaDevice, $cordovaActionSheet, $ionicModal) {
         // FEF
         var skip = 0;
         $scope.results = [];
@@ -475,56 +447,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             loadMyXy();
         };
 
-        //TODO dateFn 日期格式化
-        $scope.dateFn2 = function (date) {
-
-            var minute = 1000 * 60;
-            var hour = minute * 60;
-            var day = hour * 24;
-            var halfamonth = day * 15;
-            var month = day * 30;
-
-            var str = date.toString();
-            str = str.replace(/-/g, "/");
-            var oDate1 = new Date(str);
-            date = oDate1.getTime();
-
-            var now = new Date().getTime();
-            var diffValue = now - date;
-            if (diffValue < 0) {
-                //若日期不符则弹出窗口告之
-                //alert("结束日期不能小于开始日期！");
-            }
-            var monthC = diffValue / month;
-            var weekC = diffValue / (7 * day);
-            var dayC = diffValue / day;
-            var hourC = diffValue / hour;
-            var minC = diffValue / minute;
-            var result = '';
-            str = str.split(' ')[1];
-            if (monthC >= 1) {
-                result = str;
-                //result = "发表于" + parseInt(monthC) + "个月前";
-            }
-            else if (weekC >= 1) {
-                result = str;
-                //result = "发表于" + parseInt(weekC) + "周前";
-            }
-            else if (dayC >= 1) {
-                result = str;
-            }
-            else if (hourC >= 1) {
-                result = parseInt(hourC) + "小时前";
-            }
-            else if (minC >= 1) {
-                result = parseInt(minC) + "分钟前";
-            }
-            else if (minC < 1) {
-                result = "刚刚";
-            } else
-                result = str;
-            return result;
-        };
+        $scope.dateFn = function(date) {
+            return $appService.dateFn(date);
+        }
         //获取第几天
         $scope.getDay = function (date) {
             var str = date.toString();

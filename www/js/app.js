@@ -77,7 +77,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
                             }
                         }
-
+                        if(!$rootScope.user.get('avatar_large')) {
+                            $rootScope.user.attributes.avatar_large='img/ionic.png';
+                        }
                         $.fn.umshare.tip('欢迎回来！' + $rootScope.user.get('nick'));
                     },
                     error: function (user, error) {
@@ -290,6 +292,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 cache:false,
                 templateUrl: 'templates/xy-address.html',
                 controller: 'AddressCtrl'
+            })
+
+            .state('random', {
+                url: '/random',
+                cache:false,
+                templateUrl: 'templates/xy-random.html',
+                controller: 'RandomCtrl'
             })
 
             .state('tab.chats', {

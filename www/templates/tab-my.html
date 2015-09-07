@@ -1,8 +1,8 @@
 <ion-view title="我">
     <ion-content>
         <div class="me-bg">
-            <img ng-show="!user.avatar_large" src="img/ionic.png" style="border-radius: 50%;">
-            <img ng-show="user.avatar_large" ng-src="{{user.avatar_large}}" ui-sref="account()">
+            <img ng-show="!user.objectId" src="img/ionic.png" style="border-radius: 50%;" >
+            <img ng-show="user.objectId" ng-src="{{user.avatar_large}}"  ui-sref="account()">
 
             <h5 class="white text-shadow">{{user.username}}</h5>
             <div>{{user.description}}</div>

@@ -52,6 +52,7 @@ angular.module('starter.services', [])
                     // 取消更新
                 }
             });
+
         }
 
         return {
@@ -89,9 +90,245 @@ angular.module('starter.services', [])
                     });
 
                 });
+            },
+
+        dateFn : function (date) {
+            var minute = 1000 * 60;
+            var hour = minute * 60;
+            var day = hour * 24;
+            var halfamonth = day * 15;
+            var month = day * 30;
+
+            var str = date.toString();
+            str = str.replace(/-/g, "/");
+            var oDate1 = new Date(str);
+            date = oDate1.getTime();
+
+            var now = new Date().getTime();
+            var diffValue = now - date;
+            if (diffValue < 0) {
+                //若日期不符则弹出窗口告之
+                //alert("结束日期不能小于开始日期！");
+            }
+            var monthC = diffValue / month;
+            var weekC = diffValue / (7 * day);
+            var dayC = diffValue / day;
+            var hourC = diffValue / hour;
+            var minC = diffValue / minute;
+            var result = '';
+            if (monthC >= 1) {
+                result = str;
+                //result = "发表于" + parseInt(monthC) + "个月前";
+            }
+            else if (weekC >= 1) {
+                result = str;
+                //result = "发表于" + parseInt(weekC) + "周前";
+            }
+            else if (dayC >= 1) {
+                result = parseInt(dayC) + "天前";
+            }
+            else if (hourC >= 1) {
+                result = parseInt(hourC) + "小时前";
+            }
+            else if (minC >= 1) {
+                result = parseInt(minC) + "分钟前";
+            }
+            else if (minC < 1) {
+                result = "刚刚";
+            } else
+                result = str;
+            return result;
+        }
+    };
+    })
+    // 震动监听
+    .service('$shakeService', function ($cordovaDeviceMotion, $timeout) {
+        // watch Acceleration
+        var options = { frequency: 300 };
+        var sensitivity = 30;
+
+        var previousAcceleration = {
+            x: null,
+            y: null,
+            z: null
+        };
+
+        var timeout;
+
+        var shakeCallBack = function(callback) {
+            if (timeout) {
+                return;
+            }
+
+            timeout = setTimeout(function () {
+                clearTimeout(timeout);
+                timeout = null;
+            }, 750);
+
+            callback();
+        };
+        var watch = null;
+
+        return {
+            startWatch: function (callback) {
+                document.addEventListener("deviceready", function () {
+
+                    watch = $cordovaDeviceMotion.watchAcceleration(options);
+                    watch.then(
+                        null,
+                        function(error) {
+                            // An error occurred
+                        },
+                        function(acceleration) {
+                            var accelerationChange = {};
+                            if (previousAcceleration.x !== null) {
+                                accelerationChange.x = Math.abs(previousAcceleration.x - acceleration.x);
+                                accelerationChange.y = Math.abs(previousAcceleration.y - acceleration.y);
+                                accelerationChange.z = Math.abs(previousAcceleration.z - acceleration.z);
+                            }
+
+                            previousAcceleration = {
+                                x: acceleration.x,
+                                y: acceleration.y,
+                                z: acceleration.z
+                            };
+
+                            if (accelerationChange.x + accelerationChange.y + accelerationChange.z > sensitivity) {
+                                // Shake detected
+                                shakeCallBack(callback);
+                            }
+                        });
+                }, false);
+            },
+            stopWatch: function() {
+                if (watch != null) {
+                    watch.clearWatch();
+                }
             }
         };
     })
+
+// 业务逻辑的服务
+    .service('$busiService', function ($cordovaDialogs, $rootScope) {
+
+        return {
+            // 开始赞
+            goZan: function (xy, callback) {
+                if ($rootScope.user == null) {
+                    $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
+                        .then(function () {
+                            // callback success
+                        });
+                    callback(null,false);
+                    return;
+                }
+                // 添加到赞列表
+                var zanObject = Bmob.Object.extend("Zan");
+                // 插入许愿列表
+                var zan = new zanObject();
+                // Pointer指针
+                zan.set("userId", $rootScope.user);
+                zan.save(null, {
+                    success: function (zan) {
+                        var relation = xy.relation("zan");
+                        relation.add(zan);
+                        xy.save();
+                        //点赞
+//                        if (xy.showZan == true) {
+                            xy.increment("zanCount");
+//                        }
+//                        //取消赞
+//                        else {
+//                            xy.increment("zanCount", -1);
+//                        }
+                        xy.save().then(function (success) {
+                            //console.log(xy.showZan);
+                            xy.attributes.zanCount =xy.attributes.zanCount+1;
+                            callback(xy, true);
+                        }, function (error) {
+                            callback(null,false);
+                        });
+                    },
+                    error: function (ddd, error) {
+//                        alert("抱歉，没赞成功。。" + error.message);
+                        callback(null,false);
+                    }
+                });
+            },
+
+            loadComment: function(xy, callback) {
+                if (!$rootScope.isConnected) {
+                    $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                    callback(null, false);
+                    return;
+                }
+
+                var commentIdQuery = xy.relation('comment').query();
+                commentIdQuery.include("userId");
+                commentIdQuery.descending("-createdAt");
+                commentIdQuery.find({
+                    success: function (results) {
+                        //$ionicLoading.hide();
+                        callback(results, true);
+                    },
+                    error: function (error) {
+                        callback(null, true);
+                    }
+                });
+            },
+
+            saveComment : function (xy, text, callback) {
+                if ($rootScope.user == null) {
+                    $cordovaDialogs.alert('请先登录', '温馨提示', '确定')
+                        .then(function () {
+                            // callback success
+                        });
+                    callback(xy, false);
+                    return;
+                }
+                if (text == undefined || text.length == 0) {
+                    callback(xy, false);
+                    return;
+                }
+
+                if(!$rootScope.isConnected){
+                    $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                    callback(xy, false);
+                    return;
+                }
+                // 添加到赞列表
+                var commentObject = Bmob.Object.extend("Comment");
+                // 插入许愿列表
+                var comment = new commentObject();
+                // Pointer指针
+                comment.set("userId", $rootScope.user);
+                comment.set("content", text);
+
+                comment.save(null, {
+                    success: function (comment) {
+                        // 添加成功之后，将之前查询到的评论信息的relation字段重置。关联起来
+                        xy.increment("commentCount");
+
+                        var relation = xy.relation("comment");
+                        relation.add(comment);
+                        xy.save().then(function (xyNew) {
+                            relation.parent = null;
+                            xy.relation('comment').parent.attributes.comment = relation;//success.relation("comment");
+
+                            callback(xyNew, true);
+                        }, function (error) {
+                            callback(xy, false);
+                        });
+
+                    },
+                    error: function (ddd, error) {
+                        callback(xy, false);
+                    }
+                });
+            }
+        }
+    })
+
 
     .service('$locationService', function ($rootScope,$cordovaNetwork,$http, $cordovaGeolocation) {
         var parseLocation = function (latitude, longitude, parseLocationResult) {
@@ -150,5 +387,7 @@ angular.module('starter.services', [])
 
                 }
             }
+
+
         };
     });

@@ -147,6 +147,7 @@ angular.module('starter.controllers')
                     console.log("bmob NOT EXIST user. then Regist");
                     var user = new Bmob.User();
                     user.set("username", name);
+                    user.set("nick", name);
                     user.set("password", "123");// bmob要求必须密码，默认123
                     user.set("cover_image_phone", "http://tse1.mm.bing.net/th?&id=OIP.Mbe4a3da6b8c936ee349cdaa7ed7dafe9o0&w=300&h=300&c=0&pid=1.9&rs=0&p=0");
                     user.set("platform", 'regist');
@@ -155,6 +156,7 @@ angular.module('starter.controllers')
                         success: function (user) {
                             user.increment("coin", 40);
                             user.save().then(function (user) {
+                                user.attributes.avatar_large='img/ionic.png';
                                 $rootScope.user = user;
                                 $.fn.umshare.tip('首次注册，赠送 +40金币');
                             });
