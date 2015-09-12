@@ -1,0 +1,123 @@
+<ion-view view-title="摇一摇">
+    <ion-nav-buttons side="left">
+        <button class="button button-clear" ng-click="back()">
+            返回
+        </button>
+    </ion-nav-buttons>
+    <ion-content has-header="true" class="height100">
+        <img style="width:100%" ng-src="img/yao.jpg">
+
+        <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+            <!-- Background of PhotoSwipe.
+                 It's a separate element, as animating opacity is faster than rgba(). -->
+            <div class="pswp__bg"></div>
+
+            <!-- Slides wrapper with overflow:hidden. -->
+            <div class="pswp__scroll-wrap">
+
+                <!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+                <div class="pswp__container">
+                    <!-- don't modify these 3 pswp__item elements, data is added later on -->
+                    <div class="pswp__item"></div>
+                    <div class="pswp__item"></div>
+                    <div class="pswp__item"></div>
+                </div>
+
+                <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+                <div class="pswp__ui pswp__ui--hidden">
+
+                    <div class="pswp__top-bar">
+
+                        <!--  Controls are self-explanatory. Order can be changed. -->
+
+                        <div class="pswp__counter"></div>
+
+                        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                        <!--<button class="pswp__button pswp__button--share" title="Share"></button>-->
+
+                        <!--<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>-->
+
+                        <!--<button class="pswp__button button-icon icon ion-ios-heart"></button>-->
+
+                        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                        <!-- element will get class pswp__preloader--active when preloader is running -->
+                        <div class="pswp__preloader">
+                            <div class="pswp__preloader__icn">
+                                <div class="pswp__preloader__cut">
+                                    <div class="pswp__preloader__donut"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                        <div class="pswp__share-tooltip"></div>
+                    </div>
+
+                    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+                    </button>
+
+                    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+                    </button>
+
+                    <div class="pswp__caption">
+                        <div class="pswp__caption__center"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="position: absolute;bottom: 0px;width:100%;height:42px;background-color: rgba(0, 0, 0, 0.3);">
+                <a class="button button-icon icon ion-ios-heart-outline"
+                   style="color: #ffffff"
+                   ng-click="goZan(item)">
+                    <span >{{item.get('zanCount')}}</span>
+                </a>
+                <a class="button button-icon icon ion-ios-chatbubble-outline"
+                   style="color: #ffffff"
+                   ng-click="goXyDetail(item)">
+                    <span >{{item.get('commentCount')}}</span>
+                    </a>
+                <span style="color: #ffffff;padding: 10px 10px;">{{item.get('title')}}</span>
+            </div>
+        </div>
+
+    </ion-content>
+</ion-view>
+
+<script id="xy-detail-modal.html" type="text/ng-template">
+    <div class="modal image-modal transparent" >
+
+        <ion-pane class="fullscreen-image">
+            <i style="font-size: 20px" class = 'ion-close-round' ng-click='closeModal()'></i>
+            <div class="list">
+                <a class="item item-avatar" href="#" ng-repeat="item in comments">
+                    <img ng-src="{{item.get('userId').get('avatar_large')}}" onerror="javascript:this.src='img/ionic.png'">
+
+                    <div class="item-title-row">
+                        <div class="item-title">{{item.get('userId').get('nick')}}</div>
+                        <div class="item-after">{{dateFn(item.createdAt)}}</div>
+                    </div>
+
+                    <p>{{item.get('content')}}</p>
+                </a>
+            </div>
+
+            <div class="bar bar-footer p0">
+                <section class="ui-input-wrap ui-border-t">
+                    <div class="ui-input ui-border-radius">
+                        <input type="text" ng-model="commentText.comm" placeholder="你来撸...">
+                    </div>
+                    <button class="ui-btn" ng-disabled="disableShoot"
+                            ng-click="saveComment(item)">评论
+                    </button>
+                </section>
+            </div>
+        </ion-pane>
+    </div>
+
+
+
+</script>

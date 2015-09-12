@@ -77,7 +77,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
                             }
                         }
-
+                        if(!$rootScope.user.get('avatar_large')) {
+                            $rootScope.user.attributes.avatar_large='img/ionic.png';
+                        }
                         $.fn.umshare.tip('欢迎回来！' + $rootScope.user.get('nick'));
                     },
                     error: function (user, error) {
@@ -86,7 +88,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     }
                 });
             }
-
+            $rootScope.filter={id:0,count:0};
             $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
 
                 $rootScope.isConnected = (networkState != Connection.NONE && networkState != Connection.UNKNOWN);
@@ -105,6 +107,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     console.log(result);
                 });
             }
+            $rootScope.isDeviceReady = true;
         });
 
         //双击退出
@@ -144,6 +147,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
         // 针对非手机版本, 可以自动登陆
         if (!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()) {
+            $rootScope.filter={id:0,count:0};
             $rootScope.appVersion = 1;
             $rootScope.isConnected= true;
             Bmob.User.logIn('MegaGift', "123", {
@@ -180,12 +184,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     alert("Error: " + error.code + " " + error.message);
                 }
             });
+        } else {
+
         }
-    })
+    }])
 
 
     .
-    config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+    config(['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
         $ionicConfigProvider.tabs.position('bottom');
         $ionicConfigProvider.navBar.alignTitle('center');
@@ -289,6 +295,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 controller: 'AddressCtrl'
             })
 
+            .state('random', {
+                url: '/random',
+                cache:false,
+                templateUrl: 'templates/xy-random.html',
+                controller: 'RandomCtrl'
+            })
+
             .state('tab.chats', {
                 url: '/chats',
                 views: {
@@ -317,4 +330,4 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/dash');
 
-    });
+    }]);

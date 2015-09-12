@@ -1,14 +1,15 @@
 <ion-view title="我">
     <ion-content>
         <div class="me-bg">
-            <img ng-show="!user.avatar_large" src="img/ionic.png" style="border-radius: 50%;">
-            <img ng-show="user.avatar_large" ng-src="{{user.avatar_large}}" ui-sref="account()">
+            <img ng-show="!user.objectId" src="img/ionic.png" style="border-radius: 50%;" >
+            <img ng-show="user.objectId" ng-src="{{user.avatar_large}}"  ui-sref="account()">
 
             <h5 class="white text-shadow">{{user.username}}</h5>
             <div>{{user.description}}</div>
             <!--<div>{{user.location}}</div>-->
             <!--<button ng-click="logout()" ng-show="user">注销</button>-->
             <button ng-click="logIn()" ng-show="!user">新浪登陆</button>
+            <button ng-click="registByRandom()" ng-show="!user">随机注册</button>
         </div>
 
         <div class="list">

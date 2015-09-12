@@ -1,0 +1,28 @@
+
+http://www.changeself.net/archives/ionic：publishing-your-app.html
+
+cordova plugin rm cordova-plugin-console//去掉调试插件
+
+<application android:debuggable="true" android:hardwareAccelerated="true" android:icon="@drawable/icon" android:label="@string/app_name">
+
+把android：debuggable 改为false:
+
+
+cordova build --release android
+
+新的方式已经不需要进行如下方式，会产生两个文件，成功后要验证是否签名过 
+jarsigner -verify /Users/leo/Documents/angular/Biyeji/platforms/android/build/outputs/apk/android-release.apk 
+
+################## 
+对生成的apk进行签名
+jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA1 -keystore myApp-release-key.keystore myApp-release-unsigned.apk myApp-release-key.keystore
+
+密码 q123456
+别名是myApp-release-key.keystore
+对apk进行对齐
+zipalign -v 4 myApp-release-unsigned.apk myApp.apk
+
+3.生成签名key
+构件说明中已经提示了构件之后的apk文件在什么地方了，通过apk文件名可以看到现在的安装文件时未签名的unsigne。如果需要发布到应用商店，我们需要进行签名并优化。
+1
+keytool -genkey -v -keystore myApp-release-key.keystore -alias myApp-release-key.keystore -keyalg RSA -keysize 2048 -validity 10000
