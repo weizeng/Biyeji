@@ -1,6 +1,6 @@
 <ion-view title="唇唇欲动">
     <ion-nav-buttons side="left">
-        <button class="button button-clear icon ion-ios-paw-outline" ng-show="showLocate" ng-click="goUserLocation()">
+        <button class="button button-clear icon ion-ios-paw-outline" ng-if="showLocate" ng-click="goUserLocation()">
         </button>
         <button class="button button-clear icon ion-ios-color-filter-outline" ui-sref="random">
         </button>
@@ -24,11 +24,12 @@
                         <div class="item-after">{{dateFn(item.createdAt)}}</div>
                     </div>
 
-                    <p ng-show="item.get('userId').get('description').length>0">
-                        {{item.get('userId').get('description')}}</p>
+                    <!--<p ng-show="item.get('userId').get('description').length>0">-->
+                        <!--{{item.get('userId').get('description')}}</p>-->
+                    <p>{{item.get('title')}}</p>
                 </div>
 
-                <div class="item item-body">
+                <div class="item item-body" style="padding-left: 70px;padding-right: 12px">
                     <div style="max-height: {{imgHeightpx}};overflow: hidden;">
                         <span class="long-img" ng-show="item.get('H')>imgHeight">长图</span>
                         <img class="full-image" ng-show="item.get('image_small')" ng-click="goXyDetail(item)"
@@ -39,9 +40,9 @@
                     <span class="loc-span" ng-click="goUserLocation(item)" ng-show="item.get('locationDes')"><i
                             class="ion ion-ios-location"></i> {{item.get('locationDes')}}</span>
 
-                    <p style="margin: 10px;margin-bottom: 0;font-size: 15px">{{item.get('title')}}</p>
+                    <!--<p style="margin: 10px;margin-bottom: 0;font-size: 15px">{{item.get('title')}}</p>-->
 
-                    <div style="padding-left: 16px;" ng-init="item.showZan=false">
+                    <div class="zan-area" ng-init="item.showZan=false">
                         <a class="button button-icon icon ion-ios-heart"
                            ng-class="{'ion-ios-heart-outline':!item.showZan}"
                            ng-click="goZan(item,$index);item.showZan=!item.showZan">
@@ -74,7 +75,7 @@
                     <img ng-src="{{item.get('userId').get('avatar_large')}}"
                          onerror="javascript:this.src='img/ionic.png'">
 
-                    <p class="mb5"><span class="f12">发表于</span> {{item.createdAt}}</p>
+                    <p class="mb5"><b class="f16">{{item.get('userId').get('nick')}} </b><span class="f12">发表于</span> {{item.createdAt}}</p>
 
                     <p ng-show="item.get('userId').get('description').length==0">
                         {{item.get('userId').get('location')}}</p>
