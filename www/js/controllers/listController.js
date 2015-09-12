@@ -38,6 +38,31 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
  *许愿的列表
  */
     .controller('XYListCtrl', function ($ionicPopover,$appService,$cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
+
+        //限制图片显示高度，太高显示长图
+        $scope.imgHeight = window.screen.height - 160;
+        $scope.imgHeightpx = window.screen.height - 160+'px';
+
+
+        //选择自己喜欢要看的
+        $ionicModal.fromTemplateUrl('templates/like_modal.html', {
+            scope: $scope
+            //,
+            //animation: 'slide-in-up'
+        }).then(function (modal) {
+            $scope.likeModal = modal;
+        });
+
+        if(!window.localStorage.getItem('likes')){
+            $timeout(function(){
+                $scope.likeModal.show();
+            },500);
+        }else {
+            var yy = JSON.parse(window.localStorage.getItem('likes'));
+            $rootScope.filter.id = yy.h;
+            $rootScope.filter.count = yy.c;
+        }
+
         /**
          *增加对某一个评论点赞的方法
          */
@@ -395,22 +420,23 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         }
 
         $ionicPopover.fromTemplateUrl('templates/popover.html', {
-            scope: $scope,
-            animation: 'slide-in-up'
+            scope: $scope
+            //,
+            //animation: 'slide-in-up'
         }).then(function(popover) {
             $scope.popover = popover;
         });
         $scope.selectedItem = {"index":-1};
 
         $scope.goFilter= function(item){
-            console.log('hide'+$scope.selectedItem.index);
+            $scope.likeModal.hide();
             if($scope.selectedItem.index>=0) {
 
                 var yy = $scope.popData[$scope.selectedItem.index];
                 // 全局有效
                 $rootScope.filter.id = yy.h;
                 $rootScope.filter.count = yy.c;
-
+                window.localStorage.setItem('likes',JSON.stringify(yy));
                 $.fn.umshare.tip('主人,马上给你撸呀:'+yy.t);
                 $scope.popover.hide();
                 skip=0;

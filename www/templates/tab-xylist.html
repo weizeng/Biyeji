@@ -29,9 +29,12 @@
                 </div>
 
                 <div class="item item-body">
-                    <img class="full-image" ng-show="item.get('image_small')" ng-click="goXyDetail(item)"
-                         onerror="javascript:this.src='img/weibo.jpg'"
-                         ng-src="http://file.bmob.cn/{{item.get('image_small')}}">
+                    <div style="max-height: {{imgHeightpx}};overflow: hidden;">
+                        <span class="long-img" ng-show="item.get('H')>imgHeight">长图</span>
+                        <img class="full-image" ng-show="item.get('image_small')" ng-click="goXyDetail(item)"
+                             onerror="javascript:this.src='img/weibo.jpg'"
+                             ng-src="http://file.bmob.cn/{{item.get('image_small')}}">
+                    </div>
 
                     <span class="loc-span" ng-click="goUserLocation(item)" ng-show="item.get('locationDes')"><i
                             class="ion ion-ios-location"></i> {{item.get('locationDes')}}</span>

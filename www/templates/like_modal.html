@@ -1,0 +1,17 @@
+<div class="modal">
+  <div class="bar bar-header bar-assertive">
+    <h1 class="title">选择喜欢的分类</h1>
+  </div>
+
+  <ion-content class="has-header">
+      <label class="item item-radio" ng-repeat="item in popData">
+          <div ng-click="goFilter(item)">
+              <input type="radio" name="group" ng-model="selectedItem.index" ng-value="$index">
+
+              <div class="item-content">{{ item.t }}</div>
+              <i class="radio-icon ion-checkmark"></i>
+          </div>
+      </label>
+  </ion-content>
+
+</div>
