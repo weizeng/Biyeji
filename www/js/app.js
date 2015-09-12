@@ -147,6 +147,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
         // 针对非手机版本, 可以自动登陆
         if (!ionic.Platform.isAndroid() && !ionic.Platform.isIOS()) {
+            $rootScope.filter={id:0,count:0};
             $rootScope.appVersion = 1;
             $rootScope.isConnected= true;
             Bmob.User.logIn('MegaGift', "123", {
