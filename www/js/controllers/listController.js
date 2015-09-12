@@ -53,15 +53,15 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             $scope.likeModal = modal;
         });
 
-        if(!window.localStorage.getItem('likes')){
-            $timeout(function(){
-                $scope.likeModal.show();
-            },500);
-        }else {
-            var yy = JSON.parse(window.localStorage.getItem('likes'));
-            $rootScope.filter.id = yy.h;
-            $rootScope.filter.count = yy.c;
-        }
+        //if(!window.localStorage.getItem('likes')){
+        //    $timeout(function(){
+        //        $scope.likeModal.show();
+        //    },500);
+        //}else {
+        //    var yy = JSON.parse(window.localStorage.getItem('likes'));
+        //    $rootScope.filter.id = yy.h;
+        //    $rootScope.filter.count = yy.c;
+        //}
 
         /**
          *增加对某一个评论点赞的方法

@@ -187,11 +187,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         } else {
 
         }
-    }])
+    })
 
-
-    .
-    config(['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+    .config(['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
         $ionicConfigProvider.tabs.position('bottom');
         $ionicConfigProvider.navBar.alignTitle('center');
