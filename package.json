@@ -20,13 +20,6 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "com.ionic.keyboard",
-    {
-      "locator": "https://github.com/xu-li/cordova-plugin-wechat",
-      "id": "xu.li.cordova.wechat",
-      "variables": {
-        "": ""
-      }
-    },
     "cordova-plugin-camera",
     "cordova-plugin-file",
     "cordova-plugin-file-transfer",
@@ -39,7 +32,14 @@
       "locator": "https://github.com/havefive/com.twnav.plugins.backgroundtask.git",
       "id": "com.twnav.plugins.backgroundtask"
     },
-    "cn.zxj.cordova.UmengAnalyticsPlugin"
+    "cn.zxj.cordova.UmengAnalyticsPlugin",
+    {
+      "locator": "https://github.com/xu-li/cordova-plugin-wechat",
+      "id": "xu.li.cordova.wechat",
+      "variables": {
+        "": ""
+      }
+    }
   ],
   "cordovaPlatforms": [
     "android",
