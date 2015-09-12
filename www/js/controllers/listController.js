@@ -37,7 +37,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
 /**
  *许愿的列表
  */
-    .controller('XYListCtrl', function ($appService,$cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
+    .controller('XYListCtrl', function ($ionicPopover,$appService,$cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
         /**
          *增加对某一个评论点赞的方法
          */
@@ -301,6 +301,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                                 $scope.showLocate = $rootScope.appConf.get('hasLocate') != undefined && $rootScope.appConf.get('hasLocate');
                             }
 
+                            $scope.popData = JSON.parse($rootScope.appConf.attributes.filter);
+
                             loadReallyContent();
                         } else {
                             $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
@@ -310,6 +312,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                         $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
                     }
                 });
+            } else {
+                loadReallyContent();
             }
         }
 
@@ -321,10 +325,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             query.skip(skip);
             // 查询关联的用户信息
             query.include("userId");
-            if($rootScope.appConf.get('hasPass')) {
-                query.equalTo("hide", null);
-            } else {
-                query.equalTo("hide", "2");
+            if($rootScope.filter.id != 0){
+                query.equalTo("hide", ""+$rootScope.filter.id);
             }
 
             // 查询评论总数，和赞数目
@@ -333,22 +335,24 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             query.find({
                 success: function (results) {
                     $ionicLoading.hide();
+                    if (skip == 0) {
+                       $scope.results.length = 0;
+                        $scope.$broadcast('scroll.refreshComplete');
+                    }
+                    $scope.$broadcast('scroll.infiniteScrollComplete');    
                     if (results.length > 0) {
                         $scope.more = true;
-                        if (skip == 0) {
-                            $scope.results.length = 0;
-                            $scope.$broadcast('scroll.refreshComplete');
-                        }
+
                         //对查询的结果递归
                         angular.forEach(results, function (result) {
                             result.htmlStr = $sce.trustAsHtml(result.get('title'));
                             $scope.results.push(result);
                         });
                         skip += results.length;
-                        $scope.$broadcast('scroll.infiniteScrollComplete');
+                        
                     } else {
                         if (skip == 0) {
-
+                            $cordovaDialogs.confirm("没有更多数据啦", '糟糕了', '确定');
                         }
                         $scope.more = false;
                     }
@@ -389,6 +393,30 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
         $scope.dateFn = function(date) {
             return $appService.dateFn(date);
         }
+
+        $ionicPopover.fromTemplateUrl('templates/popover.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function(popover) {
+            $scope.popover = popover;
+        });
+        $scope.selectedItem = {"index":-1};
+
+        $scope.goFilter= function(item){
+            console.log('hide'+$scope.selectedItem.index);
+            if($scope.selectedItem.index>=0) {
+
+                var yy = $scope.popData[$scope.selectedItem.index];
+                // 全局有效
+                $rootScope.filter.id = yy.h;
+                $rootScope.filter.count = yy.c;
+
+                $.fn.umshare.tip('主人,马上给你撸呀:'+yy.t);
+                $scope.popover.hide();
+                skip=0;
+                loadReallyContent();
+            }
+        }
     })
 
 
@@ -407,9 +435,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
             var query = new Bmob.Query(XyList);
             query.limit(20);
             query.skip(skip);
-            query.equalTo("hide", null);
+            if($rootScope.filter.id != 0){
+                query.equalTo("hide", ""+$rootScope.filter.id);
+            }
             // 查询关联的用户信息
-            query.equalTo("userId", $rootScope.user.objectId);
+            query.equalTo("userId", $rootScope.user.objectId+"");
             // 查询评论总数，和赞数目
             query.descending("createdAt");
             console.log("查询前:" + skip);
@@ -417,19 +447,21 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
                 success: function (results) {
                     console.log('' + JSON.stringify(results));
                     $ionicLoading.hide();
+                    if (skip == 0) {
+                        $scope.results.length = 0;
+                        $scope.$broadcast('scroll.refreshComplete');
+                    }
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
                     if (results.length > 0) {
                         $scope.more = true;
-                        if (skip == 0) {
-                            $scope.results.length = 0;
-                            $scope.$broadcast('scroll.refreshComplete');
-                        }
+
                         //对查询的结果递归
                         angular.forEach(results, function (result) {
                             result.htmlStr = $sce.trustAsHtml(result.get('title'));
                             $scope.results.push(result);
                         });
                         skip += results.length;
-                        $scope.$broadcast('scroll.infiniteScrollComplete');
+
                     } else {
                         if (skip == 0) {
 

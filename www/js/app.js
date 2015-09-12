@@ -88,7 +88,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     }
                 });
             }
-
+            $rootScope.filter={id:0,count:0};
             $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
 
                 $rootScope.isConnected = (networkState != Connection.NONE && networkState != Connection.UNKNOWN);

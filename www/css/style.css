@@ -483,5 +483,13 @@ h2{
     position: fixed;
     right: 0;
     top: 0;
+
+.customTrans {
+    -webkit-transition: all 1s ease-out;
+    -moz-transition: all 1s ease-out;
+    -ms-transition: all 1s ease-out;
+    -o-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+}
 }
 

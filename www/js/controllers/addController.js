@@ -99,6 +99,7 @@ angular.module('starter.controllers')
                             // Pointer指针
                             ddd.set("userId", $rootScope.user);
                             ddd.set("image", savedObject);
+                            ddd.set("hide", "3");// 用户是3
                             if (point != null) {
                                 ddd.set("location", point);
                                 ddd.set("locationDes", $scope.location);

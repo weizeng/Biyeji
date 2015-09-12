@@ -22,12 +22,12 @@ angular.module('starter.controllers')
 
             // 查询关联的用户信息
             query.include("userId");
-            if($rootScope.appConf.get('hasPass')) {
-                query.equalTo("hide", null);
-                query.skip(getRandomInt(0, 1000));
-            } else {
-                query.equalTo("hide", "2");
+
+            if($rootScope.filter.id != 0){
+                query.equalTo("hide", ""+$rootScope.filter.id);
             }
+            query.skip(getRandomInt(0, $rootScope.filter.count));
+
 
             // 查询评论总数，和赞数目
             query.descending("createdAt");
