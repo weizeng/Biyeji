@@ -39,6 +39,13 @@ angular.module('starter.controllers', ['ionic', 'ngCordova'])
  */
     .controller('XYListCtrl', function ($ionicPopover,$appService,$cordovaNetwork,$cordovaDialogs, $sce, $rootScope, $scope, $ionicLoading, $cordovaDevice, $ionicModal, $ionicScrollDelegate, $timeout, $state) {
 
+        //首次登录跳转到splash页面
+        $timeout(function() {
+            if(window.localStorage['didTutorial'] !== "true") {
+                $state.go('splash');
+            }
+        });
+
         //限制图片显示高度，太高显示长图
         $scope.imgHeight = window.screen.height - 160;
         $scope.imgHeightpx = window.screen.height - 160+'px';
