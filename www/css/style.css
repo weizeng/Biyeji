@@ -408,6 +408,8 @@ h2{
     border: 1px solid #9FB7E9;
     padding: 2px 6px;
     margin-left: 4px;
+    margin-bottom: 8px;
+    display: inline-block;
 }
 .ion-social-usd-outline{
    color:#F89959
@@ -438,7 +440,7 @@ h2{
     height: 100%;
 }
 .bar.bar-assertive{
-    background-color: rgb(234,103,162)
+    background-color: #107BCB;
 }
 .tabs-striped.tabs-color-assertive .tab-item.tab-item-active{
     color: rgb(234,103,162);
@@ -452,29 +454,29 @@ h2{
     opacity: 1;
 }
 .bar.bar-assertive{
-    border-color:rgb(234,103,162);
+    border-color:#107BCB;
     background-image:none;
 }
 .tabs-color-assertive .tab-item.tab-item-active, .tabs-color-assertive .tab-item.active, .tabs-color-assertive .tab-item.activated {
-    color: #EA67A2;
+    color: #107BCB;
     border: 0 solid #EA67A2;
 }
 .tabs-color-assertive .tab-item {
-    color: rgba(234, 103, 162,0.4);
+    color: rgba(16, 123, 203,0.4);
     opacity: 1;
 }
 .f16{
     font-size: 16px;
 }
 .button.ion-ios-heart{
-    color: red;
+    color: rgb(222,23,29);
 }
 .button.ion-ios-chatbubble-outline{
-    color: limegreen;
+    color: rgb(247,150,50);
 }
 .zan-area{
     padding-left: 16px;
-    background-color: rgba(234, 103, 162, 0.2);
+    background-color: rgba(16, 123, 203, 0.2);
     margin-top: -4px;
 }
 
