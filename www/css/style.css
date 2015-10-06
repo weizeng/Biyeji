@@ -615,7 +615,7 @@ h2{
     color: #ffffff;
 }
 .item-checkbox .checkbox{
-    left: 50%;
+    left: 75%;
 }
 .item-check{
     width: 50%;
@@ -630,5 +630,9 @@ h2{
 
 .checkbox input:checked:before, .checkbox input:checked + .checkbox-icon:before {
     background: #EA67A2;
+    border-color: #EA67A2;
+}
+.button.button-positive.activated {
+    background-color: #EA67A2;
     border-color: #EA67A2;
 }
