@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','ion-fab-button'])
 
     .run(['$cordovaNetwork', '$appService','$timeout','$cordovaFileTransfer','$cordovaFileOpener2','$cordovaKeyboard', '$ionicHistory','$location','$cordovaToast','$ionicPopup', '$cordovaAppVersion', '$ionicPlatform', '$cordovaDevice', '$rootScope', '$ionicLoading',function ($cordovaNetwork, $appService,$timeout,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaKeyboard, $ionicHistory,$location,$cordovaToast,$ionicPopup, $cordovaAppVersion, $ionicPlatform, $cordovaDevice, $rootScope, $ionicLoading) {
         $ionicPlatform.ready(function () {
@@ -153,8 +153,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             Bmob.User.logIn('MegaGift', "123", {
                 success: function (user) {
                     $rootScope.user = user;
-                    console.log(JSON.stringify($rootScope.user));
-                    console.log(JSON.stringify($rootScope.user).replace(/\\"/g, '"'));
+                    //console.log(JSON.stringify($rootScope.user));
+                    //console.log(JSON.stringify($rootScope.user).replace(/\\"/g, '"'));
 
                     if (user.updatedAt) {
                         var currentDate = new Date().format("yyyy-MM-dd");
@@ -325,9 +325,25 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 url: '/account',
                 templateUrl: 'templates/tab-account.html',
                 controller: 'AccountCtrl'
+            })
+
+            //setPage
+            .state('set', {
+                url: '/set',
+                templateUrl: 'templates/user_set.html',
+                controller: 'SetCtrl'
+            })
+
+            //loginPage
+            .state('login', {
+                url: '/login',
+                templateUrl: 'templates/user_login.html',
+                controller: 'LoginCtrl'
             });
 
+
+
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/tab/dash');
+        $urlRouterProvider.otherwise('/set');
 
     }]);

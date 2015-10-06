@@ -1,0 +1,17 @@
+<ion-view title="选择我喜欢的">
+
+
+    <ion-content has-header="true" padding="true">
+
+        <ion-checkbox ng-repeat="item in popData"
+                      ng-model="item.checked" ng-change="changeChecks(item)"
+                      ng-checked="item.checked" class="item-check">
+            {{item.t}}
+        </ion-checkbox>
+
+    </ion-content>
+    <div class="bar bar-footer bar-assertive" ng-click="goLogin()">
+        <div class="title">下一步</div>
+    </div>
+
+</ion-view>

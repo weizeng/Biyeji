@@ -325,4 +325,76 @@ angular.module('starter.controllers')
             }, 1000);
         };
 
+    })
+    .controller('SetCtrl', function ($scope, $rootScope, $state, $timeout) {
+
+        //$scope.user = JSON.parse(JSON.stringify($rootScope.user));
+
+        $scope.back = function () {
+            window.history.back();
+        };
+
+        if(!$rootScope.isConnected){
+            $scope.$broadcast('scroll.refreshComplete');
+            $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+            return;
+        }
+        // 检测系统是否配置完毕，用户显示审核内容
+        if(!$rootScope.appConf){
+            var appConf = Bmob.Object.extend("AppConf");
+
+            var appQuery = new Bmob.Query(appConf);
+            appQuery.find({
+                success: function (results) {
+                    $rootScope.appConf = results[0];
+                    if($rootScope.appConf) {
+                        if($rootScope.appConf) {
+                            $scope.showLocate = $rootScope.appConf.get('hasLocate') != undefined && $rootScope.appConf.get('hasLocate');
+                        }
+
+                        $scope.popData = JSON.parse($rootScope.appConf.attributes.filter);
+
+                    } else {
+                        $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                    }
+                },
+                error: function(result) {
+                    $cordovaDialogs.confirm('世界上最遥远的还是没有网络', '糟糕了', '确定');
+                }
+            });
+        }
+        //改变
+        $scope.changeChecks = function(item){
+
+            if (item.h === '0') {
+                if (item.checked === true) {
+                    angular.forEach($scope.popData, function (item) {
+                        item.checked = true;
+                    });
+                } else {
+                    angular.forEach($scope.popData, function (item) {
+                        item.checked = false;
+                    });
+                }
+            }else{
+                if (item.checked === false && $scope.popData.length > 0) {
+                    $scope.popData[0].checked = false;
+                }
+            }
+        };
+        //下一步登录
+        $scope.goLogin = function(){
+            console.log($scope.popData);
+            $state.go('login');
+        }
+
+    })
+    .controller('LoginCtrl', function ($scope, $rootScope, $state, $timeout) {
+
+        $scope.back = function () {
+            window.history.back();
+        };
+        //TODO 登录
+
+
     });
